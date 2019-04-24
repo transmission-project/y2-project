@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "849259271283-ctiunldfem6bo9nqeosrareh0jvo1mu8.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.huntertalk",
+            "certificate_hash": "a49c4ce93b9b5f9c47a33441370fcba94f6fea6b"
+          }
+        },
+        {
           "client_id": "849259271283-t246k3ov1ev8u68okfrqoa9i5rj0gok3.apps.googleusercontent.com",
           "client_type": 3
         }
