@@ -21,14 +21,13 @@ import android.widget.Toast;
 
 import com.example.huntertalk.MainActivity;
 import com.example.huntertalk.R;
-import com.example.huntertalk.ui.login.LoginViewModel;
-import com.example.huntertalk.ui.login.LoginViewModelFactory;
+import com.example.huntertalk.RegistrationActivity;
 
 public class LoginActivity extends AppCompatActivity {
 
     private LoginViewModel loginViewModel;
     private Button loginButton;
-
+    private Button registrationButton;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,11 +35,21 @@ public class LoginActivity extends AppCompatActivity {
 
         loginButton = findViewById(R.id.login);
 
+
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
                 moveToMainActivity();
+            }
+        });
+
+        registrationButton = findViewById(R.id.registerButton);
+        registrationButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                moveToRegistrationActivity();
             }
         });
 
@@ -143,6 +152,10 @@ public class LoginActivity extends AppCompatActivity {
 
     private void moveToMainActivity(){
         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+        startActivity(intent);
+    }
+    private void moveToRegistrationActivity(){
+        Intent intent = new Intent(LoginActivity.this, RegistrationActivity.class);
         startActivity(intent);
     }
 }
