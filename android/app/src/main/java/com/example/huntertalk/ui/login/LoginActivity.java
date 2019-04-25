@@ -19,7 +19,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.huntertalk.MainActivity;
+import com.example.huntertalk.Home_page;
 import com.example.huntertalk.R;
 import com.example.huntertalk.RegistrationActivity;
 
@@ -89,7 +89,7 @@ public class LoginActivity extends AppCompatActivity {
                 }
                 if (loginResult.getSuccess() != null) {
                     //updateUiWithUser(loginResult.getSuccess());
-                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                    Intent intent = new Intent(LoginActivity.this, Home_page.class);
                     startActivity(intent);
                 }
                 setResult(Activity.RESULT_OK);
@@ -151,7 +151,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void moveToMainActivity(){
-        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+        Intent intent = new Intent(LoginActivity.this, Home_page.class);
         startActivity(intent);
     }
     private void moveToRegistrationActivity(){
