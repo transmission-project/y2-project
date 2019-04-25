@@ -21,7 +21,7 @@
         android:layout_marginTop="19dp"
         android:ems="10"
         android:inputType="textPassword"
-        android:text="Enter Password" />
+        android:hint="Enter Password" />
 
     <Button
         android:id="@+id/register2"
@@ -47,7 +47,7 @@
         android:layout_marginTop="20dp"
         android:ems="10"
         android:inputType="textPersonName"
-        android:text="Nickname" />
+        android:hint="Nickname" />
 
     <EditText
         android:id="@+id/email"
@@ -61,7 +61,7 @@
         android:layout_marginTop="60dp"
         android:ems="10"
         android:inputType="textEmailAddress"
-        android:text="Enter email" />
+        android:hint="Enter email" />
 
     <EditText
         android:id="@+id/confirmPassword"
@@ -75,5 +75,5 @@
         android:layout_marginTop="19dp"
         android:ems="10"
         android:inputType="textPassword"
-        android:text="Confirm password" />
+        android:hint="Confirm password" />
 </RelativeLayout>
