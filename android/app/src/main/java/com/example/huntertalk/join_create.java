@@ -20,8 +20,7 @@ public class join_create extends AppCompatActivity {
         joinButton.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v){
                 Intent i =  new Intent(join_create.this, InsideGroupActivity.class);
-                String groupID= "Group id: " + groupIDInput.getText().toString();
-                i.putExtra("groupID",groupID);
+                i.putExtra("groupID", groupIDInput.getText().toString());
                 startActivity(i);
             }
         });

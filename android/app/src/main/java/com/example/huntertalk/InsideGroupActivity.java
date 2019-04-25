@@ -32,7 +32,6 @@ public class InsideGroupActivity extends AppCompatActivity
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
 
-        TextView groupidDisplay=findViewById(R.id.groupid);
         String groupID;
         try {
              groupID = getIntent().getExtras().getString("groupID");
@@ -40,7 +39,8 @@ public class InsideGroupActivity extends AppCompatActivity
         catch (NullPointerException e) {
             groupID = "ERROR";
         }
-        groupidDisplay.setText(groupID);
+        String activityTitle = getResources().getString(R.string.title_with_group_name, groupID);
+        setTitle(activityTitle);
     }
 
     @Override
