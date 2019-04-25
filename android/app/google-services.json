@@ -1,0 +1,56 @@
+{
+  "project_info": {
+    "project_number": "849259271283",
+    "firebase_url": "https://hunter-talk-be521.firebaseio.com",
+    "project_id": "hunter-talk-be521",
+    "storage_bucket": "hunter-talk-be521.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:849259271283:android:b05f45355aa69ae7",
+        "android_client_info": {
+          "package_name": "com.example.huntertalk"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "849259271283-ctiunldfem6bo9nqeosrareh0jvo1mu8.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.huntertalk",
+            "certificate_hash": "a49c4ce93b9b5f9c47a33441370fcba94f6fea6b"
+          }
+        },
+        {
+          "client_id": "849259271283-qf06b3rmu18sr31i2j0mq3a2d9dbsj98.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.huntertalk",
+            "certificate_hash": "7d7937fabd3ec45cc852f757ae022335a6f0cce9"
+          }
+        },
+        {
+          "client_id": "849259271283-t246k3ov1ev8u68okfrqoa9i5rj0gok3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDF-m5n89dE5nWqQWm9OPYo6cHa8tn6CCo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "849259271283-t246k3ov1ev8u68okfrqoa9i5rj0gok3.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

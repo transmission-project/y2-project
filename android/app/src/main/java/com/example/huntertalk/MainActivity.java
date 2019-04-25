@@ -33,6 +33,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         });
     }
 
+    public void buttonOnClick(View v){
+        //do something when button is clicked
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -53,14 +57,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    public void onClick(View v){
-        switch(v.getId()){
-            case R.id.fab:
-                startActivity(new Intent(this, Home_page.class));
-                break;
-        }
     }
 }
 
