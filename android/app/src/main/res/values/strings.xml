@@ -16,9 +16,9 @@
     <string name="title_with_group_name">Group ID: %1$s</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="nav_header_title">Android Studio</string>
-    <string name="nav_header_subtitle">android.studio@android.com</string>
-    <string name="nav_header_desc">Navigation header</string>
+    <string name="nav_header_title">Nickname</string>
+    <string name="nav_header_subtitle">User email</string>
+    <string name="nav_header_desc">Profile Picture</string>
     <string name="menu_home">Home</string>
     <string name="menu_gallery">Gallery</string>
     <string name="menu_slideshow">Slideshow</string>
