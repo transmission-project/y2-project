@@ -9,6 +9,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".createGroupPage"></activity>
         <activity android:name=".group_page"></activity>
         <activity android:name=".join_create"></activity>
         <activity android:name=".Home_page"></activity>
