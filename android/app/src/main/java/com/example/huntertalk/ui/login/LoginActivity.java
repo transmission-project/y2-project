@@ -59,6 +59,7 @@ public class LoginActivity extends AppCompatActivity {
         mDetailTextView = findViewById(R.id.detail);
         resetpw = findViewById(R.id.resetpw);
         sendem = findViewById(R.id.sendem);
+        sendem.setVisibility(View.GONE);
 
         resetpw.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -83,6 +84,10 @@ public class LoginActivity extends AppCompatActivity {
                                 }
                             }
                         });
+
+                findViewById(R.id.password).setVisibility(View.VISIBLE);
+                findViewById(R.id.login).setVisibility(View.VISIBLE);
+                findViewById(R.id.sendem).setVisibility(View.GONE);
 
 
             }
@@ -170,7 +175,8 @@ public class LoginActivity extends AppCompatActivity {
     public void onStart() {
         super.onStart();
         // Check if user is signed in (non-null) and update UI accordingly.
-        FirebaseUser currentUser = mAuth.getCurrentUser();
+        //FirebaseUser currentUser = mAuth.getCurrentUser(); Uncomment this for actual version
+        FirebaseUser currentUser = null;
         updateUI(currentUser);
         if (currentUser!=null){
             moveToMainActivity();
