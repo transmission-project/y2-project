@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">Hunter Talk</string>
     <string name="action_settings">Settings</string>
+    <string name="title_activity_group_page">group_page</string>
     <string name="title_activity_login">Sign in</string>
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Password</string>
