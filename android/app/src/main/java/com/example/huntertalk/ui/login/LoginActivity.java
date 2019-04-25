@@ -12,9 +12,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.View;
-import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
@@ -40,7 +38,6 @@ public class LoginActivity extends AppCompatActivity {
     private Button sendem;
     private FirebaseAuth mAuth;
     private static final String TAG = "LoginActivity";
-    private TextView mStatusTextView;
     private TextView mDetailTextView;
 
 
@@ -55,7 +52,6 @@ public class LoginActivity extends AppCompatActivity {
         final EditText passwordEditText = findViewById(R.id.password);
         final Button loginButton = findViewById(R.id.login);
         final ProgressBar loadingProgressBar = findViewById(R.id.loading);
-        mStatusTextView = findViewById(R.id.status);
         mDetailTextView = findViewById(R.id.detail);
         resetpw = findViewById(R.id.resetpw);
         sendem = findViewById(R.id.sendem);
@@ -67,6 +63,7 @@ public class LoginActivity extends AppCompatActivity {
                 findViewById(R.id.password).setVisibility(View.GONE);
                 findViewById(R.id.login).setVisibility(View.GONE);
                 findViewById(R.id.sendem).setVisibility(View.VISIBLE);
+
             }
         });
 
@@ -74,7 +71,10 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 String emailAddress = usernameEditText.getText().toString().trim();
-
+                if (emailAddress.equals("") || !emailAddress.contains("@") || !emailAddress.contains(".")){
+                    Toast.makeText(getApplicationContext(), "Invalid email address", Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 mAuth.sendPasswordResetEmail(emailAddress)
                         .addOnCompleteListener(new OnCompleteListener<Void>() {
                             @Override
@@ -99,6 +99,10 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 String email = usernameEditText.getText().toString().trim();
+                if (email.equals("") || !email.contains("@") || !email.contains(".")){
+                    Toast.makeText(getApplicationContext(), "Invalid email address", Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 String password = passwordEditText.getText().toString().trim();
                 mAuth.signInWithEmailAndPassword(email, password)
                         .addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
