@@ -36,6 +36,8 @@ public class LoginActivity extends AppCompatActivity {
     private LoginViewModel loginViewModel;
     private Button loginButton;
     private Button registrationButton;
+    private Button resetpw;
+    private Button sendem;
     private FirebaseAuth mAuth;
     private static final String TAG = "LoginActivity";
     private TextView mStatusTextView;
@@ -55,6 +57,38 @@ public class LoginActivity extends AppCompatActivity {
         final ProgressBar loadingProgressBar = findViewById(R.id.loading);
         mStatusTextView = findViewById(R.id.status);
         mDetailTextView = findViewById(R.id.detail);
+        resetpw = findViewById(R.id.resetpw);
+        sendem = findViewById(R.id.sendem);
+
+        resetpw.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                findViewById(R.id.password).setVisibility(View.GONE);
+                findViewById(R.id.login).setVisibility(View.GONE);
+                findViewById(R.id.sendem).setVisibility(View.VISIBLE);
+            }
+        });
+
+        sendem.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String emailAddress = usernameEditText.getText().toString().trim();
+
+                mAuth.sendPasswordResetEmail(emailAddress)
+                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if (task.isSuccessful()) {
+                                    Log.d(TAG, "Email sent.");
+                                }
+                            }
+                        });
+
+
+            }
+
+
+        });
 
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -166,12 +200,12 @@ public class LoginActivity extends AppCompatActivity {
     private void updateUI(FirebaseUser user) {
 
         if (user != null) {
-            mStatusTextView.setText(getString(R.string.emailpassword_status_fmt,
-                    user.getEmail(), user.isEmailVerified()));
-            mDetailTextView.setText(getString(R.string.firebase_status_fmt, user.getUid()));
+
+            mDetailTextView.setText("Logged in");
         } else {
-            mStatusTextView.setText(R.string.signed_out);
             mDetailTextView.setText(null);
         }
     }
+
 }
+
