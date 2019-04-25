@@ -10,24 +10,19 @@ import android.widget.TextView;
 
 public class join_create extends AppCompatActivity {
 
-    Button btjoin;
-    EditText etgroupid;
-    String st;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_join_create);
-        btjoin= findViewById(R.id.btjoin);
-        etgroupid = findViewById(R.id.etgroupid);
+        Button joinButton= findViewById(R.id.btjoin);
+        final EditText groupIDInput = findViewById(R.id.etgroupid);
 
-        btjoin.setOnClickListener(new View.OnClickListener(){
+        joinButton.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v){
-                Intent i=new Intent(join_create.this,group_page.class);
-                st = "Group id: " + etgroupid.getText().toString();
-                i.putExtra("Value",st);
+                Intent i =  new Intent(join_create.this, InsideGroupActivity.class);
+                String groupID= "Group id: " + groupIDInput.getText().toString();
+                i.putExtra("groupID",groupID);
                 startActivity(i);
-
             }
         });
 
