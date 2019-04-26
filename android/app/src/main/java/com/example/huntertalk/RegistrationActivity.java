@@ -18,19 +18,11 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-<<<<<<< HEAD
-=======
-
->>>>>>> Automatically add users to database on register and refactor register code
 
 public class RegistrationActivity extends AppCompatActivity {
 
     private EditText inputEmail, inputPassword, inputPasswordConfirm;
     private Button btnSignIn, registerButton, btnResetPassword;
-<<<<<<< HEAD
-    FirebaseAuth auth = FirebaseAuth.getInstance();
-=======
->>>>>>> Automatically add users to database on register and refactor register code
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,21 +32,12 @@ public class RegistrationActivity extends AppCompatActivity {
         ActionBar actionBar = getSupportActionBar();
         actionBar.setTitle("Registration");
 
-<<<<<<< HEAD
-        //Get Firebase auth instance
-        auth = FirebaseAuth.getInstance();
-
-=======
->>>>>>> Automatically add users to database on register and refactor register code
         registerButton = (Button) findViewById(R.id.register2);
         inputEmail = (EditText) findViewById(R.id.email);
         inputPassword = (EditText) findViewById(R.id.password);
         inputPasswordConfirm = (EditText) findViewById(R.id.confirmPassword);
         final EditText inputNickname = (EditText) findViewById(R.id.displayName);
-<<<<<<< HEAD
-=======
 
->>>>>>> Automatically add users to database on register and refactor register code
 
         inputEmail.setOnClickListener(new View.OnClickListener(){
 
@@ -95,9 +78,6 @@ public class RegistrationActivity extends AppCompatActivity {
                     inputPassword.setError("Nickname can't be empty");
                     return;
                 }
-
-<<<<<<< HEAD
-=======
                 if (TextUtils.isEmpty(nickname)) {
                     Toast.makeText(getApplicationContext(), "You must have a nickname.", Toast.LENGTH_SHORT).show();
                     return;
@@ -105,7 +85,6 @@ public class RegistrationActivity extends AppCompatActivity {
 
                 FirebaseAuth auth = FirebaseAuth.getInstance();
 
->>>>>>> Automatically add users to database on register and refactor register code
                 //create user and finish with our registerFollowup listener
                 auth.createUserWithEmailAndPassword(email, password)
                         .addOnCompleteListener(RegistrationActivity.this,
@@ -122,10 +101,6 @@ class registerFollowup implements OnCompleteListener<AuthResult> {
     private RegistrationActivity registrationActivity;
     private String email, password, nickname;
 
-<<<<<<< HEAD
-=======
-
->>>>>>> Automatically add users to database on register and refactor register code
     public registerFollowup(RegistrationActivity registrationActivity, String email, String password, String nickname) {
         this.registrationActivity = registrationActivity;
         this.email = email;
@@ -147,25 +122,18 @@ class registerFollowup implements OnCompleteListener<AuthResult> {
             FirebaseAuth auth = FirebaseAuth.getInstance();
             //store user info in realtime database
             FirebaseDatabase database = FirebaseDatabase.getInstance();
-<<<<<<< HEAD
-            DatabaseReference usersTable = database.getReference().child("users");
-=======
-
             DatabaseReference usersTable = database.getReference().child("users");
 
->>>>>>> Automatically add users to database on register and refactor register code
             String uid = auth.getCurrentUser().getUid();
 
             usersTable.child(uid).child("nickname").setValue(nickname);
             usersTable.child(uid).child("email").setValue(email);
-<<<<<<< HEAD
-            Toast message= Toast.makeText(registrationActivity, "You have successfully registered. Redirecting to the main page.",
+
+            Toast message= Toast.makeText(registrationActivity, "You have successfully registered.",
                     Toast.LENGTH_LONG);
             message.setGravity(Gravity.TOP, 0,0);
             message.show();
-=======
 
->>>>>>> Automatically add users to database on register and refactor register code
             registrationActivity.finish();
         }
 
