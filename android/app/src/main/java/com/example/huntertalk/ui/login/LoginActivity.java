@@ -1,6 +1,7 @@
 package com.example.huntertalk.ui.login;
 
 import android.content.Intent;
+import android.graphics.Paint;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.ActionBar;
@@ -23,6 +24,8 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import static android.widget.TextView.*;
+
 public class LoginActivity extends AppCompatActivity {
 
     private Button loginButton;
@@ -44,6 +47,9 @@ public class LoginActivity extends AppCompatActivity {
         final EditText usernameEditText = findViewById(R.id.username);
         final EditText passwordEditText = findViewById(R.id.password);
         resetpw = findViewById(R.id.resetpw);
+        resetpw.setPaintFlags(resetpw.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+
+
         resetpw.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
