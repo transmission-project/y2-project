@@ -23,8 +23,7 @@
         </activity>
         <activity
             android:name=".RegistrationActivity"
-            android:label="RegistrationActivity"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:label="@string/title_activity_register">
             <intent-filter>
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
