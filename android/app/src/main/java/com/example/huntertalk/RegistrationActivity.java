@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.huntertalk.ui.login.LoginActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -22,7 +23,6 @@ public class RegistrationActivity extends AppCompatActivity {
 
     private EditText inputEmail, inputPassword, inputPasswordConfirm;
     private Button btnSignIn, registerButton, btnResetPassword;
-    FirebaseAuth auth = FirebaseAuth.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,14 +32,12 @@ public class RegistrationActivity extends AppCompatActivity {
         ActionBar actionBar = getSupportActionBar();
         actionBar.setTitle("Registration");
 
-        //Get Firebase auth instance
-        auth = FirebaseAuth.getInstance();
-
         registerButton = (Button) findViewById(R.id.register2);
         inputEmail = (EditText) findViewById(R.id.email);
         inputPassword = (EditText) findViewById(R.id.password);
         inputPasswordConfirm = (EditText) findViewById(R.id.confirmPassword);
         final EditText inputNickname = (EditText) findViewById(R.id.displayName);
+
 
         inputEmail.setOnClickListener(new View.OnClickListener(){
 
@@ -80,6 +78,12 @@ public class RegistrationActivity extends AppCompatActivity {
                     inputPassword.setError("Nickname can't be empty");
                     return;
                 }
+                if (TextUtils.isEmpty(nickname)) {
+                    Toast.makeText(getApplicationContext(), "You must have a nickname.", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                FirebaseAuth auth = FirebaseAuth.getInstance();
 
                 //create user and finish with our registerFollowup listener
                 auth.createUserWithEmailAndPassword(email, password)
@@ -119,14 +123,17 @@ class registerFollowup implements OnCompleteListener<AuthResult> {
             //store user info in realtime database
             FirebaseDatabase database = FirebaseDatabase.getInstance();
             DatabaseReference usersTable = database.getReference().child("users");
+
             String uid = auth.getCurrentUser().getUid();
 
             usersTable.child(uid).child("nickname").setValue(nickname);
             usersTable.child(uid).child("email").setValue(email);
-            Toast message= Toast.makeText(registrationActivity, "You have successfully registered. Redirecting to the main page.",
+
+            Toast message= Toast.makeText(registrationActivity, "You have successfully registered.",
                     Toast.LENGTH_LONG);
             message.setGravity(Gravity.TOP, 0,0);
             message.show();
+
             registrationActivity.finish();
         }
 
