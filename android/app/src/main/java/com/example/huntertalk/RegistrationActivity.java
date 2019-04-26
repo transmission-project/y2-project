@@ -163,16 +163,8 @@ public class RegistrationActivity extends AppCompatActivity {
 
                 FirebaseAuth auth = FirebaseAuth.getInstance();
 
-<<<<<<< HEAD
-
-                if (TextUtils.isEmpty(nickname)) {
-                    Toast.makeText(getApplicationContext(), "You must have a nickname.", Toast.LENGTH_SHORT).show();
-                    return;
-                }
                 
-=======
                 //create user and finish with our registerFollowup listener
->>>>>>> Remove conflict tages from RegistrationActivity.java
                 auth.createUserWithEmailAndPassword(email, password)
                         .addOnCompleteListener(RegistrationActivity.this,
                                 new registerFollowup(RegistrationActivity.this,
@@ -215,10 +207,6 @@ class registerFollowup implements OnCompleteListener<AuthResult> {
     private RegistrationActivity registrationActivity;
     private String email, password, nickname;
 
-<<<<<<< HEAD
-
-=======
->>>>>>> Remove conflict tages from RegistrationActivity.java
     public registerFollowup(RegistrationActivity registrationActivity, String email, String password, String nickname) {
         this.registrationActivity = registrationActivity;
         this.email = email;

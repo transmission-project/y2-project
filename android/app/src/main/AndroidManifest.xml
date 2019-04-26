@@ -22,6 +22,7 @@
             android:theme="@style/AppTheme.NoActionBar"
             android:parentActivityName=".ui.login.LoginActivity"/>
 
+
         <activity android:name=".group_page" />
         <activity android:name=".join_create" >
 

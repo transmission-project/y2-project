@@ -70,7 +70,7 @@ public class CreateGroupPage extends Activity implements View.OnClickListener {
             @Override
             public void onClick(View v) {
                 Intent intent =new Intent(CreateGroupPage.this,InsideGroupActivity.class);
-
+                intent.putExtra("groupID", groupId);
                 startActivity(intent);
 
                 for(int i = 0; i < k; i++) {
