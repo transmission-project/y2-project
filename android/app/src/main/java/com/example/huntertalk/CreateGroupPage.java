@@ -1,6 +1,7 @@
 package com.example.huntertalk;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Color;
 import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
@@ -68,7 +69,9 @@ public class CreateGroupPage extends Activity implements View.OnClickListener {
 
             @Override
             public void onClick(View v) {
-                //What happens when create button is clicked
+                Intent intent =new Intent(CreateGroupPage.this,InsideGroupActivity.class);
+
+                startActivity(intent);
 
                 for(int i = 0; i < k; i++) {
 
