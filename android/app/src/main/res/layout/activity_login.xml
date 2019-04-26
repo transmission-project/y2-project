@@ -47,22 +47,17 @@
 
     <Button
         android:id="@+id/login"
-        android:layout_width="179dp"
+        android:layout_width="175dp"
         android:layout_height="60dp"
         android:layout_gravity="start"
         android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="92dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginBottom="64dp"
         android:enabled="false"
         android:text="@string/action_sign_in_short"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/resetpw"
-        app:layout_constraintVertical_bias="0.023" />
+        app:layout_constraintTop_toBottomOf="@+id/resetpw" />
 
     <ProgressBar
         android:id="@+id/loading"
@@ -82,41 +77,31 @@
 
     <Button
         android:id="@+id/registerButton"
-        android:layout_width="174dp"
-        android:layout_height="52dp"
+        android:layout_width="175dp"
+        android:layout_height="60dp"
         android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="28dp"
+        android:layout_marginTop="30dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
         android:text="Register"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.488"
+        app:layout_constraintHorizontal_bias="0.511"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/login" />
 
-    <Button
+
+    <TextView
         android:id="@+id/resetpw"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginTop="48dp"
+        android:layout_height="26dp"
+        android:layout_marginTop="76dp"
+        android:layout_marginEnd="8dp"
         android:text="Reset password"
+        android:textAppearance="@style/Widget.AppCompat.Spinner.Underlined"
+        android:textColor="@android:color/holo_blue_light"
+        android:textSize="14sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.169"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/loading" />
 
-    <Button
-        android:id="@+id/sendem"
-        android:layout_width="154dp"
-        android:layout_height="46dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="48dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
-        android:text="Send E-mail"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/resetpw"
-        app:layout_constraintTop_toBottomOf="@+id/loading" />
 </android.support.constraint.ConstraintLayout>
