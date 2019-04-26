@@ -22,18 +22,19 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 
 public class RegistrationActivity extends AppCompatActivity {
 
     private EditText inputEmail, inputPassword, inputPasswordConfirm;
     private Button btnSignIn, registerButton, btnResetPassword;
-    private FirebaseAuth auth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.content_registation);
+        setContentView(R.layout.activity_registation);
 
         ActionBar actionBar = getSupportActionBar();
         actionBar.setTitle("Registration");
@@ -46,6 +47,7 @@ public class RegistrationActivity extends AppCompatActivity {
         inputEmail = (EditText) findViewById(R.id.email);
         inputPassword = (EditText) findViewById(R.id.password);
         inputPasswordConfirm = (EditText) findViewById(R.id.confirmPassword);
+        final EditText inputNickname = (EditText) findViewById(R.id.displayName);
 
 
         inputEmail.setOnClickListener(new View.OnClickListener(){
@@ -64,6 +66,8 @@ public class RegistrationActivity extends AppCompatActivity {
                 String email = inputEmail.getText().toString().trim();
                 String password = inputPassword.getText().toString().trim();
                 String passwordConfirm = inputPasswordConfirm.getText().toString().trim();
+                String nickname = inputNickname.getText().toString().trim();
+
 
 
                 if (TextUtils.isEmpty(email)) {
@@ -74,6 +78,7 @@ public class RegistrationActivity extends AppCompatActivity {
                     inputEmail.setError("Invalid email addresss");
                     return;
                 }
+
 
                 if (TextUtils.isEmpty(password)) {
                     inputPassword.setError("Enter Password");
@@ -86,35 +91,60 @@ public class RegistrationActivity extends AppCompatActivity {
 
                 if (password.length() < 6) {
                     inputPassword.setError("Enter minimum 6 characters");
+          
                     return;
                 }
 
-                //create user
+                FirebaseAuth auth = FirebaseAuth.getInstance();
+
+                //create user and finish with our registerFollowup listener
                 auth.createUserWithEmailAndPassword(email, password)
-                        .addOnCompleteListener(RegistrationActivity.this, new OnCompleteListener<AuthResult>() {
-                            @Override
-                            public void onComplete(@NonNull Task<AuthResult> task) {
-                                Toast.makeText(RegistrationActivity.this, "createUserWithEmail:onComplete:" + task.isSuccessful(), Toast.LENGTH_SHORT).show();
-                                // If sign in fails, display a message to the user. If sign in succeeds
-                                // the auth state listener will be notified and logic to handle the
-                                // signed in user can be handled in the listener.
-                                if (!task.isSuccessful()) {
-                                    Toast.makeText(RegistrationActivity.this, "Authentication failed." + task.getException(),
-                                            Toast.LENGTH_SHORT).show();
-                                } else {
-                                    startActivity(new Intent(RegistrationActivity.this, Home_page.class));
-                                    finish();
-                                }
-                            }
-                        });
+                        .addOnCompleteListener(RegistrationActivity.this,
+                                new registerFollowup(RegistrationActivity.this,
+                                        email, password, nickname));
             }
         });
     }
 
+}
 
+class registerFollowup implements OnCompleteListener<AuthResult> {
+
+    private RegistrationActivity registrationActivity;
+    private String email, password, nickname;
+
+
+    public registerFollowup(RegistrationActivity registrationActivity, String email, String password, String nickname) {
+        this.registrationActivity = registrationActivity;
+        this.email = email;
+        this.password = password;
+        this.nickname = nickname;
+    }
 
     @Override
-    protected void onResume() {
-        super.onResume();
+    public void onComplete(@NonNull Task<AuthResult> task) {
+        Toast.makeText(registrationActivity, "createUserWithEmail:onComplete:" + task.isSuccessful(), Toast.LENGTH_SHORT).show();
+        // If sign in fails, display a message to the user. If sign in succeeds
+        // the auth state listener will be notified and logic to handle the
+        // signed in user can be handled in the listener.
+        if (!task.isSuccessful()) {
+            Toast.makeText(registrationActivity, "Authentication failed." + task.getException(),
+                    Toast.LENGTH_SHORT).show();
+        }
+        else{
+            FirebaseAuth auth = FirebaseAuth.getInstance();
+            //store user info in realtime database
+            FirebaseDatabase database = FirebaseDatabase.getInstance();
+
+            DatabaseReference usersTable = database.getReference().child("users");
+
+            String uid = auth.getCurrentUser().getUid();
+
+            usersTable.child(uid).child("nickname").setValue(nickname);
+            usersTable.child(uid).child("email").setValue(email);
+
+            registrationActivity.finish();
+        }
+
     }
 }
