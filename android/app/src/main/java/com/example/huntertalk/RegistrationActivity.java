@@ -75,7 +75,9 @@ public class RegistrationActivity extends AppCompatActivity {
                 }
                 if (password.length() < 6) {
                     inputPassword.setError("Enter minimum 6 characters");
-          
+                    return;
+                }if (nickname.length() == 0) {
+                    inputPassword.setError("Nickname can't be empty");
                     return;
                 }
 
