@@ -5,7 +5,7 @@
     <string name="title_activity_login">Sign in</string>
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Password</string>
-    <string name="title_activity_register">Registration</string>
+    <string name="title_activity_register">Register a new account</string>
     <string name="emailpassword_status_fmt">Email User: %1$s (verified: %2$b)</string>
     <string name="firebase_status_fmt">Firebase User: %s</string>
     <string name="signed_out">Signed Out</string>
@@ -16,5 +16,4 @@
     <string name="invalid_username">Invalid email</string>
     <string name="invalid_password">Password must be >5 characters</string>
     <string name="login_failed">"Login failed"</string>
-    <string name="title_activity_registation">Register a new account</string>
 </resources>

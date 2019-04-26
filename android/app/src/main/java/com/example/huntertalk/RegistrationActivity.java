@@ -29,7 +29,7 @@ public class RegistrationActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.content_registation);
+        setContentView(R.layout.activity_registation);
 
         registerButton = (Button) findViewById(R.id.register2);
         inputEmail = (EditText) findViewById(R.id.email);
