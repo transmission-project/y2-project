@@ -12,6 +12,7 @@ import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.huntertalk.Home_page;
@@ -29,7 +30,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private Button loginButton;
     private Button registrationButton;
-    private Button resetpw;
+    private TextView resetpw;
     private FirebaseAuth mAuth;
     private static final String TAG = "LoginActivity";
 

@@ -51,18 +51,17 @@
         android:layout_height="60dp"
         android:layout_gravity="start"
         android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginBottom="64dp"
+        android:layout_marginBottom="268dp"
         android:enabled="false"
         android:text="@string/action_sign_in_short"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.481"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/resetpw"
-        app:layout_constraintVertical_bias="0.023" />
+        app:layout_constraintVertical_bias="0.84" />
 
     <ProgressBar
         android:id="@+id/loading"
@@ -85,26 +84,26 @@
         android:layout_width="174dp"
         android:layout_height="52dp"
         android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="28dp"
+        android:layout_marginTop="56dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
         android:text="Register"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.488"
+        app:layout_constraintHorizontal_bias="0.443"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/login" />
 
-    <Button
+    <TextView
         android:id="@+id/resetpw"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="26dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="48dp"
+        android:layout_marginTop="76dp"
         android:layout_marginEnd="8dp"
         android:text="Reset password"
+        android:textColor="@color/design_default_color_primary"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.11"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/loading" />
+        app:layout_constraintTop_toTopOf="@+id/password" />
 
 </android.support.constraint.ConstraintLayout>
