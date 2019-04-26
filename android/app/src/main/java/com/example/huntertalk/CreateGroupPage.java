@@ -1,15 +1,11 @@
 package com.example.huntertalk;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.graphics.Color;
 import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.Gravity;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -18,7 +14,6 @@ import android.widget.RelativeLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -34,7 +29,7 @@ import java.security.SecureRandom;
 import java.util.HashSet;
 import java.util.Random;
 
-public class CreateGroupPage extends AppCompatActivity implements View.OnClickListener {
+public class CreateGroupPage extends Activity implements View.OnClickListener {
 
     private Button btnCreate;
     private EditText nickname;
@@ -45,17 +40,13 @@ public class CreateGroupPage extends AppCompatActivity implements View.OnClickLi
     private int k = 0;
     private boolean[] selected;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_group_page);
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.setTitle("Create New Group");
-        if(getSupportActionBar()!=null){
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        }
 
         groupRef = database.getReference().child("groups");
         usersRef = database.getReference().child("users");
@@ -70,16 +61,19 @@ public class CreateGroupPage extends AppCompatActivity implements View.OnClickLi
         String uid = auth.getCurrentUser().getUid();
 
         groupRef.child(groupId).child("joined").child(uid).setValue(uid);
-        
+
+
+        groupRef.child(groupId).child("id").setValue(groupId);
+
+
+
         btnCreate = (Button) findViewById(R.id.createButton);
 
         btnCreate.setOnClickListener(new View.OnClickListener(){
 
             @Override
             public void onClick(View v) {
-                Intent intent =new Intent(CreateGroupPage.this,InsideGroupActivity.class);
-                intent.putExtra("groupID", groupId);
-                startActivity(intent);
+                //What happens when create button is clicked
 
                 for(int i = 0; i < k; i++) {
 
@@ -152,26 +146,6 @@ public class CreateGroupPage extends AppCompatActivity implements View.OnClickLi
             selected[clicked_id] = true;
         }
 
-    }
-
-    boolean secondPress =false;
-    @Override
-    public boolean onOptionsItemSelected(MenuItem menuItem) {
-        switch (menuItem.getItemId()) {
-            case android.R.id.home:
-                if (secondPress){
-                    Intent intent = new Intent(CreateGroupPage.this, Home_page.class);
-                    startActivity(intent);}
-                else{
-                    Toast message= Toast.makeText(CreateGroupPage.this, "Press once again to cancel group creation",
-                            Toast.LENGTH_LONG);
-                    message.setGravity(Gravity.TOP, 0,0);
-                    message.show();
-                    secondPress=true;
-                }
-                return true;
-        }
-        return (super.onOptionsItemSelected(menuItem));
     }
 }
 
