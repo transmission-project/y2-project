@@ -77,6 +77,10 @@ public class RegistrationActivity extends AppCompatActivity {
                     inputPassword.setError("Enter minimum 6 characters");
           
                     return;
+                }if (nickname.length() == 0) {
+                    inputPassword.setError("Enter minimum 6 characters");
+
+                    return;
                 }
 
                 //create user and finish with our registerFollowup listener
