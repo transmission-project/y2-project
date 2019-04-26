@@ -13,6 +13,7 @@
             android:name=".signIn"
             android:label="@string/title_activity_sign_in"
             android:parentActivityName=".ui.login.LoginActivity">
+        <activity android:name=".CreateGroupPage">
             <intent-filter>
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
@@ -20,7 +21,7 @@
         <activity
             android:name=".InsideGroupActivity"
             android:label="@string/title_activity_inside_group" />
-        <activity android:name=".createGroupPage" />
+        <activity android:name=".CreateGroupPage" />
         <activity android:name=".group_page" />
         <activity android:name=".join_create" />
         <activity android:name=".Home_page" />

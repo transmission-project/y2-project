@@ -2,6 +2,7 @@ package com.example.huntertalk;
 
 import android.app.Activity;
 import android.graphics.Color;
+import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -14,6 +15,7 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -22,11 +24,16 @@ import com.google.firebase.database.ValueEventListener;
 
 import org.w3c.dom.Text;
 
-public class createGroupPage extends Activity implements View.OnClickListener {
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+import java.util.HashSet;
+import java.util.Random;
+
+public class CreateGroupPage extends Activity implements View.OnClickListener {
 
     private Button btnCreate;
     private EditText nickname;
-    private DatabaseReference mDatabase, mRef;
+    private DatabaseReference usersRef, groupRef;
     private TextView friend, tv;
     private String friendName;
     private TableLayout tableRecHunted;
@@ -41,12 +48,22 @@ public class createGroupPage extends Activity implements View.OnClickListener {
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
 
-        mRef = database.getReference().child("groups");
+        groupRef = database.getReference().child("groups");
+        usersRef = database.getReference().child("users");
+
+        GroupId groupIdObject = new GroupId();
+
+        final String groupId = Integer.toString(groupIdObject.getId());
 
 
-        mDatabase = database.getReference().child("users");
+        FirebaseAuth auth = FirebaseAuth.getInstance();
 
-        mRef.child("groupId").child("members").child("curUserId").setValue("curUserId");
+        String uid = auth.getCurrentUser().getUid();
+
+        groupRef.child(groupId).child("joined").child(uid).setValue(uid);
+
+
+        groupRef.child(groupId).child("id").setValue(groupId);
 
 
 
@@ -56,11 +73,12 @@ public class createGroupPage extends Activity implements View.OnClickListener {
 
             @Override
             public void onClick(View v) {
-                //Write what happens when create button is clicked
+                //What happens when create button is clicked
+
                 for(int i = 0; i < k; i++) {
 
                     if(selected[i]){
-                        mRef.child("groupId").child("members").child(Integer.toString(i + 1000)).setValue(Integer.toString(i + 1000));
+                        groupRef.child(groupId).child("invited").child(Integer.toString(i + 1000)).setValue(Integer.toString(i + 1000));
 
                     }
                 }
@@ -74,7 +92,7 @@ public class createGroupPage extends Activity implements View.OnClickListener {
 
 
 
-        mDatabase.addValueEventListener(new ValueEventListener() {
+        usersRef.child(uid).child("recentlyHunted").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
@@ -82,38 +100,28 @@ public class createGroupPage extends Activity implements View.OnClickListener {
                 tableRecHunted.removeAllViews();
                 k = 0;
 
+                for (DataSnapshot person : dataSnapshot.getChildren()) {
+                            UserInformation uInfo = new UserInformation();
+                            friendName = person.getValue().toString();
 
-                    for (DataSnapshot accounts : dataSnapshot.getChildren()) {
-                        for (DataSnapshot recentlyHunted : accounts.getChildren()) {
-                            for (DataSnapshot person : recentlyHunted.getChildren()) {
-                                UserInformation uInfo = new UserInformation();
-                                friendName = person.getValue().toString();
-
-
-
-
-                                TableRow row = new TableRow(getBaseContext());
-                                TableRow.LayoutParams lp = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT);
-                                lp.setMargins(10, 10, 5, 10);
-                                row.setLayoutParams(lp);
-                                tv = new TextView(getBaseContext());
-                                tv.setText(friendName);
-                                tv.setId(1000 + k);
-                                row.setId(k);
+                            TableRow row = new TableRow(getBaseContext());
+                            TableRow.LayoutParams lp = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT);
+                            lp.setMargins(10, 10, 5, 10);
+                            row.setLayoutParams(lp);
+                            tv = new TextView(getBaseContext());
+                            tv.setText(friendName);
+                            tv.setId(1000 + k);
+                            row.setId(k);
 
 
-                                row.addView(tv, lp);
+                            row.addView(tv, lp);
 
-                                row.setOnClickListener(createGroupPage.this);
-                                tableRecHunted.addView(row, k);
-                                k++;
+                            row.setOnClickListener(CreateGroupPage.this);
+                            tableRecHunted.addView(row, k);
+                            k++;
 
-                            }
                         }
-
-                    }
                 selected = new boolean[k];
-
             }
 
 
@@ -129,7 +137,6 @@ public class createGroupPage extends Activity implements View.OnClickListener {
         int clicked_id = v.getId();
         friend = (TextView) findViewById(clicked_id + 1000);
 
-
         if (selected[clicked_id]) {
             friend.setTextColor(Color.BLACK);
             selected[clicked_id] = false;
@@ -141,3 +148,6 @@ public class createGroupPage extends Activity implements View.OnClickListener {
 
     }
 }
+
+
+
