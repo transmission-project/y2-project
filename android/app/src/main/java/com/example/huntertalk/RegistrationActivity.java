@@ -30,6 +30,7 @@ public class RegistrationActivity extends AppCompatActivity {
 
     private EditText inputEmail, inputPassword, inputPasswordConfirm;
     private Button btnSignIn, registerButton, btnResetPassword;
+    FirebaseAuth auth = FirebaseAuth.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +43,7 @@ public class RegistrationActivity extends AppCompatActivity {
 
 
         //Get Firebase auth instance
+
         auth = FirebaseAuth.getInstance();
         registerButton = (Button) findViewById(R.id.register2);
         inputEmail = (EditText) findViewById(R.id.email);
@@ -95,7 +97,7 @@ public class RegistrationActivity extends AppCompatActivity {
                     return;
                 }
 
-                FirebaseAuth auth = FirebaseAuth.getInstance();
+
 
                 //create user and finish with our registerFollowup listener
                 auth.createUserWithEmailAndPassword(email, password)
