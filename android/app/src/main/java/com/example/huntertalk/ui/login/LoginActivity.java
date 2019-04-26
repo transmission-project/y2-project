@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+
 import android.util.Patterns;
 import android.view.Gravity;
 import android.view.View;
@@ -44,6 +45,7 @@ public class LoginActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         final EditText usernameEditText = findViewById(R.id.username);
         final EditText passwordEditText = findViewById(R.id.password);
+
         resetpw = findViewById(R.id.resetpw);
         sendem = findViewById(R.id.sendem);
         sendem.setVisibility(View.GONE);
@@ -96,6 +98,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 String email = usernameEditText.getText().toString().trim();
+
                 if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()){
                     usernameEditText.setError("Invalid email address");
                     return;
@@ -143,7 +146,8 @@ public class LoginActivity extends AppCompatActivity {
         super.onStart();
         // Check if user is signed in (non-null) and update UI accordingly.
         FirebaseUser currentUser = mAuth.getCurrentUser();
-       // FirebaseUser currentUser = null;  Uncomment this to get to not remember login.
+        //currentUser = null;  //Uncomment this to get to not remember login.
+
 
         if (currentUser!=null){
             moveToMainActivity();
