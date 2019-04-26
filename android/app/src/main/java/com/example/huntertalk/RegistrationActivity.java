@@ -61,25 +61,25 @@ public class RegistrationActivity extends AppCompatActivity {
 
 
                 if (TextUtils.isEmpty(email)) {
-                    Toast.makeText(getApplicationContext(), "Enter email address!", Toast.LENGTH_SHORT).show();
+                    inputEmail.setError("Invalid email addresss");
                     return;
                 }
                 if (email.equals("") || !email.contains("@") || !email.contains(".")){
-                    Toast.makeText(getApplicationContext(), "Invalid email address", Toast.LENGTH_SHORT).show();
+                    inputEmail.setError("Invalid email addresss");
                     return;
                 }
 
                 if (TextUtils.isEmpty(password)) {
-                    Toast.makeText(getApplicationContext(), "Enter password!", Toast.LENGTH_SHORT).show();
+                    inputPassword.setError("Enter Password");
                     return;
                 }
                 if (!TextUtils.equals(password, passwordConfirm)) {
-                    Toast.makeText(getApplicationContext(), "Passwords have to match!", Toast.LENGTH_SHORT).show();
+                    inputPasswordConfirm.setError("Passwords have to match");
                     return;
                 }
 
                 if (password.length() < 6) {
-                    Toast.makeText(getApplicationContext(), "Password too short, enter minimum 6 characters!", Toast.LENGTH_SHORT).show();
+                    inputPassword.setError("Enter minimum 6 characters");
                     return;
                 }
 
