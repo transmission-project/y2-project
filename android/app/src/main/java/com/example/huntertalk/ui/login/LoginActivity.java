@@ -12,6 +12,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -38,7 +39,7 @@ public class LoginActivity extends AppCompatActivity {
     private Button sendem;
     private FirebaseAuth mAuth;
     private static final String TAG = "LoginActivity";
-    private TextView mDetailTextView;
+
 
 
     @Override
@@ -52,17 +53,18 @@ public class LoginActivity extends AppCompatActivity {
         final EditText passwordEditText = findViewById(R.id.password);
         final Button loginButton = findViewById(R.id.login);
         final ProgressBar loadingProgressBar = findViewById(R.id.loading);
-        mDetailTextView = findViewById(R.id.detail);
         resetpw = findViewById(R.id.resetpw);
         sendem = findViewById(R.id.sendem);
         sendem.setVisibility(View.GONE);
-
         resetpw.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 findViewById(R.id.password).setVisibility(View.GONE);
                 findViewById(R.id.login).setVisibility(View.GONE);
+                findViewById(R.id.resetpw).setVisibility(View.GONE);
+                findViewById(R.id.registerButton).setVisibility(View.GONE);
                 findViewById(R.id.sendem).setVisibility(View.VISIBLE);
+               setTitle("Password Reset");
 
             }
         });
@@ -72,7 +74,9 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View v) {
                 String emailAddress = usernameEditText.getText().toString().trim();
                 if (emailAddress.equals("") || !emailAddress.contains("@") || !emailAddress.contains(".")){
-                    Toast.makeText(getApplicationContext(), "Invalid email address", Toast.LENGTH_SHORT).show();
+                    Toast toast= Toast.makeText(getApplicationContext(), "Invalid email address", Toast.LENGTH_SHORT);
+                    toast.setGravity(Gravity.TOP, 10, 10);
+                    toast.show();
                     return;
                 }
                 mAuth.sendPasswordResetEmail(emailAddress)
@@ -87,8 +91,10 @@ public class LoginActivity extends AppCompatActivity {
 
                 findViewById(R.id.password).setVisibility(View.VISIBLE);
                 findViewById(R.id.login).setVisibility(View.VISIBLE);
+                findViewById(R.id.resetpw).setVisibility(View.VISIBLE);
+                findViewById(R.id.registerButton).setVisibility(View.VISIBLE);
                 findViewById(R.id.sendem).setVisibility(View.GONE);
-
+                setTitle("Sign In");
 
             }
 
@@ -112,13 +118,13 @@ public class LoginActivity extends AppCompatActivity {
                                     // Sign in success, update UI with the signed-in user's information
                                        Log.d(TAG, "signInWithEmail:success");
                                     FirebaseUser user = mAuth.getCurrentUser();
-                                      updateUI(user);
+
                                       moveToMainActivity();
                                 } else {
                                     // If sign in fails, display a message to the user.
                                        Log.w(TAG, "signInWithEmail:failure", task.getException());
                                     Toast.makeText(getApplicationContext(), "Incorrect username or password", Toast.LENGTH_SHORT).show();
-                                    updateUI(null);
+
                                 }
                             }
                         });
@@ -181,7 +187,7 @@ public class LoginActivity extends AppCompatActivity {
         // Check if user is signed in (non-null) and update UI accordingly.
         FirebaseUser currentUser = mAuth.getCurrentUser();
        // FirebaseUser currentUser = null;  Uncomment this to get to not remember login.
-        updateUI(currentUser);
+
         if (currentUser!=null){
             moveToMainActivity();
         }
@@ -207,15 +213,6 @@ public class LoginActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    private void updateUI(FirebaseUser user) {
-
-        if (user != null) {
-
-            mDetailTextView.setText("Logged in");
-        } else {
-            mDetailTextView.setText(null);
-        }
-    }
 
 }
 
