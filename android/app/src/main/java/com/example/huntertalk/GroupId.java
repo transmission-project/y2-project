@@ -33,7 +33,8 @@ public class GroupId {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     for (DataSnapshot group : dataSnapshot.getChildren()) {
-                        if (Integer.parseInt(group.child("id").getValue().toString()) == n) {
+
+                        if (Integer.parseInt(group.getKey()) == n) {
 
                             exists = true;
                             break;

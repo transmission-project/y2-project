@@ -61,12 +61,7 @@ public class CreateGroupPage extends Activity implements View.OnClickListener {
         String uid = auth.getCurrentUser().getUid();
 
         groupRef.child(groupId).child("joined").child(uid).setValue(uid);
-
-
-        groupRef.child(groupId).child("id").setValue(groupId);
-
-
-
+        
         btnCreate = (Button) findViewById(R.id.createButton);
 
         btnCreate.setOnClickListener(new View.OnClickListener(){
