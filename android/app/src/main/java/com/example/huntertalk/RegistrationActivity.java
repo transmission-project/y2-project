@@ -1,17 +1,23 @@
 package com.example.huntertalk;
 
+import android.arch.lifecycle.MutableLiveData;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 
 import android.support.v7.app.AppCompatActivity;
 
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
+import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+
+import com.example.huntertalk.RegistrationFormState;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -23,6 +29,7 @@ public class RegistrationActivity extends AppCompatActivity {
     private EditText inputEmail, inputPassword, inputPasswordConfirm;
     private Button btnSignIn, registerButton, btnResetPassword;
     private FirebaseAuth auth;
+    private MutableLiveData<RegistrationFormState> registrationFormState = new MutableLiveData<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +60,7 @@ public class RegistrationActivity extends AppCompatActivity {
                 String email = inputEmail.getText().toString().trim();
                 String password = inputPassword.getText().toString().trim();
                 String passwordConfirm = inputPasswordConfirm.getText().toString().trim();
+
 
                 if (TextUtils.isEmpty(email)) {
                     Toast.makeText(getApplicationContext(), "Enter email address!", Toast.LENGTH_SHORT).show();
@@ -98,6 +106,51 @@ public class RegistrationActivity extends AppCompatActivity {
             }
         });
     }
+    TextWatcher afterTextChangedListener = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            // ignore
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+            // ignore
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+            loginDataChanged(inputEmail.getText().toString().trim(),
+                    inputPassword.getText().toString().trim(),inputPasswordConfirm.getText().toString().trim());
+        }
+    };
+
+    public void loginDataChanged(String username, String password, String confirmpassword) {
+        if (!isUserNameValid(username)) {
+         registrationFormState.setValue(new RegistrationFormState(R.string.invalid_username, null));
+        } else if (!isPasswordValid(password)) {
+            registrationFormState.setValue(new RegistrationFormState(null, R.string.invalid_password));
+        } else {
+            registrationFormState.setValue(new RegistrationFormState(true));
+        }
+    }
+
+    // A placeholder username validation check
+    private boolean isUserNameValid(String username) {
+        if (username == null) {
+            return false;
+        }
+        if (username.contains("@")) {
+            return Patterns.EMAIL_ADDRESS.matcher(username).matches();
+        } else {
+            return !username.trim().isEmpty();
+        }
+    }
+    // A placeholder password validation check
+    private boolean isPasswordValid(String password) {
+        return password != null && password.trim().length() > 5;
+    }
+
+
 
     @Override
     protected void onResume() {
