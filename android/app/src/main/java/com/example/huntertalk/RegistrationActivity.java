@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -120,7 +121,10 @@ class registerFollowup implements OnCompleteListener<AuthResult> {
 
             usersTable.child(uid).child("nickname").setValue(nickname);
             usersTable.child(uid).child("email").setValue(email);
-
+            Toast message= Toast.makeText(registrationActivity, "You have successfully registered. Redirecting to the main page.",
+                    Toast.LENGTH_LONG);
+            message.setGravity(Gravity.TOP, 0,0);
+            message.show();
             registrationActivity.finish();
         }
 

@@ -3,11 +3,8 @@ package com.example.huntertalk;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -56,10 +53,13 @@ public class signIn extends AppCompatActivity {
                                 }
                             }
                         });
+                Toast message= Toast.makeText(signIn.this, "Check your email. If you have an account at Hunter Talk you should have received a password reset link.",
+                        Toast.LENGTH_LONG);
+                        message.setGravity(Gravity.TOP, 0,0);
+                        message.show();
                 Intent intent = new Intent(signIn.this, LoginActivity.class);
                 startActivity(intent);
                 signIn.this.finish();
-
             }
         });
     }
