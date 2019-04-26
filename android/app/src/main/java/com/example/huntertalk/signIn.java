@@ -44,9 +44,7 @@ public class signIn extends AppCompatActivity {
             public void onClick(View v) {
                 String emailAddress = enterEmail.getText().toString().trim();
                 if (emailAddress.equals("") || !emailAddress.contains("@") || !emailAddress.contains(".")){
-                    Toast toast= Toast.makeText(getApplicationContext(), "Invalid email address", Toast.LENGTH_SHORT);
-                    toast.setGravity(Gravity.TOP, 10, 10);
-                    toast.show();
+                    enterEmail.setError("Invalid email address");
                     return;
                 }
                 mAuth.sendPasswordResetEmail(emailAddress)
@@ -60,13 +58,9 @@ public class signIn extends AppCompatActivity {
                         });
                 Intent intent = new Intent(signIn.this, LoginActivity.class);
                 startActivity(intent);
-
-
+                signIn.this.finish();
 
             }
         });
-
-
     }
-
 }
