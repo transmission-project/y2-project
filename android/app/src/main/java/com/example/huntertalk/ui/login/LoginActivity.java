@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.util.Patterns;
@@ -39,6 +40,8 @@ public class LoginActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setTitle("Sign in");
         loginButton = findViewById(R.id.login);
         loginButton.setEnabled(true);
         mAuth = FirebaseAuth.getInstance();
@@ -142,8 +145,8 @@ public class LoginActivity extends AppCompatActivity {
     public void onStart() {
         super.onStart();
         // Check if user is signed in (non-null) and update UI accordingly.
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-       // FirebaseUser currentUser = null;  Uncomment this to get to not remember login.
+       // FirebaseUser currentUser = mAuth.getCurrentUser();
+        FirebaseUser currentUser = null;  //Uncomment this to get to not remember login.
 
         if (currentUser!=null){
             moveToMainActivity();
@@ -169,6 +172,7 @@ public class LoginActivity extends AppCompatActivity {
         Intent intent = new Intent(LoginActivity.this, RegistrationActivity.class);
         startActivity(intent);
     }
+
 
 
 }

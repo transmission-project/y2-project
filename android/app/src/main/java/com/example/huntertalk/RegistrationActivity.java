@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 
 import android.text.Editable;
@@ -33,6 +34,11 @@ public class RegistrationActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.content_registation);
+
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setTitle("Registration");
+
+
 
         //Get Firebase auth instance
         auth = FirebaseAuth.getInstance();
@@ -104,6 +110,8 @@ public class RegistrationActivity extends AppCompatActivity {
             }
         });
     }
+
+
 
     @Override
     protected void onResume() {
