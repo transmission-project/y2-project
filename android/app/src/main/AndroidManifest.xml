@@ -23,14 +23,15 @@
             android:label="@string/title_activity_inside_group"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".group_page" />
-        <activity android:name=".join_create" />
+        <activity android:name=".join_create" >
+
+        </activity>
         <activity android:name=".Home_page" />
         <activity
             android:name=".ui.login.LoginActivity"
             android:label="@string/title_activity_login">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
