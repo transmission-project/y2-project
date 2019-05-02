@@ -27,6 +27,7 @@ import org.w3c.dom.Text;
 
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Random;
 
@@ -36,10 +37,11 @@ public class CreateGroupPage extends Activity implements View.OnClickListener {
     private EditText nickname;
     private DatabaseReference usersRef, groupRef;
     private TextView friend, tv;
-    private String friendName;
+    private String friendName, friendId;
     private TableLayout tableRecHunted;
     private int k = 0;
-    private boolean[] selected;
+    private String[] selected;
+    private HashMap<String,String> nickNames = new HashMap<String, String>();
 
 
     @Override
@@ -75,8 +77,9 @@ public class CreateGroupPage extends Activity implements View.OnClickListener {
 
                 for(int i = 0; i < k; i++) {
 
-                    if(selected[i]){
-                        groupRef.child(groupId).child("invited").child(Integer.toString(i + 1000)).setValue(Integer.toString(i + 1000));
+                    if(selected[i] != null){
+                        String id = nickNames.get(selected[i]);
+                        groupRef.child(groupId).child("invited").child(id).setValue(selected[i]);
 
                     }
                 }
@@ -101,6 +104,10 @@ public class CreateGroupPage extends Activity implements View.OnClickListener {
                 for (DataSnapshot person : dataSnapshot.getChildren()) {
                             UserInformation uInfo = new UserInformation();
                             friendName = person.getValue().toString();
+                            friendId = person.getKey().toString();
+
+                            nickNames.put(friendName,friendId);
+
 
                             TableRow row = new TableRow(getBaseContext());
                             TableRow.LayoutParams lp = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT);
@@ -108,7 +115,7 @@ public class CreateGroupPage extends Activity implements View.OnClickListener {
                             row.setLayoutParams(lp);
                             tv = new TextView(getBaseContext());
                             tv.setText(friendName);
-                            tv.setId(1000 + k);
+                            tv.setId(k+ 1000 );
                             row.setId(k);
 
 
@@ -119,7 +126,7 @@ public class CreateGroupPage extends Activity implements View.OnClickListener {
                             k++;
 
                         }
-                selected = new boolean[k];
+                selected = new String[k];
             }
 
 
@@ -134,14 +141,15 @@ public class CreateGroupPage extends Activity implements View.OnClickListener {
     public void onClick(View v) {
         int clicked_id = v.getId();
         friend = (TextView) findViewById(clicked_id + 1000);
+        String nameRH = friend.getText().toString();
 
-        if (selected[clicked_id]) {
-            friend.setTextColor(Color.BLACK);
-            selected[clicked_id] = false;
+        if (selected[clicked_id]== null) {
+            friend.setTextColor(Color.GREEN);
+            selected[clicked_id] = nameRH;
         }
         else {
-            friend.setTextColor(Color.GREEN);
-            selected[clicked_id] = true;
+            friend.setTextColor(Color.BLACK);
+            selected[clicked_id] = null;
         }
 
     }
