@@ -12,6 +12,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 
+import com.example.huntertalk.ui.login.LoginActivity;
+
 public class InsideGroupActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -66,7 +68,8 @@ public class InsideGroupActivity extends AppCompatActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-            return true;
+            Intent i =  new Intent(InsideGroupActivity.this, SettingsPage.class);
+            startActivity(i);
         }
 
         return super.onOptionsItemSelected(item);
