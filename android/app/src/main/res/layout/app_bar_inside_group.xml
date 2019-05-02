@@ -71,4 +71,12 @@
 
     </android.support.constraint.ConstraintLayout>
 
+    <EditText
+        android:id="@+id/ettest"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="" />
+
 </android.support.design.widget.CoordinatorLayout>
