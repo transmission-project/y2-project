@@ -153,6 +153,7 @@ public class CreateGroupPage extends AppCompatActivity implements View.OnClickLi
         }
 
     }
+
     boolean secondPress =false;
     @Override
     public boolean onOptionsItemSelected(MenuItem menuItem) {

@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
@@ -23,7 +25,7 @@ public class signIn extends AppCompatActivity {
     private static final String TAG = "LoginActivity";
     private Button sendEmail;
     private EditText enterEmail;
-
+    Boolean changed=false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +39,23 @@ public class signIn extends AppCompatActivity {
 
         sendEmail = findViewById(R.id.sendEmail);
         enterEmail = findViewById(R.id.enterEmail);
+        enterEmail.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if(s.length() != 0)
+                    changed=true;
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
         mAuth = FirebaseAuth.getInstance();
         sendEmail.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -70,6 +89,10 @@ public class signIn extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem menuItem) {
         switch (menuItem.getItemId()) {
             case android.R.id.home:
+                if(!changed){
+                    Intent intent = new Intent(signIn.this, LoginActivity.class);
+                    startActivity(intent);
+                }else{
                 if (secondPress){
                     Intent intent = new Intent(signIn.this, LoginActivity.class);
                     startActivity(intent);}
@@ -79,7 +102,7 @@ public class signIn extends AppCompatActivity {
                     message.setGravity(Gravity.TOP, 0,0);
                     message.show();
                     secondPress=true;
-                }
+                }}
                 return true;
         }
         return (super.onOptionsItemSelected(menuItem));
