@@ -38,8 +38,9 @@ public class CreateGroupPage extends Activity implements View.OnClickListener {
     private DatabaseReference usersRef, groupRef;
     private TextView friend, tv;
     private String friendName, friendId;
-    private TableLayout tableRecHunted;
+    private TableLayout tableRecHunted,tableFriends;
     private int k = 0;
+    private int f = 0;
     private String[] selected;
     private HashMap<String,String> nickNames = new HashMap<String, String>();
 
@@ -93,7 +94,7 @@ public class CreateGroupPage extends Activity implements View.OnClickListener {
 
 
 
-        usersRef.child(uid).child("recentlyHunted").addValueEventListener(new ValueEventListener() {
+        usersRef.child(uid).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
@@ -101,12 +102,18 @@ public class CreateGroupPage extends Activity implements View.OnClickListener {
                 tableRecHunted.removeAllViews();
                 k = 0;
 
-                for (DataSnapshot person : dataSnapshot.getChildren()) {
+                tableFriends = (TableLayout) findViewById(R.id.tableFriends);
+                tableFriends.removeAllViews();
+
+
+                for (DataSnapshot info : dataSnapshot.getChildren()) {
+                    if (info.getKey().equals("recentlyHunted") ) {
+                        for (DataSnapshot person : info.getChildren()) {
                             UserInformation uInfo = new UserInformation();
                             friendName = person.getValue().toString();
                             friendId = person.getKey().toString();
 
-                            nickNames.put(friendName,friendId);
+                            nickNames.put(friendName, friendId);
 
 
                             TableRow row = new TableRow(getBaseContext());
@@ -115,8 +122,8 @@ public class CreateGroupPage extends Activity implements View.OnClickListener {
                             row.setLayoutParams(lp);
                             tv = new TextView(getBaseContext());
                             tv.setText(friendName);
-                            tv.setId(k+ 1000 );
-                            row.setId(k);
+                            tv.setId(f + k + 1000);
+                            row.setId(f + k);
 
 
                             row.addView(tv, lp);
@@ -126,7 +133,39 @@ public class CreateGroupPage extends Activity implements View.OnClickListener {
                             k++;
 
                         }
-                selected = new String[k];
+                    }
+                    else if ( info.getKey().equals("friends")){
+                        for (DataSnapshot person : info.getChildren()) {
+                            friendName = person.getValue().toString();
+                            friendId = person.getKey().toString();
+
+                            nickNames.put(friendName, friendId);
+
+
+                            TableRow row = new TableRow(getBaseContext());
+                            TableRow.LayoutParams lp = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT);
+                            lp.setMargins(10, 10, 5, 10);
+                            row.setLayoutParams(lp);
+                            tv = new TextView(getBaseContext());
+                            tv.setText(friendName);
+                            tv.setId(f + k + 1000);
+                            row.setId(f + k);
+
+
+
+                            row.addView(tv, lp);
+
+                            row.setOnClickListener(CreateGroupPage.this);
+                            tableFriends.addView(row, f);
+                            f++;
+
+                        }
+                    }
+                }
+
+
+                selected = new String[f + k];
+
             }
 
 
