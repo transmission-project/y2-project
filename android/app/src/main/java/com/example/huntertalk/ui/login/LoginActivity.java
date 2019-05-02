@@ -14,7 +14,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.huntertalk.CreateGroupPage;
 import com.example.huntertalk.Home_page;
 import com.example.huntertalk.R;
 import com.example.huntertalk.RegistrationActivity;
@@ -24,8 +23,6 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-
-import static android.widget.TextView.*;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -49,7 +46,6 @@ public class LoginActivity extends AppCompatActivity {
         final EditText passwordEditText = findViewById(R.id.password);
         resetpw = findViewById(R.id.resetpw);
         resetpw.setPaintFlags(resetpw.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
-
 
         resetpw.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -90,12 +86,10 @@ public class LoginActivity extends AppCompatActivity {
                         });
             }
         });
-
         registrationButton = findViewById(R.id.registerButton);
         registrationButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 moveToRegistrationActivity();
             }
         });
@@ -106,18 +100,15 @@ public class LoginActivity extends AppCompatActivity {
         super.onStart();
         // Check if user is signed in (non-null) and update UI accordingly.
         FirebaseUser currentUser = mAuth.getCurrentUser();
-
         if (currentUser!=null){
             moveToMainActivity();
         }
     }
-
    /* private void updateUiWithUser(LoggedInUserView model) {
         //String welcome = getString(R.string.welcome) + model.getDisplayName();
         // TODO : initiate successful logged in experience
         Toast.makeText(getApplicationContext(), welcome, Toast.LENGTH_LONG).show();
     }*/
-
     private void moveToMainActivity(){
         Intent intent = new Intent(LoginActivity.this, Home_page.class);
         startActivity(intent);
@@ -130,9 +121,5 @@ public class LoginActivity extends AppCompatActivity {
         Intent intent = new Intent(LoginActivity.this, signIn.class);
         startActivity(intent);
     }
-
-
-
-
 }
 

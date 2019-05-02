@@ -40,6 +40,7 @@ public class SettingsPage extends AppCompatActivity {
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
+
         applyChanges.setOnClickListener((new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -145,15 +146,12 @@ public class SettingsPage extends AppCompatActivity {
             }
         });
 
-
-
         logoutbutton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 logout();
             }
         });
     }
-
 
     private void logout(){
         FirebaseAuth.getInstance().signOut();
@@ -164,12 +162,12 @@ public class SettingsPage extends AppCompatActivity {
     }
 
     boolean secondPress =false;
-    boolean changed = true;
+
     @Override
     public boolean onOptionsItemSelected(MenuItem menuItem) {
         switch (menuItem.getItemId()) {
             case android.R.id.home:
-                if(!changed){
+                if(!nicknameChange&&!password2Change&&!passwordChange){
                     Intent intent = new Intent(SettingsPage.this, InsideGroupActivity.class);
                     startActivity(intent);
                 }else{

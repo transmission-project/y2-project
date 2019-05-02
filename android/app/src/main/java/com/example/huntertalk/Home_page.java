@@ -7,12 +7,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 
 public class Home_page extends AppCompatActivity  {
 
     Button bjoin;
-    String st;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,19 +39,15 @@ public class Home_page extends AppCompatActivity  {
         getMenuInflater().inflate(R.menu.home_page_menu, menu);
         return super.onCreateOptionsMenu(menu);
     }
-
     // handle button activities
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-
         if (id == R.id.mybutton) {
             Intent i=new Intent(Home_page.this,SettingsPage.class);
             startActivity(i);
             this.finish();
-
         }
         return super.onOptionsItemSelected(item);
     }
-
 }

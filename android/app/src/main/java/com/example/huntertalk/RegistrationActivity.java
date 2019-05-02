@@ -29,9 +29,6 @@ public class RegistrationActivity extends AppCompatActivity {
     private Button registerButton;
     private boolean changed=false;
 
-
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -168,7 +165,6 @@ public class RegistrationActivity extends AppCompatActivity {
             }
         });
     }
-
     /**
      * Makes user press twice
      * Requires setHomeButtonEnabled() in onCreate().
@@ -196,7 +192,6 @@ public class RegistrationActivity extends AppCompatActivity {
         }
         return (super.onOptionsItemSelected(menuItem));
     }
-
 }
 
 class registerFollowup implements OnCompleteListener<AuthResult> {
@@ -235,9 +230,7 @@ class registerFollowup implements OnCompleteListener<AuthResult> {
                     Toast.LENGTH_LONG);
             message.setGravity(Gravity.TOP, 0,0);
             message.show();
-
             registrationActivity.finish();
         }
-
     }
 }
