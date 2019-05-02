@@ -7,6 +7,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -33,6 +34,7 @@ public class signIn extends AppCompatActivity {
         if(getSupportActionBar()!=null){
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
+
         sendEmail = findViewById(R.id.sendEmail);
         enterEmail = findViewById(R.id.enterEmail);
         mAuth = FirebaseAuth.getInstance();
@@ -62,5 +64,24 @@ public class signIn extends AppCompatActivity {
                 signIn.this.finish();
             }
         });
+    }
+    boolean secondPress =false;
+    @Override
+    public boolean onOptionsItemSelected(MenuItem menuItem) {
+        switch (menuItem.getItemId()) {
+            case android.R.id.home:
+                if (secondPress){
+                    Intent intent = new Intent(signIn.this, LoginActivity.class);
+                    startActivity(intent);}
+                else{
+                    Toast message= Toast.makeText(signIn.this, "Press once again to cancel the reset",
+                            Toast.LENGTH_LONG);
+                    message.setGravity(Gravity.TOP, 0,0);
+                    message.show();
+                    secondPress=true;
+                }
+                return true;
+        }
+        return (super.onOptionsItemSelected(menuItem));
     }
 }
