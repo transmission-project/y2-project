@@ -9,13 +9,15 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".SettingsPage"></activity>
         <activity
             android:name=".signIn"
             android:label="@string/title_activity_sign_in"
             android:parentActivityName=".ui.login.LoginActivity" />
-        <activity android:name=".CreateGroupPage"
+        <activity
+            android:name=".CreateGroupPage"
             android:label="@string/title_create_group"
-            android:parentActivityName=".Home_page"/>
+            android:parentActivityName=".Home_page" />
         <activity
             android:name=".InsideGroupActivity"
             android:label="@string/title_activity_inside_group"

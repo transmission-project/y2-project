@@ -1,5 +1,6 @@
 package com.example.huntertalk;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.view.GravityCompat;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -86,6 +87,8 @@ public class InsideGroupActivity extends AppCompatActivity
         } else if (id == R.id.nav_invite) {
 
         } else if (id == R.id.nav_settings) {
+            Intent i =  new Intent(InsideGroupActivity.this, SettingsPage.class);
+            startActivity(i);
 
         } else if (id == R.id.nav_leave) {
 
