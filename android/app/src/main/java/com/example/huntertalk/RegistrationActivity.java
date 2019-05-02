@@ -1,11 +1,15 @@
 package com.example.huntertalk;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.Gravity;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -22,25 +26,95 @@ import com.google.firebase.database.FirebaseDatabase;
 public class RegistrationActivity extends AppCompatActivity {
 
     private EditText inputEmail, inputPassword, inputPasswordConfirm;
-    private Button btnSignIn, registerButton, btnResetPassword;
+    private Button registerButton;
+    private boolean changed=false;
+
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registation);
-
         ActionBar actionBar = getSupportActionBar();
         actionBar.setTitle("Registration");
-
+        actionBar.setHomeButtonEnabled(true);
         registerButton = (Button) findViewById(R.id.register2);
         inputEmail = (EditText) findViewById(R.id.email);
         inputPassword = (EditText) findViewById(R.id.password);
         inputPasswordConfirm = (EditText) findViewById(R.id.confirmPassword);
         final EditText inputNickname = (EditText) findViewById(R.id.displayName);
 
+        inputEmail.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if(s.length() != 0)
+                    changed=true;
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+        inputPassword.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if(s.length() != 0)
+                    changed=true;
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+        inputPasswordConfirm.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if(s.length() != 0)
+                    changed=true;
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+        inputNickname.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if(s.length() != 0)
+                    changed=true;
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
 
         inputEmail.setOnClickListener(new View.OnClickListener(){
-
             @Override
             public void onClick(View v) {
                 inputEmail.setText("");
@@ -54,6 +128,7 @@ public class RegistrationActivity extends AppCompatActivity {
                 String password = inputPassword.getText().toString().trim();
                 String passwordConfirm = inputPasswordConfirm.getText().toString().trim();
                 String nickname = inputNickname.getText().toString().trim();
+
 
                 if (TextUtils.isEmpty(email)) {
                     inputEmail.setError("Invalid email addresss");
@@ -94,10 +169,37 @@ public class RegistrationActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Makes user press twice
+     * Requires setHomeButtonEnabled() in onCreate().
+     */
+    boolean secondPress =false;
+    @Override
+    public boolean onOptionsItemSelected(MenuItem menuItem) {
+        switch (menuItem.getItemId()) {
+            case android.R.id.home:
+                if(!changed){
+                    Intent intent = new Intent(RegistrationActivity.this, LoginActivity.class);
+                    startActivity(intent);
+                }else{
+                if (secondPress){
+                Intent intent = new Intent(RegistrationActivity.this, LoginActivity.class);
+                startActivity(intent);}
+                else{
+                    Toast message= Toast.makeText(RegistrationActivity.this, "Press once again to cancel the registration",
+                            Toast.LENGTH_LONG);
+                    message.setGravity(Gravity.TOP, 0,0);
+                    message.show();
+                    secondPress=true;
+                }}
+                return true;
+        }
+        return (super.onOptionsItemSelected(menuItem));
+    }
+
 }
 
 class registerFollowup implements OnCompleteListener<AuthResult> {
-
     private RegistrationActivity registrationActivity;
     private String email, password, nickname;
 

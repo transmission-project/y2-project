@@ -17,14 +17,11 @@ public class Home_page extends AppCompatActivity  {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_page);
 
-
         bjoin = (Button) findViewById(R.id.bjoin);
         bjoin.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v){
                 Intent i=new Intent(Home_page.this,join_create.class);
-
                 startActivity(i);
-
             }
         });
 
@@ -32,9 +29,7 @@ public class Home_page extends AppCompatActivity  {
         createButton.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v){
                 Intent i=new Intent(Home_page.this,CreateGroupPage.class);
-
                 startActivity(i);
-
             }
         });
     }
