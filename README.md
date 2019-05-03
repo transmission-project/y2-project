@@ -11,8 +11,8 @@ We're creating an app that hunters can use as an alternative to the communicatio
 |  Goal         | Description   | Result  |
 | ------------- |:-------------:| -----:|
 | Groups      | Handle groups, create and join | A few tasks are transferred to sprint 2 |
-| Runnable app      | Create a base to build upon | ✔ |
-| Accounts | Handle account information | ✔ |
+| Runnable app      | Create a base to build upon | Done |
+| Accounts | Handle account information | Done |
 
 ### Sprint 2
 
