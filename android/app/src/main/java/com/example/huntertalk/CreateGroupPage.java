@@ -1,9 +1,7 @@
 package com.example.huntertalk;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
-import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -13,8 +11,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -27,17 +23,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import org.w3c.dom.Text;
-
-import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
-import java.util.HashSet;
-import java.util.Random;
-
 public class CreateGroupPage extends AppCompatActivity implements View.OnClickListener {
 
     private Button btnCreate;
-    private EditText nickname;
     private DatabaseReference usersRef, groupRef;
     private TextView friend, tv;
     private String friendName;
@@ -64,7 +52,6 @@ public class CreateGroupPage extends AppCompatActivity implements View.OnClickLi
 
         final String groupId = Integer.toString(groupIdObject.getId());
 
-
         FirebaseAuth auth = FirebaseAuth.getInstance();
 
         String uid = auth.getCurrentUser().getUid();
@@ -82,32 +69,24 @@ public class CreateGroupPage extends AppCompatActivity implements View.OnClickLi
                 startActivity(intent);
 
                 for(int i = 0; i < k; i++) {
-
                     if(selected[i]){
                         groupRef.child(groupId).child("invited").child(Integer.toString(i + 1000)).setValue(Integer.toString(i + 1000));
-
                     }
                 }
-
             }
         });
 
-
-
-        nickname = (EditText) findViewById(R.id.nicknameCGP);
-
-
+        EditText nickname = (EditText) findViewById(R.id.nicknameCGP);
 
         usersRef.child(uid).child("recentlyHunted").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                tableRecHunted = (TableLayout) findViewById(R.id.tableRecHunted);
+                tableRecHunted = (TableLayout) findViewById(R.id.tableGroupMembers);
                 tableRecHunted.removeAllViews();
                 k = 0;
 
                 for (DataSnapshot person : dataSnapshot.getChildren()) {
-                            UserInformation uInfo = new UserInformation();
                             friendName = person.getValue().toString();
 
                             TableRow row = new TableRow(getBaseContext());
@@ -118,22 +97,16 @@ public class CreateGroupPage extends AppCompatActivity implements View.OnClickLi
                             tv.setText(friendName);
                             tv.setId(1000 + k);
                             row.setId(k);
-
-
                             row.addView(tv, lp);
 
                             row.setOnClickListener(CreateGroupPage.this);
                             tableRecHunted.addView(row, k);
                             k++;
-
                         }
                 selected = new boolean[k];
             }
-
-
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-
             }
         });
     }
@@ -151,7 +124,6 @@ public class CreateGroupPage extends AppCompatActivity implements View.OnClickLi
             friend.setTextColor(Color.GREEN);
             selected[clicked_id] = true;
         }
-
     }
 
     boolean secondPress =false;
