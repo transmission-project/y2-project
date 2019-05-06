@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+  <title>Realtime communication with WebRTC</title>
+
+  <link rel="stylesheet" href="/css/main.css" />
+
+</head>
+
+<body>
+
+  <h1>Realtime communication with WebRTC</h1>
+
+  <div id="videos" style="display:flex; flex-wrap: wrap;">
+    <video id="localVideo" autoplay playsinline></video>
+  </div>
+
+  <input id="grp" type="number">
+  <button onclick="joinGroup()">Join</button>
+
+  <script src="https://www.gstatic.com/firebasejs/5.11.1/firebase.js"></script>
+  <script>
+      // Initialize Firebase
+      var config = {
+          apiKey: "AIzaSyCgcyKJ6PL_53rTc1XylCXQqt0dKKaefMA",
+          authDomain: "hunter-talk-be521.firebaseapp.com",
+          databaseURL: "https://hunter-talk-be521.firebaseio.com",
+          projectId: "hunter-talk-be521",
+          storageBucket: "hunter-talk-be521.appspot.com",
+          messagingSenderId: "849259271283"
+      };
+      firebase.initializeApp(config);
+  </script>
+  <script src="js/main.js"></script>
+
+</body>
+
+</html>
