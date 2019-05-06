@@ -1,14 +1,20 @@
-let database = firebase.database();
 const localVideo = document.querySelector('#localVideo');
+showJoinGroup();
+
+let database = firebase.database();
+
 let groupID; // ID of joined group
-let ourID; // Our user ID, randomly generated for tests
+const ourID = Math.floor(Math.random() *90000) + 10000;// Our user ID, randomly generated for tests
 
 let offerRef; // Incoming offer handler, is a firebase listen object
 let answerRef; // Incoming answer handler, is a firebase listen object
+let closeRef; //TODO comments
+let iceRef;
 
 let connections = {};
 
 // commented out because asking for webcam is annoying
+// TODO: replace stream with track
 // init webcam
 // navigator.mediaDevices.getUserMedia({
 //       audio: false,
@@ -20,13 +26,13 @@ let connections = {};
 //         alert("Oh no!\n" + e)
 // });
 
-function joinGroup() {
+async function joinGroup() {
     groupID = document.getElementById('grp').value;
-    ourID = Math.floor(Math.random() *10001);
 
     //add ourselves to database
+    await database.ref('/groups/' + groupID + '/joined/' + ourID).set("");
 
-    //start listening to offers and answers
+    //start listening to offers, answers, and closes
     offerRef = database.ref('/groups/' + groupID + '/joined/' + ourID + 'offers');
     offerRef.on('child_added', onReceiveOffer);
     answerRef = database.ref('/groups/' + groupID + '/joined/' + ourID + 'answers');
@@ -36,22 +42,30 @@ function joinGroup() {
     database.ref('/groups/'+ groupID + '/joined')
         .once('value', (snapshot) => {
             snapshot.forEach(makeOffer)
+
         });
+
+    showLeaveGroup();
 }
 
-function leaveGroup() {
-    // remove self from database
+async function leaveGroup() {
+    await database.ref('/groups/' + groupID + '/joined/' + ourID).set(null);
 
+    //unsubscribe from listeners
     offerRef.off();
     answerRef.off();
+    //TODO: close
+    //TODO: ICE
 
     //close rtc connections
+    connections.keys().forEach(closeConnection);
 
     groupID = null;
-    ourID = null;
     offerRef = null;
     answerRef = null;
     connections = {};
+
+    showJoinGroup();
 }
 
 function createRTCConnection(uid) {
@@ -121,8 +135,56 @@ function onReceiveAnswer() {
     //delete answer
 }
 
+function onClose(){
+    //TODO: close connection corresponding to closing user here
+}
+
+function closeConnection(key) {
+    connections[key].close();
+    database.ref('/groups/' + groupID + /joined/ + key + /closing/ + ourID ).set("");
+}
 
 
+//UI Functions
+function showJoinGroup() {
+    try {
+        document.getElementById("group_label").remove();
+        document.getElementById("leave").remove()
+    } catch (e) {}
+
+    const div = document.getElementById("group_controls");
+
+    const number = document.createElement("input");
+    number.id = "grp";
+    number.type = "number";
+
+    const join = document.createElement("button");
+    join.id = "join";
+    join.onclick = joinGroup;
+    join.innerText = "Join";
+
+    div.appendChild(number);
+    div.appendChild(join);
+}
+
+function showLeaveGroup() {
+    document.getElementById("grp").remove();
+    document.getElementById('join').remove();
+
+    const div = document.getElementById("group_controls");
+
+    const currentGroup = document.createElement("h2");
+    currentGroup.id = "group_label"
+    currentGroup.innerText = "Current group: " + groupID;
+
+    const leave = document.createElement("button");
+    leave.id = "leave";
+    leave.onclick = leaveGroup;
+    leave.innerText = "Leave current group"
+
+    div.appendChild(currentGroup);
+    div.appendChild(leave);
+}
 
 ///////old functions/////////
 
