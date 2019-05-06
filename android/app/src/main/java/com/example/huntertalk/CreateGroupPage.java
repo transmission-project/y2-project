@@ -75,35 +75,35 @@ public class CreateGroupPage extends AppCompatActivity implements View.OnClickLi
 
         nickname = (EditText) findViewById(R.id.nicknameCGP);
         usersRef.child(uid).child("recentlyHunted").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                tableRecHunted = (TableLayout) findViewById(R.id.tableRecHunted);
-                tableRecHunted.removeAllViews();
-                k = 0;
-                for (DataSnapshot person : dataSnapshot.getChildren()) {
-                            UserInformation uInfo = new UserInformation();
-                            friendName = person.getValue().toString();
-                            TableRow row = new TableRow(getBaseContext());
-                            TableRow.LayoutParams lp = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT);
-                            lp.setMargins(10, 10, 5, 10);
-                            row.setLayoutParams(lp);
-                            tv = new TextView(getBaseContext());
-                            tv.setText(friendName);
-                            tv.setId(1000 + k);
-                            row.setId(k);
-                            row.addView(tv, lp);
-                            row.setOnClickListener(CreateGroupPage.this);
-                            tableRecHunted.addView(row, k);
-                            k++;
-                        }
-                selected = new boolean[k];
+        @Override
+        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+            tableRecHunted = (TableLayout) findViewById(R.id.tableRecHunted);
+            tableRecHunted.removeAllViews();
+            k = 0;
+            for (DataSnapshot person : dataSnapshot.getChildren()) {
+                UserInformation uInfo = new UserInformation();
+                friendName = person.getValue().toString();
+                TableRow row = new TableRow(getBaseContext());
+                TableRow.LayoutParams lp = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT);
+                lp.setMargins(10, 10, 5, 10);
+                row.setLayoutParams(lp);
+                tv = new TextView(getBaseContext());
+                tv.setText(friendName);
+                tv.setId(1000 + k);
+                row.setId(k);
+                row.addView(tv, lp);
+                row.setOnClickListener(CreateGroupPage.this);
+                tableRecHunted.addView(row, k);
+                k++;
             }
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
+            selected = new boolean[k];
+        }
+        @Override
+        public void onCancelled(@NonNull DatabaseError databaseError) {
 
-            }
-        });
-    }
+        }
+    });
+}
 
     @Override
     public void onClick(View v) {

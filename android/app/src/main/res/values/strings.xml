@@ -32,4 +32,5 @@
     <string name="title_activity_sign_in2">SignIn2</string>
     <string name="title_activity_sign_in">signIn</string>
     <string name="title_create_group">Create New Group</string>
+    <string name="friendList">Friend List</string>
 </resources>

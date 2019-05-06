@@ -224,6 +224,7 @@ class registerFollowup implements OnCompleteListener<AuthResult> {
             String uid = auth.getCurrentUser().getUid();
 
             usersTable.child(uid).child("nickname").setValue(nickname);
+
             usersTable.child(uid).child("email").setValue(email);
 
             Toast message= Toast.makeText(registrationActivity, "You have successfully registered.",

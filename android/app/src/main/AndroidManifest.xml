@@ -9,7 +9,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".SettingsPage"></activity>
+        <activity android:name=".FriendList"
+            android:label="@string/friendList">
+        </activity>
+        <activity android:name=".SettingsPage" />
         <activity
             android:name=".signIn"
             android:label="@string/title_activity_sign_in"
@@ -23,15 +26,14 @@
             android:label="@string/title_activity_inside_group"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".group_page" />
-        <activity android:name=".join_create" >
-
-        </activity>
+        <activity android:name=".join_create"></activity>
         <activity android:name=".Home_page" />
         <activity
             android:name=".ui.login.LoginActivity"
             android:label="@string/title_activity_login">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

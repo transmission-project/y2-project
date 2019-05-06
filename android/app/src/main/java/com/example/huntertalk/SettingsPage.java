@@ -19,11 +19,16 @@ import android.widget.Toast;
 
 import com.example.huntertalk.ui.login.LoginActivity;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 public class SettingsPage extends AppCompatActivity {
     private Boolean nicknameChange= false;
     private Boolean passwordChange= false;
     private Boolean password2Change= false;
+    private DatabaseReference mDatabase;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +39,10 @@ public class SettingsPage extends AppCompatActivity {
         final EditText nickname = findViewById(R.id.etchangenickname);
         final EditText password = findViewById(R.id.etchangepw);
         final EditText confirmPassword = findViewById(R.id.etchangepw2);
+        mDatabase = FirebaseDatabase.getInstance().getReference();
+
+        final FirebaseAuth auth = FirebaseAuth.getInstance();
+        final String uid = auth.getCurrentUser().getUid();
 
         ActionBar actionBar = getSupportActionBar();
         actionBar.setTitle("Settings");
@@ -70,6 +79,7 @@ public class SettingsPage extends AppCompatActivity {
                     /**
                      * Add connection to DB
                      */
+                    auth.getCurrentUser().updatePassword(password1);
                 }
                 if (nicknameChange){
                     if (nickname1.length() == 0) {
@@ -86,8 +96,10 @@ public class SettingsPage extends AppCompatActivity {
                     /**
                      * Add connection to DB
                      */
+
+                    mDatabase.child("users").child(uid).child("nickname").setValue(nickname1);
                 }
-                if(passwordChange==nicknameChange==password2Change==false){
+                if(passwordChange==false &&password2Change==false && nicknameChange==false){
                     Toast.makeText(getApplicationContext(), "No changes done to your data", Toast.LENGTH_LONG).show();
                 }
                 SettingsPage.this.finish();
