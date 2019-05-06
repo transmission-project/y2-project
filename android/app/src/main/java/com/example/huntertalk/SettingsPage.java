@@ -180,12 +180,10 @@ public class SettingsPage extends AppCompatActivity {
         switch (menuItem.getItemId()) {
             case android.R.id.home:
                 if(!nicknameChange&&!password2Change&&!passwordChange){
-                    Intent intent = new Intent(SettingsPage.this, InsideGroupActivity.class);
-                    startActivity(intent);
+                   this.finish();
                 }else{
                     if (secondPress){
-                        Intent intent = new Intent(SettingsPage.this, InsideGroupActivity.class);
-                        startActivity(intent);}
+                        this.finish();}
                     else{
                         Toast message= Toast.makeText(SettingsPage.this, "Press once again to cancel the changes",
                                 Toast.LENGTH_LONG);
