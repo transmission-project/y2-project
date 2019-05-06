@@ -36,8 +36,6 @@ public class FriendList extends AppCompatActivity {
     private int f;
 
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -46,21 +44,20 @@ public class FriendList extends AppCompatActivity {
 
         final EditText etSearch = findViewById(R.id.etsearch);
         Button searchButton = findViewById(R.id.searchButton);
-
-
+        
         mDatabase = FirebaseDatabase.getInstance().getReference("users");
-        usersRef =  FirebaseDatabase.getInstance().getReference().child("users");
         final FirebaseAuth auth = FirebaseAuth.getInstance();
         final String uid = auth.getCurrentUser().getUid();
         FirebaseUser currentUser= auth.getCurrentUser();
         mDatabase.child(uid).child("friends").push();
-        ActionBar actionBar = getSupportActionBar();
 
+       //enabling back button
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
 
-        usersRef.child(uid).addListenerForSingleValueEvent(new ValueEventListener() {
+        //create friendlist on start
+        mDatabase.child(uid).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 tableFriendList= (TableLayout) findViewById(R.id.tableFriendList);
@@ -76,8 +73,7 @@ public class FriendList extends AppCompatActivity {
             }
         });
 
-
-
+        //changes text on touch
         etSearch.setOnTouchListener(new View.OnTouchListener() {
 
             @Override
@@ -87,12 +83,12 @@ public class FriendList extends AppCompatActivity {
             }
         });
 
+       //does all the checks and adds on friendlist
         searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                  final    String email = etSearch.getText().toString().trim();
-
-
+                //checks if email is valid
                     if (TextUtils.isEmpty(email)) {
                         etSearch.setError("Invalid email addresss");
                         return;
@@ -105,6 +101,8 @@ public class FriendList extends AppCompatActivity {
                         etSearch.setError("Enter Email");
                         return;
                     }
+
+            // checks if email of the friend the user wants to add exists
                 mDatabase.orderByChild("email").addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -123,6 +121,7 @@ public class FriendList extends AppCompatActivity {
                     }
                 });
 
+          //checks if the friend already exists
             mDatabase.orderByChild("email").equalTo(email).addChildEventListener(new ChildEventListener() {
                 @Override
                 public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
@@ -144,7 +143,8 @@ public class FriendList extends AppCompatActivity {
                                 return;
                             }
 
-                                usersRef.child(futureFriend).child("nickname").addListenerForSingleValueEvent(new ValueEventListener() {
+                            //adds friend on the list with nickname
+                                mDatabase.child(futureFriend).child("nickname").addListenerForSingleValueEvent(new ValueEventListener() {
                                     @Override
                                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                         String nickname3 = dataSnapshot.getValue().toString();
@@ -159,11 +159,6 @@ public class FriendList extends AppCompatActivity {
                                     public void onCancelled(@NonNull DatabaseError databaseError) {
                                     }
                                 });
-
-
-//dev0eEDe1GSgSKTXqeYHdF5dAVV2
-
-
                         }
                         @Override
                         public void onCancelled(@NonNull DatabaseError databaseError) {
@@ -190,7 +185,6 @@ public class FriendList extends AppCompatActivity {
 
                 @Override
                 public void onCancelled(@NonNull DatabaseError databaseError) {
-//     abc@se.se
                 }
             });
 
@@ -198,7 +192,7 @@ public class FriendList extends AppCompatActivity {
 
         });
     }
-
+ // get all friends from the database and show on the friendlist
     private void startFriendList(DataSnapshot dataSnapshot) {
         for (DataSnapshot friends : dataSnapshot.getChildren()){
             if (friends.getKey().equals("friends")){
@@ -213,6 +207,7 @@ public class FriendList extends AppCompatActivity {
         }
     }
 
+    //Creating a new row in the table of friends
     private void createARow() {
         TableRow row = new TableRow(getBaseContext());
         TableRow.LayoutParams lp = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT);
@@ -227,7 +222,7 @@ public class FriendList extends AppCompatActivity {
         k++;
     }
 
-
+//Back button functionality
     @Override
         public boolean onOptionsItemSelected (MenuItem menuItem){
             switch (menuItem.getItemId()) {
@@ -237,13 +232,5 @@ public class FriendList extends AppCompatActivity {
             }
             return (super.onOptionsItemSelected(menuItem));
         }
-
-        // create an action bar button
-  /*  @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.friend_list_menu, menu);
-        return super.onCreateOptionsMenu(menu);
-    }*/
-
 }
 
