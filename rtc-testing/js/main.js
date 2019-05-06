@@ -13,18 +13,18 @@ let iceRef;
 
 let connections = {};
 
-// commented out because asking for webcam is annoying
 // TODO: replace stream with track
 // init webcam
-// navigator.mediaDevices.getUserMedia({
-//       audio: false,
-//       video: true
-// }).then( (stream) => { // I have no idea how to use tracks, so I use streams even though they're depreciated
-//         localVideo.srcObject = stream;
-//         localConnection.addStream(stream);
-//     }).catch(function(e) {
-//         alert("Oh no!\n" + e)
-// });
+let webcamStream;
+navigator.mediaDevices.getUserMedia({
+      audio: false,
+      video: true
+}).then( (stream) => { // I have no idea how to use tracks, so I use streams even though they're depreciated
+        webcamStream = stream;
+        localVideo.srcObject = stream;
+}).catch(function(e) {
+        alert("Oh no!\n" + e)
+});
 
 async function joinGroup() {
     groupID = document.getElementById('grp').value;
@@ -33,10 +33,12 @@ async function joinGroup() {
     await database.ref('/groups/' + groupID + '/joined/' + ourID).set("");
 
     //start listening to offers, answers, and closes
-    offerRef = database.ref('/groups/' + groupID + '/joined/' + ourID + 'offers');
+    offerRef = database.ref('/groups/' + groupID + '/joined/' + ourID + '/offers');
     offerRef.on('child_added', onReceiveOffer);
-    answerRef = database.ref('/groups/' + groupID + '/joined/' + ourID + 'answers');
+    answerRef = database.ref('/groups/' + groupID + '/joined/' + ourID + '/answers');
     answerRef.on('child_added', onReceiveAnswer);
+    closeRef = database.ref('/groups/' + groupID + '/joined/' + ourID + '/closing');
+    closeRef.on('child_added', onClose);
 
     // Make connections to users already in group
     database.ref('/groups/'+ groupID + '/joined')
@@ -54,7 +56,7 @@ async function leaveGroup() {
     //unsubscribe from listeners
     offerRef.off();
     answerRef.off();
-    //TODO: close
+    closeRef.off();
     //TODO: ICE
 
     //close rtc connections
@@ -78,11 +80,12 @@ function createRTCConnection(uid) {
     const connection = new RTCPeerConnection();
     connections[uid] = connection;
 
+    connection.addStream(webcamStream);
+
     //stream handlers
     connection.onaddstream = (event) => {
         console.log('Remote stream added.');
-        remoteStream = event.stream;
-
+        const remoteStream = event.stream;
         const display = document.createElement("video");
         display.id = uid;
         display.autoplay = true;
@@ -90,7 +93,6 @@ function createRTCConnection(uid) {
         display.srcObject = remoteStream;
         document.getElementById("videos").appendChild(display);
     };
-
     connection.onremovestream = (event) => {
         console.log('Remote stream removed. Event: ', event);
         document.getElementById(uid).remove();
@@ -107,36 +109,49 @@ async function makeOffer(childSnapshot) {
     const uid = childSnapshot.key;
     if(uid == ourID) return;
 
-    const connection = createRTCConnection(uid)
+    const connection = createRTCConnection(uid);
 
     console.log("Sending offer to " + uid + '...');
     const offer = await connection.createOffer(null);
-    database.ref('/groups/' + groupId + '/joined/' + uid + '/offers/' + ourID)
+    database.ref('/groups/' + groupID + '/joined/' + uid + '/offers/' + ourID)
         .set(JSON.stringify(offer));
     connection.setLocalDescription(offer);
 }
 
-function onReceiveOffer() {
-    //TODO: do we need to pick the right child here? what do we get
-    const uid = childSnapshot.key;
-    if(uid == ourID) return;
+async function onReceiveOffer(snapshot) {
+    const uid = snapshot.key;
+    const offer = JSON.parse(snapshot.val());
 
     const connection = createRTCConnection(uid);
+    connection.setRemoteDescription(offer);
 
-    //register offer, and make and send answer
+    // TODO: Figure out how to remove offer with out deleting tree
+    // console.log(offerRef.removeChild());
+    // offerRef.child(uid).set(null);
+
+    console.log("Offer accepted. Sending answer to " + uid + "...");
+    let answer = await connection.createAnswer();
+    connection.setLocalDescription(answer);
+    database.ref('/groups/' + groupID + '/joined/' + uid + '/answers/' + ourID)
+        .set(JSON.stringify(answer));
+
     // update ice candidates
-    // delete offer
 }
 
-function onReceiveAnswer() {
-    //TODO: Mirror onReceiveOffer here
-    //accept answer
-    //update ice candidates
+function onReceiveAnswer(snapshot) {
+    const uid = snapshot.key;
+    const answer = JSON.parse(snapshot.val());
+
+    connections[uid].setRemoteDescription(answer);
+    console.log("Answer accepted from " + uid + ". Preparing to send ICE candidates.")
     //delete answer
+
+    //update ice candidates
 }
 
-function onClose(){
-    //TODO: close connection corresponding to closing user here
+function onClose(snapshot){
+    const uid = snapshot.key;
+    connections[uid].close();
 }
 
 function closeConnection(key) {
@@ -174,13 +189,13 @@ function showLeaveGroup() {
     const div = document.getElementById("group_controls");
 
     const currentGroup = document.createElement("h2");
-    currentGroup.id = "group_label"
+    currentGroup.id = "group_label";
     currentGroup.innerText = "Current group: " + groupID;
 
     const leave = document.createElement("button");
     leave.id = "leave";
     leave.onclick = leaveGroup;
-    leave.innerText = "Leave current group"
+    leave.innerText = "Leave current group";
 
     div.appendChild(currentGroup);
     div.appendChild(leave);
