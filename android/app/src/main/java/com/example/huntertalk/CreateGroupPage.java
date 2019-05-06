@@ -31,7 +31,6 @@ import java.util.Random;
 public class CreateGroupPage extends AppCompatActivity implements View.OnClickListener {
 
     private Button btnCreate;
-    private EditText nickname;
     private DatabaseReference usersRef, groupRef;
     private TextView friend, tv;
     private String friendName, friendId;
@@ -72,25 +71,23 @@ public class CreateGroupPage extends AppCompatActivity implements View.OnClickLi
 
                 for(int i = 0; i < k; i++) {
 
+
                     if(selected[i] != null){
                         String id = nickNames.get(selected[i]);
                         groupRef.child(groupId).child("invited").child(id).setValue(selected[i]);
 
                     }
                 }
-
             }
         });
 
-        nickname = (EditText) findViewById(R.id.nicknameCGP);
-
-
+        EditText nickname = (EditText) findViewById(R.id.nicknameCGP);
 
         usersRef.child(uid).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                tableRecHunted = (TableLayout) findViewById(R.id.tableRecHunted);
+                tableRecHunted = (TableLayout) findViewById(R.id.tableGroupMembers);
                 tableRecHunted.removeAllViews();
                 k = 0;
 
@@ -117,13 +114,11 @@ public class CreateGroupPage extends AppCompatActivity implements View.OnClickLi
                             tv.setId(f + k + 1000);
                             row.setId(f + k);
 
-
                             row.addView(tv, lp);
 
                             row.setOnClickListener(CreateGroupPage.this);
                             tableRecHunted.addView(row, k);
                             k++;
-
                         }
                     }
                     else if ( info.getKey().equals("friends")){
@@ -161,7 +156,6 @@ public class CreateGroupPage extends AppCompatActivity implements View.OnClickLi
             }
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-
             }
 
 
@@ -185,6 +179,5 @@ public class CreateGroupPage extends AppCompatActivity implements View.OnClickLi
             friend.setTextColor(Color.BLACK);
             selected[clicked_id] = null;
         }
-
     }
 }

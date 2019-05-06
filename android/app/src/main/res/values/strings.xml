@@ -33,4 +33,6 @@
     <string name="title_activity_sign_in">signIn</string>
     <string name="title_create_group">Create New Group</string>
     <string name="friendList">Friend List</string>
+    <string name="title_show_group_members">Group members</string>
+    <string name="welcome_create_group_page">Welcome! Create your group here: </string>
 </resources>
