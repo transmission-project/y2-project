@@ -32,6 +32,7 @@ public class Home_page extends AppCompatActivity  {
                 startActivity(i);
             }
         });
+
     }
     // create an action bar button
     @Override

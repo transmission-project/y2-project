@@ -26,8 +26,12 @@ import com.google.firebase.database.FirebaseDatabase;
 public class RegistrationActivity extends AppCompatActivity {
 
     private EditText inputEmail, inputPassword, inputPasswordConfirm;
-    private Button registerButton;
+
     private boolean changed=false;
+
+
+
+    private Button btnSignIn, registerButton, btnResetPassword;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,12 +39,14 @@ public class RegistrationActivity extends AppCompatActivity {
         setContentView(R.layout.activity_registation);
         ActionBar actionBar = getSupportActionBar();
         actionBar.setTitle("Registration");
-        actionBar.setHomeButtonEnabled(true);
+        actionBar.setHomeButtonEnabled(true); //maybe need to be removed
+
         registerButton = (Button) findViewById(R.id.register2);
         inputEmail = (EditText) findViewById(R.id.email);
         inputPassword = (EditText) findViewById(R.id.password);
         inputPasswordConfirm = (EditText) findViewById(R.id.confirmPassword);
         final EditText inputNickname = (EditText) findViewById(R.id.displayName);
+
 
         inputEmail.addTextChangedListener(new TextWatcher() {
             @Override
@@ -157,6 +163,7 @@ public class RegistrationActivity extends AppCompatActivity {
 
                 FirebaseAuth auth = FirebaseAuth.getInstance();
 
+
                 //create user and finish with our registerFollowup listener
                 auth.createUserWithEmailAndPassword(email, password)
                         .addOnCompleteListener(RegistrationActivity.this,
@@ -219,6 +226,7 @@ class registerFollowup implements OnCompleteListener<AuthResult> {
             FirebaseAuth auth = FirebaseAuth.getInstance();
             //store user info in realtime database
             FirebaseDatabase database = FirebaseDatabase.getInstance();
+
             DatabaseReference usersTable = database.getReference().child("users");
 
             String uid = auth.getCurrentUser().getUid();
@@ -227,7 +235,8 @@ class registerFollowup implements OnCompleteListener<AuthResult> {
 
             usersTable.child(uid).child("email").setValue(email);
 
-            Toast message= Toast.makeText(registrationActivity, "You have successfully registered.",
+
+            Toast message = Toast.makeText(registrationActivity, "You have successfully registered. Redirecting to the main page.",
                     Toast.LENGTH_LONG);
             message.setGravity(Gravity.TOP, 0,0);
             message.show();
