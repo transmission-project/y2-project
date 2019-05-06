@@ -123,7 +123,7 @@ public class RegistrationActivity extends AppCompatActivity {
                 inputEmail.setText("");
             }
         });
-        
+
         registerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -163,7 +163,7 @@ public class RegistrationActivity extends AppCompatActivity {
 
                 FirebaseAuth auth = FirebaseAuth.getInstance();
 
-                
+
                 //create user and finish with our registerFollowup listener
                 auth.createUserWithEmailAndPassword(email, password)
                         .addOnCompleteListener(RegistrationActivity.this,
@@ -172,7 +172,6 @@ public class RegistrationActivity extends AppCompatActivity {
             }
         });
     }
-
     /**
      * Makes user press twice
      * Requires setHomeButtonEnabled() in onCreate().
@@ -200,7 +199,6 @@ public class RegistrationActivity extends AppCompatActivity {
         }
         return (super.onOptionsItemSelected(menuItem));
     }
-
 }
 
 class registerFollowup implements OnCompleteListener<AuthResult> {
@@ -234,6 +232,7 @@ class registerFollowup implements OnCompleteListener<AuthResult> {
             String uid = auth.getCurrentUser().getUid();
 
             usersTable.child(uid).child("nickname").setValue(nickname);
+
             usersTable.child(uid).child("email").setValue(email);
 
 
@@ -241,9 +240,7 @@ class registerFollowup implements OnCompleteListener<AuthResult> {
                     Toast.LENGTH_LONG);
             message.setGravity(Gravity.TOP, 0,0);
             message.show();
-
             registrationActivity.finish();
         }
-
     }
 }

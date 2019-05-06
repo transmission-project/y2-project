@@ -3,6 +3,7 @@ package com.example.huntertalk;
 import android.content.Intent;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -27,7 +28,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Random;
 
-public class CreateGroupPage extends Activity implements View.OnClickListener {
+public class CreateGroupPage extends AppCompatActivity implements View.OnClickListener {
 
     private Button btnCreate;
     private DatabaseReference usersRef, groupRef;
@@ -44,24 +45,22 @@ public class CreateGroupPage extends Activity implements View.OnClickListener {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_group_page);
-
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setTitle("Create New Group");
+        if(getSupportActionBar()!=null){
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
         groupRef = database.getReference().child("groups");
         usersRef = database.getReference().child("users");
-
         GroupId groupIdObject = new GroupId();
-
         final String groupId = Integer.toString(groupIdObject.getId());
-
         FirebaseAuth auth = FirebaseAuth.getInstance();
-
         String uid = auth.getCurrentUser().getUid();
 
         groupRef.child(groupId).child("joined").child(uid).setValue(uid);
-        
-        btnCreate = (Button) findViewById(R.id.createButton);
 
+        btnCreate = (Button) findViewById(R.id.createButton);
         btnCreate.setOnClickListener(new View.OnClickListener(){
 
             @Override
@@ -158,8 +157,13 @@ public class CreateGroupPage extends Activity implements View.OnClickListener {
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
             }
-        });
-    }
+
+
+
+
+
+    });
+}
 
     @Override
     public void onClick(View v) {
@@ -177,6 +181,3 @@ public class CreateGroupPage extends Activity implements View.OnClickListener {
         }
     }
 }
-
-
-

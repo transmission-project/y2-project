@@ -1,5 +1,6 @@
 package com.example.huntertalk;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.view.GravityCompat;
@@ -21,6 +22,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
 
 public class InsideGroupActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -119,15 +121,13 @@ public class InsideGroupActivity extends AppCompatActivity
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-            return true;
+            Intent i =  new Intent(InsideGroupActivity.this, SettingsPage.class);
+            startActivity(i);
         }
-
         return super.onOptionsItemSelected(item);
     }
-
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
@@ -143,11 +143,12 @@ public class InsideGroupActivity extends AppCompatActivity
         } else if (id == R.id.nav_invite) {
 
         } else if (id == R.id.nav_settings) {
+            Intent i =  new Intent(InsideGroupActivity.this, SettingsPage.class);
+            startActivity(i);
 
         } else if (id == R.id.nav_leave) {
 
         }
-
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
