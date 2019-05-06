@@ -3,6 +3,7 @@ package com.example.huntertalk;
 import android.content.Intent;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -27,7 +28,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Random;
 
-public class CreateGroupPage extends Activity implements View.OnClickListener {
+public class CreateGroupPage extends AppCompatActivity implements View.OnClickListener {
 
     private Button btnCreate;
     private EditText nickname;
@@ -158,12 +159,15 @@ public class CreateGroupPage extends Activity implements View.OnClickListener {
                 selected = new String[f + k];
 
             }
-            selected = new boolean[k];
-        }
-        @Override
-        public void onCancelled(@NonNull DatabaseError databaseError) {
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
 
-        }
+            }
+
+
+
+
+
     });
 }
 
