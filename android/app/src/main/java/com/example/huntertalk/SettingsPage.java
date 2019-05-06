@@ -183,7 +183,8 @@ public class SettingsPage extends AppCompatActivity {
                    this.finish();
                 }else{
                     if (secondPress){
-                        this.finish();}
+                        Intent intent = new Intent(SettingsPage.this, InsideGroupActivity.class);
+                        startActivity(intent);}
                     else{
                         Toast message= Toast.makeText(SettingsPage.this, "Press once again to cancel the changes",
                                 Toast.LENGTH_LONG);
