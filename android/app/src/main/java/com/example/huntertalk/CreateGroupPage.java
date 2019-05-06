@@ -1,17 +1,13 @@
 package com.example.huntertalk;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
-import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -34,7 +30,6 @@ import java.util.Random;
 public class CreateGroupPage extends Activity implements View.OnClickListener {
 
     private Button btnCreate;
-    private EditText nickname;
     private DatabaseReference usersRef, groupRef;
     private TextView friend, tv;
     private String friendName, friendId;
@@ -59,7 +54,6 @@ public class CreateGroupPage extends Activity implements View.OnClickListener {
 
         final String groupId = Integer.toString(groupIdObject.getId());
 
-
         FirebaseAuth auth = FirebaseAuth.getInstance();
 
         String uid = auth.getCurrentUser().getUid();
@@ -78,27 +72,23 @@ public class CreateGroupPage extends Activity implements View.OnClickListener {
 
                 for(int i = 0; i < k; i++) {
 
+
                     if(selected[i] != null){
                         String id = nickNames.get(selected[i]);
                         groupRef.child(groupId).child("invited").child(id).setValue(selected[i]);
 
                     }
                 }
-
             }
         });
 
-
-
-        nickname = (EditText) findViewById(R.id.nicknameCGP);
-
-
+        EditText nickname = (EditText) findViewById(R.id.nicknameCGP);
 
         usersRef.child(uid).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                tableRecHunted = (TableLayout) findViewById(R.id.tableRecHunted);
+                tableRecHunted = (TableLayout) findViewById(R.id.tableGroupMembers);
                 tableRecHunted.removeAllViews();
                 k = 0;
 
@@ -125,13 +115,11 @@ public class CreateGroupPage extends Activity implements View.OnClickListener {
                             tv.setId(f + k + 1000);
                             row.setId(f + k);
 
-
                             row.addView(tv, lp);
 
                             row.setOnClickListener(CreateGroupPage.this);
                             tableRecHunted.addView(row, k);
                             k++;
-
                         }
                     }
                     else if ( info.getKey().equals("friends")){
@@ -167,11 +155,8 @@ public class CreateGroupPage extends Activity implements View.OnClickListener {
                 selected = new String[f + k];
 
             }
-
-
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-
             }
         });
     }
@@ -190,7 +175,6 @@ public class CreateGroupPage extends Activity implements View.OnClickListener {
             friend.setTextColor(Color.BLACK);
             selected[clicked_id] = null;
         }
-
     }
 }
 
