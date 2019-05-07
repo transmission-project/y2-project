@@ -67,7 +67,9 @@ async function leaveGroup() {
     //TODO: ICE
 
     //close rtc connections
-    Object.keys(connections).forEach(closeConnection);
+    Object.keys(connections).forEach((uid) => {
+        if(connections[uid].signalingState !== 'closed') closeConnection(uid)
+    });
 
     groupID = null;
     offerRef = null;
@@ -107,7 +109,6 @@ function createRTCConnection(uid) {
         console.log('Remote stream removed. Event: ', event);
         document.getElementById(uid).remove();
     };
-
     return connection;
 }
 
@@ -185,15 +186,20 @@ function onReceiveICE(snapshot) {
     // If we haven't done that yet, we can skip it now and pick it up later
     if(!connections.hasOwnProperty(uid)) return;
     const connection = connections[uid];
-    console.log("Receiving ICE Candidates and remoteDescription is " + connection.remoteDescription);
+
+    console.log("ICE: checking signalling");
+    if(connection.signalingState === 'closed') return;
+    console.log("ICE: checking remoteDescription");
     if(connection.remoteDescription == null) return;
-    console.log("continuing with ICE");
+    //if() return;
 
     console.log(snapshot.val());
     const ICEList = JSON.parse(snapshot.val());
     console.log(ICEList);
     for(candidate of ICEList) {
-        connection.addIceCandidate(candidate);
+        if(connection.signalingState !== "closed") {
+            connection.addIceCandidate(candidate);
+        }
     }
 }
 
