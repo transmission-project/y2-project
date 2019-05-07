@@ -80,6 +80,8 @@ async function leaveGroup() {
     showJoinGroup();
 }
 
+window.onbeforeunload = leaveGroup;
+
 function createRTCConnection(uid) {
     /**
      * Creates an RTC Connection object for a given database entry.
