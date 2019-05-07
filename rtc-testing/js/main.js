@@ -18,7 +18,7 @@ let ICELists = {};
 // init webcam
 let webcamStream;
 navigator.mediaDevices.getUserMedia({
-      audio: false,
+      audio: true,
       video: true
 }).then( (stream) => { // I have no idea how to use tracks, so I use streams even though they're depreciated
         webcamStream = stream;
