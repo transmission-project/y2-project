@@ -60,7 +60,7 @@ async function leaveGroup() {
     //TODO: ICE
 
     //close rtc connections
-    connections.keys().forEach(closeConnection);
+    Object.keys(connections).forEach(closeConnection);
 
     groupID = null;
     offerRef = null;
