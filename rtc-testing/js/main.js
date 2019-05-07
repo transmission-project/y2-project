@@ -29,9 +29,6 @@ navigator.mediaDevices.getUserMedia({
 async function joinGroup() {
     groupID = document.getElementById('grp').value;
 
-    //add ourselves to database
-    await database.ref('/groups/' + groupID + '/joined/' + ourID).set("");
-
     //start listening to offers, answers, and closes
     offerRef = database.ref('/groups/' + groupID + '/joined/' + ourID + '/offers');
     offerRef.on('child_added', onReceiveOffer);
@@ -40,11 +37,18 @@ async function joinGroup() {
     closeRef = database.ref('/groups/' + groupID + '/joined/' + ourID + '/closing');
     closeRef.on('child_added', onClose);
 
+    //add ourselves to database
+    await database.ref('/groups/' + groupID + '/joined/' + ourID).set("");
+    console.log("Joined group as "+ ourID + ".");
+
     // Make connections to users already in group
     database.ref('/groups/'+ groupID + '/joined')
         .once('value', (snapshot) => {
-            snapshot.forEach(makeOffer)
-
+            console.log(snapshot);
+            snapshot.forEach((childSnapshot) => {
+                console.log(childSnapshot); // Having this line here solves race conditions for some reason
+                makeOffer(childSnapshot);
+            })
         });
 
     showLeaveGroup();
@@ -105,14 +109,13 @@ async function makeOffer(childSnapshot) {
     /**
      * Initiates a new connection with a given user and sends them an offer.
      */
-
     const uid = childSnapshot.key;
     if(uid == ourID) return;
 
     const connection = createRTCConnection(uid);
 
     console.log("Sending offer to " + uid + '...');
-    const offer = await connection.createOffer(null);
+    const offer = await connection.createOffer();
     database.ref('/groups/' + groupID + '/joined/' + uid + '/offers/' + ourID)
         .set(JSON.stringify(offer));
     connection.setLocalDescription(offer);
