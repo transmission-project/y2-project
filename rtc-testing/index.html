@@ -1,9 +1,14 @@
 <!DOCTYPE html>
 <html>
-
+  <style>
+    video {
+      width: 20em;
+      height: 15em;
+    }
+  </style>
 <head>
 
-  <title>Realtime communication with WebRTC</title>
+  <title>Realtime communication with WebRTC and Firebase</title>
 
   <link rel="stylesheet" href="/css/main.css" />
 
@@ -14,7 +19,7 @@
   <h1>Realtime communication with WebRTC</h1>
 
   <div id="videos" style="display:flex; flex-wrap: wrap;">
-    <video id="localVideo" autoplay playsinline></video>
+    <video id="localVideo" autoplay playsinline muted></video>
   </div>
 
   <div id="group_controls">
