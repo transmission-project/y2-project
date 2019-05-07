@@ -195,14 +195,6 @@ function onReceiveICE(snapshot) {
     for(candidate of ICEList) {
         connection.addIceCandidate(candidate);
     }
-
-    // //Also register ICE candidates we sent them
-    // database.ref('/groups/' + groupID + '/joined/' + uid + '/answers/' + ourID)
-    //     .once('value', (snapshot) => {
-    //         for(candidate of JSON.parse(snapshot)) {
-    //             connection.addIceCandidate(candidate)
-    //         }
-    //     });
 }
 
 function closeConnection(key) {
