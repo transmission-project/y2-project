@@ -38,7 +38,7 @@ async function joinGroup() {
     closeRef = database.ref('/groups/' + groupID + '/joined/' + ourID + '/closing');
     closeRef.on('child_added', onClose);
     iceRef = database.ref('/groups/' + groupID + '/joined/' + ourID + '/ice');
-    closeRef.on('child_added', onReceiveICE);
+    iceRef.on('child_added', onReceiveICE);
 
     //add ourselves to database
     await database.ref('/groups/' + groupID + '/joined/' + ourID).set("");
@@ -64,7 +64,7 @@ async function leaveGroup() {
     offerRef.off();
     answerRef.off();
     closeRef.off();
-    //TODO: ICE
+    iceRef.off();
 
     //close rtc connections
     Object.keys(connections).forEach((uid) => {
@@ -177,6 +177,7 @@ function onGenerateICE(event) {
     if(event.candidate) {
         ICEList.push(event.candidate)
     } else {
+        console.log("Sending ICE candidates");
         database.ref("/groups/" + groupID + "/joined/" + callerUID + "/ice/" + ourID).set(JSON.stringify(ICEList));
     }
 }
@@ -189,19 +190,17 @@ function onReceiveICE(snapshot) {
     if(!connections.hasOwnProperty(uid)) return;
     const connection = connections[uid];
 
-    console.log("ICE: checking signalling");
-    if(connection.signalingState === 'closed') return;
-    console.log("ICE: checking remoteDescription");
     if(connection.remoteDescription == null) return;
-    //if() return;
 
     console.log(snapshot.val());
+    if(snapshot.val() == null) {
+        console.log("received a null ice list??");
+        return;
+    }
+
     const ICEList = JSON.parse(snapshot.val());
-    console.log(ICEList);
     for(candidate of ICEList) {
-        if(connection.signalingState !== "closed") {
-            connection.addIceCandidate(candidate);
-        }
+        connection.addIceCandidate(candidate);
     }
 }
 
