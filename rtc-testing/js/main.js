@@ -47,7 +47,6 @@ async function joinGroup() {
     // Make connections to users already in group
     database.ref('/groups/'+ groupID + '/joined')
         .once('value', (snapshot) => {
-            console.log(snapshot);
             snapshot.forEach((childSnapshot) => {
                 console.log(childSnapshot); // Having this line here solves race conditions for some reason
                 makeOffer(childSnapshot);
@@ -78,6 +77,7 @@ async function leaveGroup() {
     ICELists = {};
 
     showJoinGroup();
+    console.log("leave group complete")
 }
 
 window.onbeforeunload = leaveGroup;
@@ -141,7 +141,7 @@ async function onReceiveOffer(snapshot) {
     // console.log(offerRef.removeChild());
     // offerRef.child(uid).set(null);
 
-    console.log("Offer accepted. Sending answer to " + uid + "...");
+    console.log("Offer accepted from " + uid +". Sending our answer.");
     let answer = await connection.createAnswer();
     connection.setLocalDescription(answer);
     database.ref('/groups/' + groupID + '/joined/' + uid + '/answers/' + ourID)
@@ -156,7 +156,7 @@ async function onReceiveAnswer(snapshot) {
     const answer = JSON.parse(snapshot.val());
 
     await connections[uid].setRemoteDescription(answer);
-    console.log("Answer accepted from " + uid + ". Preparing to send ICE candidates.")
+    console.log("Answer accepted from " + uid + ".");
     //delete answer
 
     //register any ice candidates we might have received up to now and had ignored
@@ -166,6 +166,7 @@ async function onReceiveAnswer(snapshot) {
 function onClose(snapshot){
     const uid = snapshot.key;
     connections[uid].close();
+    //connections[uid] = null; //we're supposed to do this, but it crashes things
 }
 
 function onGenerateICE(event) {
