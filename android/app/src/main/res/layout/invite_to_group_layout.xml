@@ -2,46 +2,41 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_gravity="center_horizontal"
+
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <EditText
-        android:id="@+id/etsearchmember"
-        style="?attr/searchViewStyle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="96dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginTop="100dp"
-        android:ems="10"
-        android:inputType="textPersonName" />
+        <EditText
+            android:id="@+id/etsearchmember"
+            style="?attr/searchViewStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="96dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginTop="100dp"
+            android:ems="10"
+            android:inputType="textPersonName" />
 
 
-    <ImageView
-        android:id="@+id/ivsearch"
-        android:layout_width="42dp"
-        android:layout_height="55dp"
-        android:layout_marginTop="100dp"
-        android:layout_marginStart="14dp"
-        app:srcCompat="@drawable/ic_search_black_24dp" />
+            <ImageView
+                android:id="@+id/ivsearch"
+                android:layout_width="42dp"
+                android:layout_height="55dp"
+                android:layout_marginTop="100dp"
+                android:layout_marginStart="14dp"
+                app:srcCompat="@drawable/ic_search_black_24dp" />
 
-    <Button
-        android:id="@+id/btnsearch"
-        android:layout_width="103dp"
-        android:layout_height="43dp"
-        android:layout_alignParentEnd="true"
-        android:layout_marginTop="100dp"
-        android:layout_marginStart="14dp"
-        android:layout_marginEnd="29dp"
-        android:layout_toEndOf="@+id/etsearchmember"
-        android:text="@android:string/search_go" />
+        <Button
+            android:id="@+id/btnsearch"
+            android:layout_width="103dp"
+            android:layout_height="43dp"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="100dp"
+            android:layout_marginStart="14dp"
+            android:layout_marginEnd="29dp"
+            android:layout_toEndOf="@+id/etsearchmember"
+            android:text="@android:string/search_go" />
 
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/toolbar3"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="?attr/colorPrimary"
-        android:minHeight="?attr/actionBarSize"
-        android:theme="?attr/actionBarTheme" />
+
+
 
 </RelativeLayout>
