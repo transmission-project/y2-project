@@ -9,8 +9,6 @@
     <string name="emailpassword_status_fmt">Email User: %1$s (verified: %2$b)</string>
     <string name="firebase_status_fmt">Firebase User: %s</string>
     <string name="signed_out">Signed Out</string>
-
-
     <string name="action_sign_in_short">Sign in</string>
     <string name="welcome">Welcome!</string>
     <string name="invalid_username">Invalid email</string>
@@ -35,4 +33,5 @@
     <string name="friendList">Friend List</string>
     <string name="title_show_group_members">Group members</string>
     <string name="welcome_create_group_page">Welcome! Create your group here: </string>
+    <string name="add_button">Add</string>
 </resources>

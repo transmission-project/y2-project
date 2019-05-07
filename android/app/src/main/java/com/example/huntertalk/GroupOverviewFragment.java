@@ -56,6 +56,7 @@ public class GroupOverviewFragment extends Fragment implements NavigationView.On
                 for (DataSnapshot groupMember : dataSnapshot.getChildren()) {
                     member = groupMember.getValue().toString();
 
+                    //get nicknames from user ID
                     usersRef.child(member).child("nickname").addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {

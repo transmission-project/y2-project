@@ -15,11 +15,11 @@
       },
       "oauth_client": [
         {
-          "client_id": "849259271283-ctiunldfem6bo9nqeosrareh0jvo1mu8.apps.googleusercontent.com",
+          "client_id": "849259271283-fbo4910k8596l30svoo85e85kjudtucm.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.example.huntertalk",
-            "certificate_hash": "a49c4ce93b9b5f9c47a33441370fcba94f6fea6b"
+            "certificate_hash": "e4ab97f94d1d9c7eed508379bb2129fa659bc3d5"
           }
         },
         {
@@ -28,6 +28,14 @@
           "android_info": {
             "package_name": "com.example.huntertalk",
             "certificate_hash": "7d7937fabd3ec45cc852f757ae022335a6f0cce9"
+          }
+        },
+        {
+          "client_id": "849259271283-ctiunldfem6bo9nqeosrareh0jvo1mu8.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.huntertalk",
+            "certificate_hash": "a49c4ce93b9b5f9c47a33441370fcba94f6fea6b"
           }
         },
         {

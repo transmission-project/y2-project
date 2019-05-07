@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -48,6 +49,7 @@ public class CreateGroupPage extends AppCompatActivity implements View.OnClickLi
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         ActionBar actionBar = getSupportActionBar();
         actionBar.setTitle("Create New Group");
+
         if(getSupportActionBar()!=null){
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
@@ -65,23 +67,17 @@ public class CreateGroupPage extends AppCompatActivity implements View.OnClickLi
 
             @Override
             public void onClick(View v) {
+
+                for(int i = 0; i < k; i++) {
+                    if(selected[i] != null){
+                        groupRef.child(groupId).child("invited").child(selected[i]).setValue(selected[i]);
+                    }
+                }
                 Intent intent =new Intent(CreateGroupPage.this,InsideGroupActivity.class);
                 intent.putExtra("groupID", groupId);
                 startActivity(intent);
-
-                for(int i = 0; i < k; i++) {
-
-
-                    if(selected[i] != null){
-                        String id = nickNames.get(selected[i]);
-                        groupRef.child(groupId).child("invited").child(id).setValue(selected[i]);
-
-                    }
-                }
             }
         });
-
-        EditText nickname = (EditText) findViewById(R.id.nicknameCGP);
 
         usersRef.child(uid).addValueEventListener(new ValueEventListener() {
             @Override
@@ -98,70 +94,74 @@ public class CreateGroupPage extends AppCompatActivity implements View.OnClickLi
                 for (DataSnapshot info : dataSnapshot.getChildren()) {
                     if (info.getKey().equals("recentlyHunted") ) {
                         for (DataSnapshot person : info.getChildren()) {
-                            UserInformation uInfo = new UserInformation();
                             friendName = person.getValue().toString();
-                            friendId = person.getKey().toString();
-
+                            friendId = person.getKey();
+                            Log.d("hashTag", friendName + " and " + friendId);
                             nickNames.put(friendName, friendId);
-
 
                             TableRow row = new TableRow(getBaseContext());
                             TableRow.LayoutParams lp = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT);
                             lp.setMargins(10, 10, 5, 10);
                             row.setLayoutParams(lp);
                             tv = new TextView(getBaseContext());
-                            tv.setText(friendName);
+
+                            usersRef.child(friendName).child("nickname").addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                    String nickname = dataSnapshot.getValue().toString();
+                                    tv.setText(nickname);
+                                }
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
+                                }
+                            });
                             tv.setId(f + k + 1000);
                             row.setId(f + k);
-
                             row.addView(tv, lp);
-
                             row.setOnClickListener(CreateGroupPage.this);
                             tableRecHunted.addView(row, k);
                             k++;
                         }
+
                     }
                     else if ( info.getKey().equals("friends")){
                         for (DataSnapshot person : info.getChildren()) {
                             friendName = person.getValue().toString();
-                            friendId = person.getKey().toString();
+                            friendId = person.getKey();
 
                             nickNames.put(friendName, friendId);
-
 
                             TableRow row = new TableRow(getBaseContext());
                             TableRow.LayoutParams lp = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT);
                             lp.setMargins(10, 10, 5, 10);
                             row.setLayoutParams(lp);
                             tv = new TextView(getBaseContext());
-                            tv.setText(friendName);
+
+                            usersRef.child(friendName).child("nickname").addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                    String nickname = dataSnapshot.getValue().toString();
+                                    tv.setText(nickname);
+                                }
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
+                                }
+                            });
                             tv.setId(f + k + 1000);
                             row.setId(f + k);
-
-
-
                             row.addView(tv, lp);
-
                             row.setOnClickListener(CreateGroupPage.this);
                             tableFriends.addView(row, f);
                             f++;
-
                         }
                     }
                 }
 
-
                 selected = new String[f + k];
-
             }
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
             }
-
-
-
-
-
     });
 }
 

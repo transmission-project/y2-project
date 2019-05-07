@@ -32,6 +32,8 @@ public class join_create extends AppCompatActivity {
         Button joinButton= findViewById(R.id.btjoin);
      final  EditText groupIDInput = findViewById(R.id.etgroupid);
 
+
+
         groupIDInput.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {

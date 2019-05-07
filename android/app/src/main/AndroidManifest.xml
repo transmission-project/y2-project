@@ -9,9 +9,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".FriendList"
-            android:label="@string/friendList">
-        </activity>
+
+        <activity
+            android:name=".FriendList"
+            android:label="@string/friendList"></activity>
         <activity android:name=".SettingsPage" />
         <activity
             android:name=".signIn"
@@ -24,26 +25,17 @@
         <activity
             android:name=".InsideGroupActivity"
             android:label="@string/title_activity_inside_group"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:parentActivityName=".ui.login.LoginActivity"/>
-
-
-        <activity android:name=".join_create">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+            android:parentActivityName=".ui.login.LoginActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".join_create"/>
         <activity android:name=".Home_page" />
         <activity
             android:name=".ui.login.LoginActivity"
             android:label="@string/title_activity_login">
-            <!--
              <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-            -->
         </activity>
         <activity
             android:name=".RegistrationActivity"
@@ -53,6 +45,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <service android:name="InviteNotificationService">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
     </application>
 
 </manifest>
