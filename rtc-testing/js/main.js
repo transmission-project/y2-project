@@ -67,6 +67,7 @@ async function leaveGroup() {
 
     //close rtc connections
     Object.keys(connections).forEach((uid) => {
+        closeVideoStream(uid);
         if(connections[uid].signalingState !== 'closed') closeConnection(uid)
     });
 
@@ -96,21 +97,6 @@ function createRTCConnection(uid) {
 
     connection.addStream(webcamStream);
 
-    //stream handlers
-    connection.onaddstream = (event) => {
-        console.log('Remote stream added.');
-        const remoteStream = event.stream;
-        const display = document.createElement("video");
-        display.id = uid;
-        display.autoplay = true;
-        display.playsinline = true;
-        display.srcObject = remoteStream;
-        document.getElementById("videos").appendChild(display);
-    };
-    connection.onremovestream = (event) => {
-        console.log('Remote stream removed. Event: ', event);
-        document.getElementById(uid).remove();
-    };
     return connection;
 }
 
@@ -147,8 +133,7 @@ async function onReceiveOffer(snapshot) {
     database.ref('/groups/' + groupID + '/joined/' + uid + '/answers/' + ourID)
         .set(JSON.stringify(answer));
 
-    //register any ice candidates we might have received up to now and had ignored
-    onReceiveICE(await database.ref('/groups/' + groupID + '/joined/' + ourID + '/ice/' + uid).once('value'));
+    openVideoStream(uid);
 }
 
 async function onReceiveAnswer(snapshot) {
@@ -159,12 +144,14 @@ async function onReceiveAnswer(snapshot) {
     console.log("Answer accepted from " + uid + ".");
     //delete answer
 
+    openVideoStream(uid);
     //register any ice candidates we might have received up to now and had ignored
     onReceiveICE(await database.ref('/groups/' + groupID + '/joined/' + ourID + '/ice/' + uid).once('value'));
 }
 
 function onClose(snapshot){
     const uid = snapshot.key;
+    closeVideoStream(uid);
     connections[uid].close();
     //connections[uid] = null; //we're supposed to do this, but it crashes things
 }
@@ -206,12 +193,30 @@ function onReceiveICE(snapshot) {
 }
 
 function closeConnection(key) {
+    console.log("closing connection to "+ key);
+    closeVideoStream(uid);
     connections[key].close();
     database.ref('/groups/' + groupID + /joined/ + key + /closing/ + ourID ).set("");
 }
 
 
 //UI Functions
+function openVideoStream(uid) {
+    const remoteStream = connections[uid].getRemoteStreams()[0];
+    const display = document.createElement("video");
+    display.id = uid;
+    display.autoplay = true;
+    display.playsinline = true;
+    display.srcObject = remoteStream;
+    document.getElementById("videos").appendChild(display);
+}
+
+function closeVideoStream(uid) {
+    try {
+        document.getElementById(uid).remove();
+    } catch (e) {}
+}
+
 function showJoinGroup() {
     try {
         document.getElementById("group_label").remove();
