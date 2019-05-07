@@ -12,6 +12,7 @@ let closeRef; //TODO comments
 let iceRef;
 
 let connections = {};
+let ICELists = {};
 
 // TODO: replace stream with track
 // init webcam
@@ -36,6 +37,8 @@ async function joinGroup() {
     answerRef.on('child_added', onReceiveAnswer);
     closeRef = database.ref('/groups/' + groupID + '/joined/' + ourID + '/closing');
     closeRef.on('child_added', onClose);
+    iceRef = database.ref('/groups/' + groupID + '/joined/' + ourID + '/ice');
+    closeRef.on('child_added', onReceiveICE);
 
     //add ourselves to database
     await database.ref('/groups/' + groupID + '/joined/' + ourID).set("");
@@ -70,6 +73,7 @@ async function leaveGroup() {
     offerRef = null;
     answerRef = null;
     connections = {};
+    ICELists = {};
 
     showJoinGroup();
 }
@@ -83,6 +87,8 @@ function createRTCConnection(uid) {
     console.log('Making a new connection for ' + uid + '.');
     const connection = new RTCPeerConnection();
     connections[uid] = connection;
+    ICELists[uid] = [];
+    connection.onicecandidate = onGenerateICE;
 
     connection.addStream(webcamStream);
 
@@ -118,7 +124,7 @@ async function makeOffer(childSnapshot) {
     const offer = await connection.createOffer();
     database.ref('/groups/' + groupID + '/joined/' + uid + '/offers/' + ourID)
         .set(JSON.stringify(offer));
-    connection.setLocalDescription(offer);
+    await connection.setLocalDescription(offer);
 }
 
 async function onReceiveOffer(snapshot) {
@@ -126,7 +132,7 @@ async function onReceiveOffer(snapshot) {
     const offer = JSON.parse(snapshot.val());
 
     const connection = createRTCConnection(uid);
-    connection.setRemoteDescription(offer);
+    await connection.setRemoteDescription(offer);
 
     // TODO: Figure out how to remove offer with out deleting tree
     // console.log(offerRef.removeChild());
@@ -138,23 +144,65 @@ async function onReceiveOffer(snapshot) {
     database.ref('/groups/' + groupID + '/joined/' + uid + '/answers/' + ourID)
         .set(JSON.stringify(answer));
 
-    // update ice candidates
+    //register any ice candidates we might have received up to now and had ignored
+    onReceiveICE(await database.ref('/groups/' + groupID + '/joined/' + ourID + '/ice/' + uid).once('value'));
 }
 
-function onReceiveAnswer(snapshot) {
+async function onReceiveAnswer(snapshot) {
     const uid = snapshot.key;
     const answer = JSON.parse(snapshot.val());
 
-    connections[uid].setRemoteDescription(answer);
+    await connections[uid].setRemoteDescription(answer);
     console.log("Answer accepted from " + uid + ". Preparing to send ICE candidates.")
     //delete answer
 
-    //update ice candidates
+    //register any ice candidates we might have received up to now and had ignored
+    onReceiveICE(await database.ref('/groups/' + groupID + '/joined/' + ourID + '/ice/' + uid).once('value'));
 }
 
 function onClose(snapshot){
     const uid = snapshot.key;
     connections[uid].close();
+}
+
+function onGenerateICE(event) {
+    var callerUID;
+    for( uid in connections) {
+        if(connections[uid] == event.target) callerUID = uid;
+    }
+    ICEList = ICELists[callerUID];
+    if(event.candidate) {
+        ICEList.push(event.candidate)
+    } else {
+        database.ref("/groups/" + groupID + "/joined/" + callerUID + "/ice/" + ourID).set(JSON.stringify(ICEList));
+    }
+}
+
+function onReceiveICE(snapshot) {
+    const uid = snapshot.key;
+
+    // Check if we have a connection object with this host and if the host is registered.
+    // If we haven't done that yet, we can skip it now and pick it up later
+    if(!connections.hasOwnProperty(uid)) return;
+    const connection = connections[uid];
+    console.log("Receiving ICE Candidates and remoteDescription is " + connection.remoteDescription);
+    if(connection.remoteDescription == null) return;
+    console.log("continuing with ICE");
+
+    console.log(snapshot.val());
+    const ICEList = JSON.parse(snapshot.val());
+    console.log(ICEList);
+    for(candidate of ICEList) {
+        connection.addIceCandidate(candidate);
+    }
+
+    // //Also register ICE candidates we sent them
+    // database.ref('/groups/' + groupID + '/joined/' + uid + '/answers/' + ourID)
+    //     .once('value', (snapshot) => {
+    //         for(candidate of JSON.parse(snapshot)) {
+    //             connection.addIceCandidate(candidate)
+    //         }
+    //     });
 }
 
 function closeConnection(key) {
