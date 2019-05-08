@@ -81,7 +81,7 @@ async function leaveGroup() {
     console.log("leave group complete")
 }
 
-window.onbeforeunload = leaveGroup;
+window.addEventListener("beforeunload", leaveGroup);
 
 function createRTCConnection(uid) {
     /**
