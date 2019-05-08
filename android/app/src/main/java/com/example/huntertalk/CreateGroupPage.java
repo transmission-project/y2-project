@@ -21,15 +21,10 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import org.w3c.dom.Text;
-
-import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Random;
 
-public class CreateGroupPage extends AppCompatActivity implements View.OnClickListener {
+
+public class CreateGroupPage extends AppCompatActivity {
 
     private Button btnCreate;
     private DatabaseReference usersRef, groupRef;
@@ -38,7 +33,7 @@ public class CreateGroupPage extends AppCompatActivity implements View.OnClickLi
     private TableLayout tableRecHunted,tableFriends;
     private int k = 0;
     private int f = 0;
-    private String[] selected;
+    private String[][] selected;
     private HashMap<String,String> friends = new HashMap<String, String>();
     private HashMap<String,String> recentlyHunted = new HashMap<String, String>();
 
@@ -59,19 +54,36 @@ public class CreateGroupPage extends AppCompatActivity implements View.OnClickLi
         GroupId groupIdObject = new GroupId();
         final String groupId = Integer.toString(groupIdObject.getId());
         FirebaseAuth auth = FirebaseAuth.getInstance();
-        String uid = auth.getCurrentUser().getUid();
+       final String uid = auth.getCurrentUser().getUid();
 
-        groupRef.child(groupId).child("joined").child(uid).setValue(uid);
+
+
 
         btnCreate = (Button) findViewById(R.id.createButton);
         btnCreate.setOnClickListener(new View.OnClickListener(){
 
             @Override
             public void onClick(View v) {
+                //adds current user as joined to the group and
+                usersRef.child(uid).child("nickname").addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        String nickname = dataSnapshot.getValue().toString();
+                        groupRef.child(groupId).child("joined").child(uid).setValue(nickname);
+                    }
 
-                for(int i = 0; i < k; i++) {
-                    if(selected[i] != null){
-                        groupRef.child(groupId).child("invited").child(selected[i]).setValue(selected[i]);
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                    }
+                });
+
+                /**
+                 * Adding people to invite list
+                 * Nicknames are stored at 0 ids are at 1
+                 */
+                for(int i = 0; i < k+f; i++) {
+                    if(selected[i][0] != null){
+                        groupRef.child(groupId).child("invited").child(selected[i][1]).setValue(selected[i][0]);
                     }
                 }
                 Intent intent =new Intent(CreateGroupPage.this,InsideGroupActivity.class);
@@ -91,19 +103,20 @@ public class CreateGroupPage extends AppCompatActivity implements View.OnClickLi
                 tableFriends = (TableLayout) findViewById(R.id.tableFriends);
                 tableFriends.removeAllViews();
                 f=0;
-
+/**
+ * Method to output all the recently hunted and friends
+ */
                 for (DataSnapshot info : dataSnapshot.getChildren()) {
                     if (info.getKey().equals("recentlyHunted") ) {
                         for (DataSnapshot person : info.getChildren()) {
                             friendName = person.getValue().toString();
                             friendId = person.getKey();
-                            Log.d("hashTag", friendName + " and " + friendId);
                             recentlyHunted.put(friendId, friendName);
                             usersRef.child(friendId).child("nickname").addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                     String nickname = dataSnapshot.getValue().toString();
-                                    friends.put(friendId, nickname);
+                                    recentlyHunted.put(friendId, nickname);
 
                                 }
                                 @Override
@@ -123,8 +136,8 @@ public class CreateGroupPage extends AppCompatActivity implements View.OnClickLi
                         createTableFriends(friends, "fr");
                     }
                 }
-
-                selected = new String[f + k];
+                //nicknames are stored at 0 ids are at 1
+                selected = new String[f + k][2];
             }
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
@@ -134,13 +147,14 @@ public class CreateGroupPage extends AppCompatActivity implements View.OnClickLi
     private void createTableFriends(HashMap<String, String> people, String command){
         for (String key: people.keySet()){
             String nickname= people.get(key);
+            final String keyForStoringId =key;
             final TableRow row = new TableRow(getBaseContext());
             TableRow.LayoutParams lp = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT);
             lp.setMargins(10, 10, 5, 10);
             row.setLayoutParams(lp);
             tv1 = new TextView(getBaseContext());
             tv1.setText(nickname);
-            tv1.setId(f +k + 1000);
+            tv1.setId(f+k + 1000);
             row.setId(f+k);
             row.addView(tv1, lp);
             row.setOnClickListener(new View.OnClickListener() {
@@ -149,14 +163,14 @@ public class CreateGroupPage extends AppCompatActivity implements View.OnClickLi
                     int clicked_id = v.getId();
                     friend = (TextView) findViewById(clicked_id + 1000);
                     String nameRH = friend.getText().toString();
-
-                    if (selected[clicked_id ]== null) {
+                    if (selected[clicked_id][0]== null) {
                         friend.setTextColor(Color.GREEN);
-                        selected[clicked_id] = nameRH;
+                        selected[clicked_id][0] = nameRH;
+                        selected[clicked_id][1] = keyForStoringId;
                     }
                     else {
                         friend.setTextColor(Color.BLACK);
-                        selected[clicked_id] = null;
+                        selected[clicked_id][0] = null;
                     }
                 }
             }
@@ -169,22 +183,6 @@ public class CreateGroupPage extends AppCompatActivity implements View.OnClickLi
             tableFriends.addView(row, f);
             f++;
         }
-        }
-    }
-
-    @Override
-    public void onClick(View v) {
-        int clicked_id = v.getId();
-        friend = (TextView) findViewById(clicked_id + 1000);
-        String nameRH = friend.getText().toString();
-
-        if (selected[clicked_id]== null) {
-            friend.setTextColor(Color.GREEN);
-            selected[clicked_id] = nameRH;
-        }
-        else {
-            friend.setTextColor(Color.BLACK);
-            selected[clicked_id] = null;
         }
     }
 }
