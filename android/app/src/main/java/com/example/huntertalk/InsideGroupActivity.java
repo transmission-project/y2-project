@@ -20,6 +20,7 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -30,12 +31,23 @@ import com.google.firebase.database.ValueEventListener;
 public class InsideGroupActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
+    private DatabaseReference groupsRef;
+    private String groupID;
+    private String uid;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.replace(R.id.content_frame, new GroupOverviewFragment()).commit();
+
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        groupsRef = database.getReference().child("groups");
+        //usersRef = database.getReference().child("users");
+
+        FirebaseAuth auth = FirebaseAuth.getInstance();
+        uid = auth.getCurrentUser().getUid();
 
         setContentView(R.layout.activity_inside_group);
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -48,6 +60,13 @@ public class InsideGroupActivity extends AppCompatActivity
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
 
+        try {
+            groupID = getIntent().getExtras().getString("groupID");
+            System.out.println(groupID);
+        }
+        catch (NullPointerException e) {
+            groupID = "ERROR";
+        }
 
     }
 
@@ -102,8 +121,11 @@ public class InsideGroupActivity extends AppCompatActivity
             Intent i =  new Intent(InsideGroupActivity.this, SettingsPage.class);
             startActivity(i);
 
+        //removes user from group
         } else if (id == R.id.nav_leave) {
-
+            groupsRef.child(groupID).child("joined").child(uid).removeValue();
+            Intent i =  new Intent(InsideGroupActivity.this, Home_page.class);
+            startActivity(i);
         }
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);

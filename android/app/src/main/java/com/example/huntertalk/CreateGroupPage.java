@@ -54,7 +54,7 @@ public class CreateGroupPage extends AppCompatActivity {
         GroupId groupIdObject = new GroupId();
         final String groupId = Integer.toString(groupIdObject.getId());
         FirebaseAuth auth = FirebaseAuth.getInstance();
-       final String uid = auth.getCurrentUser().getUid();
+        final String uid = auth.getCurrentUser().getUid();
 
 
 

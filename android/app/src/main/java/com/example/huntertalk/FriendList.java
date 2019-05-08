@@ -93,11 +93,11 @@ public class FriendList extends AppCompatActivity {
                  final    String email = etSearch.getText().toString().trim();
                 //checks if email is valid
                     if (TextUtils.isEmpty(email)) {
-                        etSearch.setError("Invalid email addresss");
+                        etSearch.setError("Invalid email address");
                         return;
                     }
                     if (email.equals("") || !email.contains("@") || !email.contains(".")) {
-                        etSearch.setError("Invalid email addresss");
+                        etSearch.setError("Invalid email address");
                         return;
                     }
                     if (TextUtils.isEmpty(email)) {
@@ -200,18 +200,14 @@ public class FriendList extends AppCompatActivity {
         for (DataSnapshot friends : dataSnapshot.getChildren()){
             if (friends.getKey().equals("friends")){
                 for (DataSnapshot person : friends.getChildren()){
-                    UserInformation uInfo = new UserInformation();
                     friendName = person.getValue().toString();
-                    friendId = person.getKey().toString();
+                    friendId = person.getKey();
                     nickNames.put(friendId,friendName);
-
                 }
                 createTable();
             }
         }
     }
-
-
     private void createTable(){
     rowNumber=0;
 
