@@ -124,6 +124,21 @@ public class InsideGroupActivity extends AppCompatActivity
         //removes user from group
         } else if (id == R.id.nav_leave) {
             groupsRef.child(groupID).child("joined").child(uid).removeValue();
+
+            groupsRef.child(groupID).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot snapshot) {
+                    if (!snapshot.hasChild("joined")) {
+                        groupsRef.child(groupID).child("invited").removeValue();
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+
             Intent i =  new Intent(InsideGroupActivity.this, Home_page.class);
             startActivity(i);
         }
