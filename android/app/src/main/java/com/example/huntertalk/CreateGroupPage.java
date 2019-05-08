@@ -33,13 +33,14 @@ public class CreateGroupPage extends AppCompatActivity implements View.OnClickLi
 
     private Button btnCreate;
     private DatabaseReference usersRef, groupRef;
-    private TextView friend, tv;
+    private TextView friend, tv, tv1;
     private String friendName, friendId;
     private TableLayout tableRecHunted,tableFriends;
     private int k = 0;
     private int f = 0;
     private String[] selected;
-    private HashMap<String,String> nickNames = new HashMap<String, String>();
+    private HashMap<String,String> friends = new HashMap<String, String>();
+    private HashMap<String,String> recentlyHunted = new HashMap<String, String>();
 
 
     @Override
@@ -89,7 +90,7 @@ public class CreateGroupPage extends AppCompatActivity implements View.OnClickLi
 
                 tableFriends = (TableLayout) findViewById(R.id.tableFriends);
                 tableFriends.removeAllViews();
-
+                f=0;
 
                 for (DataSnapshot info : dataSnapshot.getChildren()) {
                     if (info.getKey().equals("recentlyHunted") ) {
@@ -97,63 +98,29 @@ public class CreateGroupPage extends AppCompatActivity implements View.OnClickLi
                             friendName = person.getValue().toString();
                             friendId = person.getKey();
                             Log.d("hashTag", friendName + " and " + friendId);
-                            nickNames.put(friendName, friendId);
-
-                            TableRow row = new TableRow(getBaseContext());
-                            TableRow.LayoutParams lp = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT);
-                            lp.setMargins(10, 10, 5, 10);
-                            row.setLayoutParams(lp);
-                            tv = new TextView(getBaseContext());
-
-                            usersRef.child(friendName).child("nickname").addListenerForSingleValueEvent(new ValueEventListener() {
+                            recentlyHunted.put(friendId, friendName);
+                            usersRef.child(friendId).child("nickname").addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                     String nickname = dataSnapshot.getValue().toString();
-                                    tv.setText(nickname);
+                                    friends.put(friendId, nickname);
+
                                 }
                                 @Override
                                 public void onCancelled(@NonNull DatabaseError databaseError) {
                                 }
                             });
-                            tv.setId(f + k + 1000);
-                            row.setId(f + k);
-                            row.addView(tv, lp);
-                            row.setOnClickListener(CreateGroupPage.this);
-                            tableRecHunted.addView(row, k);
-                            k++;
                         }
+                        createTableFriends(recentlyHunted, "rc");
 
                     }
                     else if ( info.getKey().equals("friends")){
                         for (DataSnapshot person : info.getChildren()) {
                             friendName = person.getValue().toString();
                             friendId = person.getKey();
-
-                            nickNames.put(friendName, friendId);
-
-                            TableRow row = new TableRow(getBaseContext());
-                            TableRow.LayoutParams lp = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT);
-                            lp.setMargins(10, 10, 5, 10);
-                            row.setLayoutParams(lp);
-                            tv = new TextView(getBaseContext());
-
-                            usersRef.child(friendName).child("nickname").addListenerForSingleValueEvent(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                    String nickname = dataSnapshot.getValue().toString();
-                                    tv.setText(nickname);
-                                }
-                                @Override
-                                public void onCancelled(@NonNull DatabaseError databaseError) {
-                                }
-                            });
-                            tv.setId(f + k + 1000);
-                            row.setId(f + k);
-                            row.addView(tv, lp);
-                            row.setOnClickListener(CreateGroupPage.this);
-                            tableFriends.addView(row, f);
-                            f++;
+                            friends.put(friendId, friendName);
                         }
+                        createTableFriends(friends, "fr");
                     }
                 }
 
@@ -164,6 +131,46 @@ public class CreateGroupPage extends AppCompatActivity implements View.OnClickLi
             }
     });
 }
+    private void createTableFriends(HashMap<String, String> people, String command){
+        for (String key: people.keySet()){
+            String nickname= people.get(key);
+            final TableRow row = new TableRow(getBaseContext());
+            TableRow.LayoutParams lp = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT);
+            lp.setMargins(10, 10, 5, 10);
+            row.setLayoutParams(lp);
+            tv1 = new TextView(getBaseContext());
+            tv1.setText(nickname);
+            tv1.setId(f +k + 1000);
+            row.setId(f+k);
+            row.addView(tv1, lp);
+            row.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int clicked_id = v.getId();
+                    friend = (TextView) findViewById(clicked_id + 1000);
+                    String nameRH = friend.getText().toString();
+
+                    if (selected[clicked_id ]== null) {
+                        friend.setTextColor(Color.GREEN);
+                        selected[clicked_id] = nameRH;
+                    }
+                    else {
+                        friend.setTextColor(Color.BLACK);
+                        selected[clicked_id] = null;
+                    }
+                }
+            }
+         );
+        if (command.equals("rc")) {
+            tableRecHunted.addView(row, k);
+            k++;
+        }
+        else{
+            tableFriends.addView(row, f);
+            f++;
+        }
+        }
+    }
 
     @Override
     public void onClick(View v) {

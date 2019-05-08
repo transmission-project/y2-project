@@ -2,7 +2,6 @@ package com.example.huntertalk;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -34,6 +33,8 @@ public class FriendList extends AppCompatActivity {
     private TextView tv, tv1;
     private int k;
     private int f;
+    private int i=150;
+    private int rowNumber;
     private final FirebaseAuth auth =FirebaseAuth.getInstance();
     final String uid = auth.getCurrentUser().getUid();
     FirebaseUser currentUser= auth.getCurrentUser();
@@ -59,7 +60,7 @@ public class FriendList extends AppCompatActivity {
         }
 
         //create friendlist on start
-        mDatabase.child(uid).addListenerForSingleValueEvent(new ValueEventListener() {
+        mDatabase.child(uid).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 tableFriendList= (TableLayout) findViewById(R.id.tableFriendList);
@@ -145,7 +146,7 @@ public class FriendList extends AppCompatActivity {
                                 return;
                             }
 
-                            //adds friend on the list with nickname
+                            //adds friend to the list with nickname
                                 mDatabase.child(futureFriend).child("nickname").addListenerForSingleValueEvent(new ValueEventListener() {
                                     @Override
                                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -153,7 +154,7 @@ public class FriendList extends AppCompatActivity {
                                         mDatabase.child(uid).child("friends").child(futureFriend).setValue(nickname3);
                                         friendName=nickname3;
                                         nickNames.put(futureFriend,nickname3);
-                                        createARow();
+                                        createTable();
 
                                     }
 
@@ -203,41 +204,52 @@ public class FriendList extends AppCompatActivity {
                     friendName = person.getValue().toString();
                     friendId = person.getKey().toString();
                     nickNames.put(friendId,friendName);
-                    createARow();
+
                 }
+                createTable();
             }
         }
     }
 
-    //Creating a new row in the table of friends
-    private void createARow() {
-       final TableRow row = new TableRow(getBaseContext());
-        TableRow.LayoutParams lp = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT);
-        lp.setMargins(10, 10, 5, 10);
-        row.setLayoutParams(lp);
-        Button btn = new Button(this);
-        btn.setText("X");
-        btn.setId(k);
-        btn.setVisibility(View.VISIBLE);
-        btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                System.out.println(row.getId());
-                TextView text=(TextView) row.getChildAt(0);
-                String id= text.getText().toString();
-                mDatabase.child(uid).child("friends").child(id).removeValue();
-                nickNames.remove(id);
-                tableFriendList.removeView(row);
-            }
-        });
-        tv = new TextView(getBaseContext());
-        tv.setText(friendId);
-        tv.setId(f + k + 1000);
-        row.setId(f + k);
-        row.addView(tv, lp);
-        row.addView(btn);
-        tableFriendList.addView(row, k);
-        k++;
+
+    private void createTable(){
+    rowNumber=0;
+
+        for (String key: nickNames.keySet()){
+            String nickname= nickNames.get(key);
+            final TableRow row = new TableRow(getBaseContext());
+            TableRow.LayoutParams lp = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT);
+            lp.setMargins(10, 10, 5, 10);
+            row.setLayoutParams(lp);
+            Button btn = new Button(this);
+            btn.setText("X");
+            btn.setId(i+k);
+            btn.setVisibility(View.VISIBLE);
+            btn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    TextView text=(TextView) row.getChildAt(1);
+                    String id= text.getText().toString();
+                    mDatabase.child(uid).child("friends").child(id).removeValue();
+                    nickNames.remove(id);
+                    tableFriendList.removeView(row);
+                }
+            });
+            tv1 = new TextView(getBaseContext());
+            tv1.setText(nickname);
+            tv1.setId(i + k + 10000);
+            tv = new TextView(getBaseContext());
+            tv.setText(key);
+            tv.setId(i + k + 1000);
+            tv.setVisibility(View.GONE);
+            row.setId(k);
+            row.addView(tv1, lp);
+            row.addView(tv, lp);
+            row.addView(btn);
+            tableFriendList.addView(row, rowNumber);
+            rowNumber++;
+        }
+
     }
 
 //Back button functionality
