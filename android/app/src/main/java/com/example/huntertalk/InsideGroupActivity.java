@@ -3,6 +3,9 @@ package com.example.huntertalk;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.util.Log;
@@ -27,13 +30,13 @@ import com.google.firebase.database.ValueEventListener;
 public class InsideGroupActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    private DatabaseReference usersRef, groupRef;
-    private TextView tv;
-    private TableLayout tb;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ft.replace(R.id.content_frame, new GroupOverviewFragment()).commit();
+
         setContentView(R.layout.activity_inside_group);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -45,57 +48,7 @@ public class InsideGroupActivity extends AppCompatActivity
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
 
-        String groupID;
-        try {
-             groupID = getIntent().getExtras().getString("groupID");
-        }
-        catch (NullPointerException e) {
-            groupID = "ERROR";
-        }
 
-        String activityTitle = getResources().getString(R.string.title_with_group_name, groupID);
-        setTitle(activityTitle);
-
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        groupRef = database.getReference().child("groups");
-        usersRef = database.getReference().child("users");
-
-        groupRef.child(groupID).child("joined").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                String member;
-                tb = (TableLayout) findViewById(R.id.tableGroupMembers);
-                tb.removeAllViews();
-
-                for (DataSnapshot groupMember : dataSnapshot.getChildren()) {
-                    member = groupMember.getValue().toString();
-
-                    usersRef.child(member).child("nickname").addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            String nickname = dataSnapshot.getValue().toString();
-
-                            TableRow row = new TableRow(getBaseContext());
-                            TableRow.LayoutParams lp = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT);
-                            lp.setMargins(10, 10, 5, 10);
-                            row.setLayoutParams(lp);
-                            tv = new TextView(getBaseContext());
-                            tv.setText(nickname);
-                            row.addView(tv, lp);
-                            tb.addView(row);
-                        }
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError databaseError) {
-                        }
-                    });
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
     }
 
     @Override
@@ -133,14 +86,17 @@ public class InsideGroupActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
+        FragmentManager fragmentManager = getSupportFragmentManager();
 
         if (id == R.id.nav_overview) {
-            // Handle the camera action
+            fragmentManager.beginTransaction().replace(R.id.content_frame, new GroupOverviewFragment()).commit();
+
         } else if (id == R.id.nav_map) {
 
         } else if (id == R.id.nav_chat) {
 
         } else if (id == R.id.nav_invite) {
+            fragmentManager.beginTransaction().replace(R.id.content_frame, new InviteToGroupFragment()).commit();
 
         } else if (id == R.id.nav_settings) {
             Intent i =  new Intent(InsideGroupActivity.this, SettingsPage.class);

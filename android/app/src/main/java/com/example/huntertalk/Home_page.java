@@ -28,7 +28,7 @@ public class Home_page extends AppCompatActivity  {
         Button createButton = findViewById(R.id.button3);
         createButton.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v){
-                Intent i=new Intent(Home_page.this,FriendList.class);
+                Intent i=new Intent(Home_page.this,CreateGroupPage.class);
                 startActivity(i);
             }
         });
