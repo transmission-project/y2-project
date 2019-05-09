@@ -38,6 +38,9 @@ public class GroupOverviewFragment extends Fragment implements NavigationView.On
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         myView = inflater.inflate(R.layout.group_overview_layout, container, false);
 
+        /**
+         *   Sets the group id as the nameof the group for current user
+         */
         String groupID;
         try {
             groupID = getActivity().getIntent().getExtras().getString("groupID");
@@ -54,7 +57,7 @@ public class GroupOverviewFragment extends Fragment implements NavigationView.On
         usersRef = database.getReference().child("users");
         mAuth=FirebaseAuth.getInstance();
         FirebaseUser currentUser= mAuth.getCurrentUser();
-       final String uid= currentUser.getUid();
+        final String uid= currentUser.getUid();
 
         groupRef.child(groupID).child("joined").addValueEventListener(new ValueEventListener() {
             @Override
@@ -62,10 +65,16 @@ public class GroupOverviewFragment extends Fragment implements NavigationView.On
                 for (DataSnapshot groupMember : dataSnapshot.getChildren()) {
                     final String member = groupMember.getKey();
                     final String name= groupMember.getValue().toString();
-                    System.out.println(member+ "   "+ name);
+
+                    /**
+                     *  Adds every member in the group, to the hashmap of connected users for current user.
+                     */
                     membersInTheGroup.put(member,name);
 
-                    //get nickname from user ID and add to recently hunted of existing group members
+                    /**
+                     * Get nickname from user ID and add to recently hunted of existing group members
+                     * Also enables current user to see himself on the list of people in side the group
+                     */
                     usersRef.child(uid).child("nickname").addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -90,9 +99,10 @@ public class GroupOverviewFragment extends Fragment implements NavigationView.On
             }
         });
 
-
-
-
+        /**
+         *    Currently necessary for update on someone leaving the group
+         *    In future could be done more neatly
+         */
         groupRef.child(groupID).child("joined").addChildEventListener(new ChildEventListener() {
 
             @Override
@@ -104,7 +114,9 @@ public class GroupOverviewFragment extends Fragment implements NavigationView.On
             public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
 
             }
-
+            /**
+             *  Updates the table of group members whenever someone leaves
+             */
             @Override
             public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
             String removedKey= dataSnapshot.getKey();
@@ -126,6 +138,10 @@ public class GroupOverviewFragment extends Fragment implements NavigationView.On
         return myView;
     }
 
+    /**
+     *  Creates the table and adds a row (method below) for each member of the group
+     *  Group members are stored in the hashmap membersInTheGroup
+     */
     private void createTable(){
         tb = (TableLayout) myView.findViewById(R.id.tableGroupMembers);
         tb.removeAllViews();
@@ -135,6 +151,10 @@ public class GroupOverviewFragment extends Fragment implements NavigationView.On
         }
     }
 
+    /**
+     * Adding row to the table of users connected to the group.
+     * @param nickname
+     */
     private void addRow(String nickname){
         TableRow row = new TableRow(myView.getContext());
         TableRow.LayoutParams lp = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT);

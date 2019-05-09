@@ -54,12 +54,16 @@ public class FriendList extends AppCompatActivity {
 
         mDatabase.child(uid).child("friends").push();
 
-       //enabling back button
+        /**
+         * Enabling the back button
+         */
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
 
-        //create friendlist on start
+        /**
+         *  Create a friend list when launch
+         */
         mDatabase.child(uid).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -76,7 +80,9 @@ public class FriendList extends AppCompatActivity {
             }
         });
 
-        //changes text on touch
+        /**
+         * Changes hint on touch
+         */
         etSearch.setOnTouchListener(new View.OnTouchListener() {
 
             @Override
@@ -86,7 +92,9 @@ public class FriendList extends AppCompatActivity {
             }
         });
 
-       //does all the checks and adds on friendlist
+        /**
+         * Does all the checks and adds the user to the check list
+         */
         searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -105,7 +113,9 @@ public class FriendList extends AppCompatActivity {
                         return;
                     }
 
-            // checks if email of the friend the user wants to add exists
+                /**
+                 * Check if email provided for potential friend exists.
+                 */
                 mDatabase.orderByChild("email").addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -124,7 +134,9 @@ public class FriendList extends AppCompatActivity {
                     }
                 });
 
-          //checks if the friend already exists
+                /**
+                 *  Check if the user and potential friends are already friends
+                 */
             mDatabase.orderByChild("email").equalTo(email).addChildEventListener(new ChildEventListener() {
                 @Override
                 public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
@@ -146,7 +158,9 @@ public class FriendList extends AppCompatActivity {
                                 return;
                             }
 
-                            //adds friend to the list with nickname
+                            /**
+                             * Add friends to the list with nicknames
+                             */
                                 mDatabase.child(futureFriend).child("nickname").addListenerForSingleValueEvent(new ValueEventListener() {
                                     @Override
                                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -195,7 +209,11 @@ public class FriendList extends AppCompatActivity {
 
         });
     }
- // get all friends from the database and show on the friendlist
+
+
+    /**
+     * Get all friends from the database and show on the friendlist
+     */
     private void startFriendList(DataSnapshot dataSnapshot) {
         for (DataSnapshot friends : dataSnapshot.getChildren()){
             if (friends.getKey().equals("friends")){
@@ -208,9 +226,12 @@ public class FriendList extends AppCompatActivity {
             }
         }
     }
+
+    /**
+     * Create tables and add rows to it for all the friends
+     */
     private void createTable(){
     rowNumber=0;
-
         for (String key: nickNames.keySet()){
             String nickname= nickNames.get(key);
             final TableRow row = new TableRow(getBaseContext());
@@ -248,7 +269,11 @@ public class FriendList extends AppCompatActivity {
 
     }
 
-//Back button functionality
+    /**
+     *  Back button functionality
+     * @param menuItem
+     * @return
+     */
     @Override
         public boolean onOptionsItemSelected (MenuItem menuItem){
             switch (menuItem.getItemId()) {

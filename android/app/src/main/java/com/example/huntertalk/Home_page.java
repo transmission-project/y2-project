@@ -20,7 +20,7 @@ public class Home_page extends AppCompatActivity  {
         bjoin = (Button) findViewById(R.id.bjoin);
         bjoin.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v){
-                Intent i=new Intent(Home_page.this, joinAGroupById.class);
+                Intent i=new Intent(Home_page.this, JoinAGroupById.class);
                 startActivity(i);
             }
         });
@@ -32,6 +32,7 @@ public class Home_page extends AppCompatActivity  {
                 startActivity(i);
             }
         });
+
 
     }
     // create an action bar button
@@ -46,6 +47,11 @@ public class Home_page extends AppCompatActivity  {
         int id = item.getItemId();
         if (id == R.id.mybutton) {
             Intent i=new Intent(Home_page.this,SettingsPage.class);
+            startActivity(i);
+            this.finish();
+        }
+        if (id == R.id.addFriends) {
+            Intent i=new Intent(Home_page.this,FriendList.class);
             startActivity(i);
             this.finish();
         }
