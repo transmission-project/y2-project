@@ -124,7 +124,7 @@ public class CreateGroupPage extends AppCompatActivity {
                                 }
                             });
                         }
-                        createTableFriends(recentlyHunted, "rc");
+                        createTable(recentlyHunted, "rc");
 
                     }
                     else if ( info.getKey().equals("friends")){
@@ -133,7 +133,7 @@ public class CreateGroupPage extends AppCompatActivity {
                             friendId = person.getKey();
                             friends.put(friendId, friendName);
                         }
-                        createTableFriends(friends, "fr");
+                        createTable(friends, "fr");
                     }
                 }
                 //nicknames are stored at 0 ids are at 1
@@ -144,7 +144,7 @@ public class CreateGroupPage extends AppCompatActivity {
             }
     });
 }
-    private void createTableFriends(HashMap<String, String> people, String command){
+    private void createTable(HashMap<String, String> people, String command){
         for (String key: people.keySet()){
             String nickname= people.get(key);
             final String keyForStoringId =key;
