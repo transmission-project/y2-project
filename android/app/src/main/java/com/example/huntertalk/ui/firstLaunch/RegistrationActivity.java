@@ -13,6 +13,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.huntertalk.R;
@@ -30,23 +31,31 @@ public class RegistrationActivity extends AppCompatActivity {
     private boolean changed=false;
 
 
-
+    private TextView login;
     private Button btnSignIn, registerButton, btnResetPassword;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registation);
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.setTitle("Registration");
-        actionBar.setHomeButtonEnabled(true); //maybe need to be removed
+        //ActionBar actionBar = getSupportActionBar();
+        //actionBar.setTitle("Registration");
+        //actionBar.setHomeButtonEnabled(true); //maybe need to be removed
 
         registerButton = (Button) findViewById(R.id.register2);
         inputEmail = (EditText) findViewById(R.id.email);
         inputPassword = (EditText) findViewById(R.id.password);
         inputPasswordConfirm = (EditText) findViewById(R.id.confirmPassword);
         final EditText inputNickname = (EditText) findViewById(R.id.displayName);
+        login = (TextView) findViewById(R.id.login2);
 
+        login.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(RegistrationActivity.this, LoginActivity.class);
+                startActivity(intent);
+            }
+        });
 
         inputEmail.addTextChangedListener(new TextWatcher() {
             @Override
