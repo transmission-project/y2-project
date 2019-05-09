@@ -2,7 +2,6 @@ package com.example.huntertalk;
 
 import android.content.Intent;
 import android.support.annotation.NonNull;
-import android.util.Log;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -22,7 +21,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-public class join_create extends AppCompatActivity {
+public class joinAGroupById extends AppCompatActivity {
     private DatabaseReference usersRef, groupRef;
     Boolean changed=false;
     @Override
@@ -66,11 +65,11 @@ public class join_create extends AppCompatActivity {
                 final String uid= FirebaseAuth.getInstance().getCurrentUser().getUid();
 
 
-                groupRef.addValueEventListener(new ValueEventListener() {
+                groupRef.addListenerForSingleValueEvent(new ValueEventListener() {
+
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         long dscount=dataSnapshot.getChildrenCount();
-
                         for(DataSnapshot ds: dataSnapshot.getChildren()){
                             int value = Integer.parseInt(ds.getKey());
                             if(content==value){
@@ -82,10 +81,13 @@ public class join_create extends AppCompatActivity {
                                     String id= ch.getKey();
                                     String rcNickname= ch.getValue().toString();
                                     if (!id.equals(uid)){
-                                    usersRef.child(uid).child("recentlyHunted").child(id).setValue(rcNickname);}
+                                    usersRef.child(uid).child("recentlyHunted").child(id).setValue(rcNickname);
+                                    }
+
+
                                 }
 
-                                //adds friend to the list with nickname
+                                //adds Recently Hunted to the list with nickname
                                 usersRef.child(uid).child("nickname").addListenerForSingleValueEvent(new ValueEventListener() {
                                     @Override
                                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -98,7 +100,7 @@ public class join_create extends AppCompatActivity {
                                     }
                                 });
 
-                                Intent i = new Intent(join_create.this, InsideGroupActivity.class);
+                                Intent i = new Intent(joinAGroupById.this, InsideGroupActivity.class);
                                 i.putExtra("groupID", groupIDInput.getText().toString());
                                 startActivity(i);
                                 break;
@@ -125,15 +127,15 @@ public class join_create extends AppCompatActivity {
             case android.R.id.home:
 
                 if(!changed){
-                    Intent intent = new Intent(join_create.this, Home_page.class);
+                    Intent intent = new Intent(joinAGroupById.this, Home_page.class);
                     startActivity(intent);
                 }else {
                     if (secondPress) {
-                        Intent intent = new Intent(join_create.this, Home_page.class);
+                        Intent intent = new Intent(joinAGroupById.this, Home_page.class);
                         startActivity(intent);
                         this.finish();
                     } else {
-                        Toast message = Toast.makeText(join_create.this, "Press once again to cancel joining a group",
+                        Toast message = Toast.makeText(joinAGroupById.this, "Press once again to cancel joining a group",
                                 Toast.LENGTH_LONG);
                         message.setGravity(Gravity.TOP, 0, 0);
                         message.show();

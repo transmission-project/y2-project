@@ -125,7 +125,7 @@ public class InsideGroupActivity extends AppCompatActivity
         } else if (id == R.id.nav_leave) {
             groupsRef.child(groupID).child("joined").child(uid).removeValue();
 
-            groupsRef.child(groupID).addListenerForSingleValueEvent(new ValueEventListener() {
+        /*    groupsRef.child(groupID).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot snapshot) {
                     if (!snapshot.hasChild("joined")) {
@@ -138,8 +138,9 @@ public class InsideGroupActivity extends AppCompatActivity
 
                 }
             });
-
+            */
             Intent i =  new Intent(InsideGroupActivity.this, Home_page.class);
+            this.finish();
             startActivity(i);
         }
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
