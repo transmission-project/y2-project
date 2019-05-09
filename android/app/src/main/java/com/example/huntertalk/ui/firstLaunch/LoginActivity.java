@@ -24,7 +24,7 @@ import com.google.firebase.auth.FirebaseUser;
 public class LoginActivity extends AppCompatActivity {
 
     private Button loginButton;
-    private Button registrationButton;
+    private TextView registrationButton;
     private TextView resetpw;
     private FirebaseAuth mAuth;
     private static final String TAG = "LoginActivity";
@@ -34,9 +34,10 @@ public class LoginActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.setTitle("Sign in");
+        //ActionBar actionBar = getSupportActionBar();
+        //actionBar.setTitle("Sign in");
         loginButton = findViewById(R.id.login);
+
         loginButton.setEnabled(true);
         mAuth = FirebaseAuth.getInstance();
         final EditText usernameEditText = findViewById(R.id.username);
