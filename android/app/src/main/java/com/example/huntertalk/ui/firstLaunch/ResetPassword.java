@@ -30,7 +30,7 @@ public class ResetPassword extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         ActionBar actionBar = getSupportActionBar();
-        actionBar.setTitle("Reset password");
+        actionBar.setTitle("Login help");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_in);
         if(getSupportActionBar()!=null){
