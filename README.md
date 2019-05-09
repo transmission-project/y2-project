@@ -32,6 +32,11 @@ We're creating an app that hunters can use as an alternative to the communicatio
 | Publish | Get the app ready for publishing to play store, GDPR etc | - |
 
 
+## Snapshot from the third sprint planning meeting
+
+![](sprint3-scheduling.jpg)
+
+
 ## About us
 Team Transmission is a goup of 6 ICT students at KTH in Stockholm and we're doing this project is a part of the course *Il1305 Project in information and communication technology*. The idea came from a team member's brother who is a frequent hunter and felt like this app has been missing from the market. We're excited about taking on this challenge and learn more about team work and app development!
 
