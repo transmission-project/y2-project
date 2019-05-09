@@ -65,16 +65,39 @@ public class join_create extends AppCompatActivity {
                 usersRef = database.getReference().child("users");
                 final String uid= FirebaseAuth.getInstance().getCurrentUser().getUid();
 
+
                 groupRef.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         long dscount=dataSnapshot.getChildrenCount();
 
                         for(DataSnapshot ds: dataSnapshot.getChildren()){
-                            Log.d("mytag",Long.toString(dscount));
                             int value = Integer.parseInt(ds.getKey());
                             if(content==value){
-                                groupRef.child(ds.getKey()).child("joined").child(uid).setValue(uid);
+                                final DataSnapshot ds1=ds;
+/**
+ * Gets all joined people from the group
+ */
+                                for (DataSnapshot ch: ds.child("joined").getChildren()) {
+                                    String id= ch.getKey();
+                                    String rcNickname= ch.getValue().toString();
+                                    if (!id.equals(uid)){
+                                    usersRef.child(uid).child("recentlyHunted").child(id).setValue(rcNickname);}
+                                }
+
+                                //adds friend to the list with nickname
+                                usersRef.child(uid).child("nickname").addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                        String nickname = dataSnapshot.getValue().toString();
+                                        groupRef.child(ds1.getKey()).child("joined").child(uid).setValue(nickname);
+                                    }
+
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                                    }
+                                });
+
                                 Intent i = new Intent(join_create.this, InsideGroupActivity.class);
                                 i.putExtra("groupID", groupIDInput.getText().toString());
                                 startActivity(i);

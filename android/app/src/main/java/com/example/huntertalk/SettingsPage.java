@@ -36,6 +36,7 @@ public class SettingsPage extends AppCompatActivity {
         setContentView(R.layout.activity_settings_page);
         Button logoutbutton = findViewById(R.id.logoutbutton);
         Button applyChanges= findViewById(R.id.apply);
+        Button addFriends = findViewById(R.id.addFriends);
         final EditText nickname = findViewById(R.id.etchangenickname);
         final EditText password = findViewById(R.id.etchangepw);
         final EditText confirmPassword = findViewById(R.id.etchangepw2);
@@ -49,7 +50,14 @@ public class SettingsPage extends AppCompatActivity {
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
-
+addFriends.setOnClickListener(new View.OnClickListener() {
+    @Override
+    public void onClick(View v) {
+        Intent intent = new Intent(getApplicationContext(), FriendList.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
+    }
+});
         applyChanges.setOnClickListener((new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -180,12 +188,10 @@ public class SettingsPage extends AppCompatActivity {
         switch (menuItem.getItemId()) {
             case android.R.id.home:
                 if(!nicknameChange&&!password2Change&&!passwordChange){
-                    Intent intent = new Intent(SettingsPage.this, InsideGroupActivity.class);
-                    startActivity(intent);
+                   this.finish();
                 }else{
                     if (secondPress){
-                        Intent intent = new Intent(SettingsPage.this, InsideGroupActivity.class);
-                        startActivity(intent);}
+                        this.finish();}
                     else{
                         Toast message= Toast.makeText(SettingsPage.this, "Press once again to cancel the changes",
                                 Toast.LENGTH_LONG);

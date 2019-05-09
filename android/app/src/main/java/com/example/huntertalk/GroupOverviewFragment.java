@@ -13,6 +13,8 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -22,6 +24,7 @@ import com.google.firebase.database.ValueEventListener;
 public class GroupOverviewFragment extends Fragment implements NavigationView.OnNavigationItemSelectedListener {
 
     private DatabaseReference usersRef, groupRef;
+    private FirebaseAuth mAuth;
     private TextView tv;
     private TableLayout tb;
     View myView;
@@ -45,23 +48,39 @@ public class GroupOverviewFragment extends Fragment implements NavigationView.On
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         groupRef = database.getReference().child("groups");
         usersRef = database.getReference().child("users");
+        mAuth=FirebaseAuth.getInstance();
+        FirebaseUser currentUser= mAuth.getCurrentUser();
+       final String uid= currentUser.getUid();
 
         groupRef.child(groupID).child("joined").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                String member;
+
                 tb = (TableLayout) getActivity().findViewById(R.id.tableGroupMembers);
                 tb.removeAllViews();
 
                 for (DataSnapshot groupMember : dataSnapshot.getChildren()) {
-                    member = groupMember.getValue().toString();
+                    final String member = groupMember.getKey();
 
-                    //get nicknames from user ID
+                    //get nickname from user ID and add to recently hunted of existing group members
+                    usersRef.child(uid).child("nickname").addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            String nickname = dataSnapshot.getValue().toString();
+                            if (!member.equals(uid)) {
+                                usersRef.child(member).child("recentlyHunted").child(uid).setValue(nickname);
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+                        }
+                    });
+                    //get nickname from user ID and add to recently hunted of existing group members
                     usersRef.child(member).child("nickname").addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                             String nickname = dataSnapshot.getValue().toString();
-
                             TableRow row = new TableRow(getActivity().getBaseContext());
                             TableRow.LayoutParams lp = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT);
                             lp.setMargins(10, 10, 5, 10);
