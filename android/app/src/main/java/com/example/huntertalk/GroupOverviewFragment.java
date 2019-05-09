@@ -30,7 +30,7 @@ public class GroupOverviewFragment extends Fragment implements NavigationView.On
     private FirebaseAuth mAuth;
     private TextView tv;
     private TableLayout tb;
-    private HashMap <String, String> membersInTheGroup;
+    private HashMap <String, String> membersInTheGroup=new HashMap<String, String>();
     View myView;
 
     @Nullable
@@ -56,17 +56,14 @@ public class GroupOverviewFragment extends Fragment implements NavigationView.On
         FirebaseUser currentUser= mAuth.getCurrentUser();
        final String uid= currentUser.getUid();
 
-        groupRef.child(groupID).addChildEventListener(new ChildEventListener() {
-
+        groupRef.child(groupID).child("joined").addValueEventListener(new ValueEventListener() {
             @Override
-            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-
-                tb = (TableLayout) getActivity().findViewById(R.id.tableGroupMembers);
-                tb.removeAllViews();
-
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot groupMember : dataSnapshot.getChildren()) {
                     final String member = groupMember.getKey();
+                    final String name= groupMember.getValue().toString();
+                    System.out.println(member+ "   "+ name);
+                    membersInTheGroup.put(member,name);
 
                     //get nickname from user ID and add to recently hunted of existing group members
                     usersRef.child(uid).child("nickname").addListenerForSingleValueEvent(new ValueEventListener() {
@@ -76,31 +73,30 @@ public class GroupOverviewFragment extends Fragment implements NavigationView.On
                             if (!member.equals(uid)) {
                                 usersRef.child(member).child("recentlyHunted").child(uid).setValue(nickname);
                             }
+                            membersInTheGroup.put(uid,nickname);
                         }
 
                         @Override
                         public void onCancelled(@NonNull DatabaseError databaseError) {
                         }
                     });
-                    //get nickname from user ID and add to recently hunted of existing group members
-                    usersRef.child(member).child("nickname").addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            String nickname = dataSnapshot.getValue().toString();
-                            TableRow row = new TableRow(getActivity().getBaseContext());
-                            TableRow.LayoutParams lp = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT);
-                            lp.setMargins(10, 10, 5, 10);
-                            row.setLayoutParams(lp);
-                            tv = new TextView(getActivity().getBaseContext());
-                            tv.setText(nickname);
-                            row.addView(tv, lp);
-                            tb.addView(row);
-                        }
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError databaseError) {
-                        }
-                    });
                 }
+                createTable();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+
+
+
+        groupRef.child(groupID).child("joined").addChildEventListener(new ChildEventListener() {
+
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
 
             }
 
@@ -111,46 +107,9 @@ public class GroupOverviewFragment extends Fragment implements NavigationView.On
 
             @Override
             public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-                tb = (TableLayout) getActivity().findViewById(R.id.tableGroupMembers);
-                tb.removeAllViews();
-
-                for (DataSnapshot groupMember : dataSnapshot.getChildren()) {
-                    final String member = groupMember.getKey();
-
-                    //get nickname from user ID and add to recently hunted of existing group members
-                    usersRef.child(uid).child("nickname").addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            String nickname = dataSnapshot.getValue().toString();
-                            if (!member.equals(uid)) {
-                                usersRef.child(member).child("recentlyHunted").child(uid).setValue(nickname);
-                            }
-                        }
-
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError databaseError) {
-                        }
-                    });
-                    //get nickname from user ID and add to recently hunted of existing group members
-                    usersRef.child(member).child("nickname").addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            String nickname = dataSnapshot.getValue().toString();
-                            TableRow row = new TableRow(getActivity().getBaseContext());
-                            TableRow.LayoutParams lp = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT);
-                            lp.setMargins(10, 10, 5, 10);
-                            row.setLayoutParams(lp);
-                            tv = new TextView(getActivity().getBaseContext());
-                            tv.setText(nickname);
-                            row.addView(tv, lp);
-                            tb.addView(row);
-                        }
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError databaseError) {
-                        }
-                    });
-                }
-
+            String removedKey= dataSnapshot.getKey();
+            membersInTheGroup.remove(removedKey);
+            createTable();
             }
 
             @Override
@@ -158,13 +117,33 @@ public class GroupOverviewFragment extends Fragment implements NavigationView.On
 
             }
 
-
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
             }
         });
+
         return myView;
+    }
+
+    private void createTable(){
+        tb = (TableLayout) myView.findViewById(R.id.tableGroupMembers);
+        tb.removeAllViews();
+        for (String key: membersInTheGroup.keySet()){
+            String nickname= membersInTheGroup.get(key);
+            addRow(nickname);
+        }
+    }
+
+    private void addRow(String nickname){
+        TableRow row = new TableRow(myView.getContext());
+        TableRow.LayoutParams lp = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT);
+        lp.setMargins(10, 10, 5, 10);
+        row.setLayoutParams(lp);
+        tv = new TextView(myView.getContext());
+        tv.setText(nickname);
+        row.addView(tv, lp);
+        tb.addView(row);
     }
 
     @Override

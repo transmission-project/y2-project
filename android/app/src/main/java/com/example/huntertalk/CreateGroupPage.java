@@ -96,7 +96,7 @@ public class CreateGroupPage extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                tableRecHunted = (TableLayout) findViewById(R.id.tableGroupMembers);
+                tableRecHunted = (TableLayout) findViewById(R.id.tableGroupMembers1);
                 tableRecHunted.removeAllViews();
                 k = 0;
 

@@ -76,18 +76,7 @@ public class joinAGroupById extends AppCompatActivity {
                                 final DataSnapshot ds1=ds;
 /**
  * Gets all joined people from the group
- */
-                                for (DataSnapshot ch: ds.child("joined").getChildren()) {
-                                    String id= ch.getKey();
-                                    String rcNickname= ch.getValue().toString();
-                                    if (!id.equals(uid)){
-                                    usersRef.child(uid).child("recentlyHunted").child(id).setValue(rcNickname);
-                                    }
-
-
-                                }
-
-                                //adds Recently Hunted to the list with nickname
+ */     //adds Recently Hunted to the list with nickname
                                 usersRef.child(uid).child("nickname").addListenerForSingleValueEvent(new ValueEventListener() {
                                     @Override
                                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -99,6 +88,14 @@ public class joinAGroupById extends AppCompatActivity {
                                     public void onCancelled(@NonNull DatabaseError databaseError) {
                                     }
                                 });
+
+                                for (DataSnapshot ch: ds.child("joined").getChildren()) {
+                                    String id= ch.getKey();
+                                    String rcNickname= ch.getValue().toString();
+                                    if (!id.equals(uid)){
+                                    usersRef.child(uid).child("recentlyHunted").child(id).setValue(rcNickname);
+                                    }
+                                }
 
                                 Intent i = new Intent(joinAGroupById.this, InsideGroupActivity.class);
                                 i.putExtra("groupID", groupIDInput.getText().toString());
