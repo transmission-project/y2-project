@@ -1,4 +1,4 @@
-package com.example.huntertalk;
+package com.example.huntertalk.everythingWithGroups;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -15,6 +15,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.huntertalk.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -36,7 +37,6 @@ public class InviteToGroupFragment extends Fragment {
         myView = inflater.inflate(R.layout.invite_to_group_layout, container, false);
 
         super.onCreate(savedInstanceState);
-        //getActivity().setContentView(R.layout.invite_to_group_layout);
 
         final EditText etSearch = myView.findViewById(R.id.etsearchmember);
         Button searchButton = myView.findViewById(R.id.btnsearch);

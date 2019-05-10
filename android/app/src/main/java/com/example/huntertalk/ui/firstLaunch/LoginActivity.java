@@ -1,4 +1,4 @@
-package com.example.huntertalk.ui.login;
+package com.example.huntertalk.ui.firstLaunch;
 
 import android.content.Intent;
 import android.graphics.Paint;
@@ -14,10 +14,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.huntertalk.Home_page;
 import com.example.huntertalk.R;
-import com.example.huntertalk.RegistrationActivity;
-import com.example.huntertalk.ResetPassword;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;

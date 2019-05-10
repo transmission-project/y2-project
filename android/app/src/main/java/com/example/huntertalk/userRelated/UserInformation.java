@@ -1,4 +1,4 @@
-package com.example.huntertalk;
+package com.example.huntertalk.userRelated;
 
 public class UserInformation {
 
