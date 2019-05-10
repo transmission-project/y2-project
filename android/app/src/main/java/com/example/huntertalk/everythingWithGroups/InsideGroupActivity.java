@@ -14,6 +14,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 
+import com.example.huntertalk.LeaveGroupPopUp;
 import com.example.huntertalk.R;
 import com.example.huntertalk.userRelated.SettingsPage;
 import com.example.huntertalk.ui.firstLaunch.Home_page;
