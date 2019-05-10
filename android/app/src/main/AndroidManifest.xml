@@ -14,6 +14,8 @@
     <uses-feature
         android:glEsVersion="0x00020000"
         android:required="true" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
 
     <application
         android:allowBackup="true"
@@ -45,6 +47,7 @@
             android:name="org.apache.http.legacy"
             android:required="false" />
 
+        <activity android:name=".WebTestActivity"></activity>
         <activity
             android:name=".map.MapsActivity"
             android:label="@string/title_activity_maps"></activity>
@@ -74,7 +77,6 @@
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
