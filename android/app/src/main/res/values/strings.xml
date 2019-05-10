@@ -8,6 +8,7 @@
     <string name="prompt_confirm_password">Confirm Password</string>
     <string name="prompt_nickname">Nickname</string>
     <string name="prompt_groupid">Group id</string>
+    <string name="prompt_friends_email">Friend\'s email</string>
     <string name="title_activity_register">Register a new account</string>
     <string name="emailpassword_status_fmt">Email User: %1$s (verified: %2$b)</string>
     <string name="firebase_status_fmt">Firebase User: %s</string>

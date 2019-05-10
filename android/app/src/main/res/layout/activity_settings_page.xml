@@ -31,7 +31,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
-            android:labelFor="@+id/enterEmail"
+            android:labelFor="@+id/etchangenickname"
             android:text="@string/prompt_nickname"
             android:textColor="@color/hunterGreen" />
 
@@ -57,7 +57,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
-            android:labelFor="@+id/enterEmail"
+            android:labelFor="@+id/etchangepw"
             android:text="@string/prompt_password"
             android:textColor="@color/hunterGreen" />
 
@@ -83,7 +83,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
-            android:labelFor="@+id/enterEmail"
+            android:labelFor="@+id/etchangepw2"
             android:text="@string/prompt_confirm_password"
             android:textColor="@color/hunterGreen" />
 
