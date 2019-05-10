@@ -66,7 +66,6 @@ public class FriendList extends AppCompatActivity {
        mDatabase.child(uid).child("friends").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                System.out.println(" event listener n friends triggered ");
                tableFriends = (TableLayout) findViewById(R.id.tableFriendList);
                tableFriends.removeAllViews();
                 f=0;
@@ -83,7 +82,6 @@ public class FriendList extends AppCompatActivity {
         mDatabase.child(uid).child("recentlyHunted").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                System.out.println(" Event listener on recently hunted triggered ");
                 tableRecHunted = (TableLayout) findViewById(R.id.tableGroupMembers2);
                 tableRecHunted.removeAllViews();
                 /**
@@ -142,7 +140,6 @@ public class FriendList extends AppCompatActivity {
                        for (DataSnapshot email1 : dataSnapshot.getChildren()){
                            if (email1.child("email").exists()){
                                String emailToCheck= email1.child("email").getValue().toString();
-                               System.out.println("Email to check is "+ emailToCheck);
                            if (email.equals(emailToCheck)){
                                return;
                            }
@@ -237,7 +234,6 @@ public class FriendList extends AppCompatActivity {
      * Get all friends and Recently hunteed from the database and show on the appropriate lists
      */
     private void startLists(DataSnapshot dataSnapshot, String command) {
-        System.out.println(" Start lists triggered ");
         for (DataSnapshot friends1 : dataSnapshot.getChildren()){
             friendName = friends1.getValue().toString();
             friendId = friends1.getKey();
@@ -254,7 +250,6 @@ public class FriendList extends AppCompatActivity {
      *  Create a table based on Hash Map
      */
     private void createTable(HashMap<String, String> people, String command){
-        System.out.println(" Create Table triggered with command  "+ command);
         for (String key: people.keySet()){
             String nickname= people.get(key);
             if (command.equals("rc")) {
