@@ -13,9 +13,9 @@ import android.widget.EditText;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -26,18 +26,17 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.HashMap;
 
 public class FriendList extends AppCompatActivity {
-    private DatabaseReference mDatabase, usersRef;
-    private TableLayout tableFriendList;
-    private HashMap<String,String> nickNames = new HashMap<String, String>();
+    private DatabaseReference mDatabase;
+    private TableLayout tableRecHunted,tableFriends;
     public String friendName,friendId;
     private TextView tv, tv1;
-    private int k;
-    private int f;
-    private int i=150;
-    private int rowNumber;
+    private int k,f,i;
     private final FirebaseAuth auth =FirebaseAuth.getInstance();
     final String uid = auth.getCurrentUser().getUid();
-    FirebaseUser currentUser= auth.getCurrentUser();
+    private HashMap<String,String> nickNames = new HashMap<String, String>();
+    private HashMap<String,String> recentlyHunted = new HashMap<String, String>();
+    private TableRow.LayoutParams lp = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT);
+
 
 
     @Override
@@ -50,10 +49,8 @@ public class FriendList extends AppCompatActivity {
         Button searchButton = findViewById(R.id.searchButton);
 
         mDatabase = FirebaseDatabase.getInstance().getReference("users");
-
-
-        mDatabase.child(uid).child("friends").push();
-
+       // mDatabase.child(uid).child("friends").push();
+        lp.setMargins(10, 10, 5, 10);
         /**
          * Enabling the back button
          */
@@ -61,22 +58,43 @@ public class FriendList extends AppCompatActivity {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
 
+
+
         /**
          *  Create a friend list when launch
          */
-        mDatabase.child(uid).addValueEventListener(new ValueEventListener() {
+       mDatabase.child(uid).child("friends").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                tableFriendList= (TableLayout) findViewById(R.id.tableFriendList);
-                tableFriendList.removeAllViews();
-                k=0;
+                System.out.println(" event listener n friends triggered ");
+               tableFriends = (TableLayout) findViewById(R.id.tableFriendList);
+               tableFriends.removeAllViews();
                 f=0;
-                startFriendList(dataSnapshot);
+                /**
+                 * Method to output all the recently hunted and friends
+                 */
+                startLists(dataSnapshot, "friends");
+                createTable(nickNames, "fr");
             }
-
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
+            }
+        });
+        mDatabase.child(uid).child("recentlyHunted").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                System.out.println(" Event listener on recently hunted triggered ");
+                tableRecHunted = (TableLayout) findViewById(R.id.tableGroupMembers2);
+                tableRecHunted.removeAllViews();
+                /**
+                 * Method to output all the recently hunted and friends
+                 */
+                startLists(dataSnapshot, "recentlyHunted");
+                createTable(recentlyHunted, "rc");
 
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
             }
         });
 
@@ -99,7 +117,9 @@ public class FriendList extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                  final    String email = etSearch.getText().toString().trim();
-                //checks if email is valid
+                /**
+                 * Check if email provided is of a valid format.
+                 */
                     if (TextUtils.isEmpty(email)) {
                         etSearch.setError("Invalid email address");
                         return;
@@ -116,13 +136,16 @@ public class FriendList extends AppCompatActivity {
                 /**
                  * Check if email provided for potential friend exists.
                  */
-                mDatabase.orderByChild("email").addValueEventListener(new ValueEventListener() {
+                mDatabase.orderByChild("email").addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                        for (DataSnapshot email1 : dataSnapshot.getChildren()){
-                           String emailToCheck= email1.child("email").getValue().toString();
-                          if (email.equals(emailToCheck)){
+                           if (email1.child("email").exists()){
+                               String emailToCheck= email1.child("email").getValue().toString();
+                               System.out.println("Email to check is "+ emailToCheck);
+                           if (email.equals(emailToCheck)){
                                return;
+                           }
                            }
                        }
                         etSearch.setError("User does not exist");
@@ -159,7 +182,7 @@ public class FriendList extends AppCompatActivity {
                             }
 
                             /**
-                             * Add friends to the list with nicknames
+                             * Add friends to the list with the nickname.
                              */
                                 mDatabase.child(futureFriend).child("nickname").addListenerForSingleValueEvent(new ValueEventListener() {
                                     @Override
@@ -168,8 +191,7 @@ public class FriendList extends AppCompatActivity {
                                         mDatabase.child(uid).child("friends").child(futureFriend).setValue(nickname3);
                                         friendName=nickname3;
                                         nickNames.put(futureFriend,nickname3);
-                                        createTable();
-
+                                        addRow(nickname3,futureFriend, "fr");
                                     }
 
                                     @Override
@@ -212,35 +234,85 @@ public class FriendList extends AppCompatActivity {
 
 
     /**
-     * Get all friends from the database and show on the friendlist
+     * Get all friends and Recently hunteed from the database and show on the appropriate lists
      */
-    private void startFriendList(DataSnapshot dataSnapshot) {
-        for (DataSnapshot friends : dataSnapshot.getChildren()){
-            if (friends.getKey().equals("friends")){
-                for (DataSnapshot person : friends.getChildren()){
-                    friendName = person.getValue().toString();
-                    friendId = person.getKey();
+    private void startLists(DataSnapshot dataSnapshot, String command) {
+        System.out.println(" Start lists triggered ");
+        for (DataSnapshot friends1 : dataSnapshot.getChildren()){
+            friendName = friends1.getValue().toString();
+            friendId = friends1.getKey();
+            if (command.equals("friends")){
                     nickNames.put(friendId,friendName);
-                }
-                createTable();
+            }
+            if (command.equals("recentlyHunted")){
+                    recentlyHunted.put(friendId,friendName);
             }
         }
     }
 
     /**
-     * Create tables and add rows to it for all the friends
+     *  Create a table based on Hash Map
      */
-    private void createTable(){
-    rowNumber=0;
-        for (String key: nickNames.keySet()){
-            String nickname= nickNames.get(key);
-            final TableRow row = new TableRow(getBaseContext());
-            TableRow.LayoutParams lp = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT);
-            lp.setMargins(10, 10, 5, 10);
-            row.setLayoutParams(lp);
+    private void createTable(HashMap<String, String> people, String command){
+        System.out.println(" Create Table triggered with command  "+ command);
+        for (String key: people.keySet()){
+            String nickname= people.get(key);
+            if (command.equals("rc")) {
+                addRow(nickname,key, "rc");
+            }
+            else{
+                addRow(nickname,key, "fr");
+            }
+        }
+    }
+
+    /**
+     * Method to add a row to a table view. Command "rc" for Recently Hunted,
+     * command "fr" for Friends
+     * @param nickname
+     * @param id
+     * @param command
+     */
+    private void addRow (String nickname, String id, String command){
+
+        // Creates a row with two TextView fields
+
+        final TableRow row = createRow(nickname, id);
+        /**
+         * Creates appropriate buttons with correct functionality for each table
+         * and adds them to the row. Then adds the row to the appropriate TableLayout
+         */
+        if (command.equals("rc")) {
+           final Button btn = new Button(this);
+            btn.setText("Add Friend");
+            btn.setId(i+k+f+1000);
+            i++;
+            btn.setVisibility(View.VISIBLE);
+            btn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    TextView text=(TextView) row.getChildAt(1);
+                    String id= text.getText().toString();
+                    TextView textNickname=(TextView) row.getChildAt(0);
+                    String nickname= textNickname.getText().toString();
+                    mDatabase.child(uid).child("friends").child(id).setValue(nickname);
+                    if(!nickNames.containsKey(id)){
+                        nickNames.put(id,nickname);
+                        addRow(nickname,id,"fr");
+                    }else{
+                        Toast.makeText(getApplicationContext(), "Already friends", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+            row.addView(btn);
+            tableRecHunted.addView(row, k);
+            k++;
+        }
+        if (command.equals("fr")){
             Button btn = new Button(this);
             btn.setText("X");
-            btn.setId(i+k);
+            btn.setId(i+k+f+1000);
+            i++;
             btn.setVisibility(View.VISIBLE);
             btn.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -249,24 +321,35 @@ public class FriendList extends AppCompatActivity {
                     String id= text.getText().toString();
                     mDatabase.child(uid).child("friends").child(id).removeValue();
                     nickNames.remove(id);
-                    tableFriendList.removeView(row);
+                    tableFriends.removeView(row);
                 }
             });
-            tv1 = new TextView(getBaseContext());
-            tv1.setText(nickname);
-            tv1.setId(i + k + 10000);
-            tv = new TextView(getBaseContext());
-            tv.setText(key);
-            tv.setId(i + k + 1000);
-            tv.setVisibility(View.GONE);
-            row.setId(k);
-            row.addView(tv1, lp);
-            row.addView(tv, lp);
             row.addView(btn);
-            tableFriendList.addView(row, rowNumber);
-            rowNumber++;
+            tableFriends.addView(row, f);
+            f++;
         }
+    }
 
+    /**
+     * Creates a row with two TextView fields
+     */
+
+    private TableRow createRow(String nickname, String id) {
+        TableRow row=new TableRow(getBaseContext());
+        row.setLayoutParams(lp);
+        tv1 = new TextView(getBaseContext());
+        tv1.setText(nickname);
+        tv1.setId(f+k +i + 1000);
+        i++;
+        tv = new TextView(getBaseContext());
+        tv.setText(id);
+        tv.setId(f+k +i+ 1000);
+        i++;
+        tv.setVisibility(View.GONE);
+        row.setId(f+k);
+        row.addView(tv1, lp);
+        row.addView(tv, lp);
+     return row;
     }
 
     /**

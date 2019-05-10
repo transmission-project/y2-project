@@ -65,6 +65,35 @@
         app:layout_constraintTop_toBottomOf="@+id/etsearch"
         tools:ignore="MissingConstraints">
 
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:background="@color/colorPrimary"
+            android:gravity="center">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="Previously Hunted"
+                android:textSize="20dp"
+                android:layout_marginLeft="5dp"/>
+
+        </LinearLayout>
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:fillViewport="true">
+
+            <TableLayout
+                android:id="@+id/tableGroupMembers2"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="5dp"
+                android:stretchColumns="1">
+
+
+            </TableLayout>
+        </ScrollView>
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="30dp"
@@ -79,7 +108,6 @@
                 android:textSize="20dp" />
 
         </LinearLayout>
-
         <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="match_parent"
             android:layout_height="150dp"
