@@ -1,4 +1,3 @@
-const localVideo = document.querySelector('#localVideo');
 showJoinGroup();
 
 let database = firebase.database();
@@ -16,14 +15,13 @@ let ICELists = {};
 
 // TODO: replace stream with track
 // init webcam
-let webcamStream;
+let LocalStream;
 navigator.mediaDevices.getUserMedia({
       audio: true,
       video: false
 }).then( (stream) => { // I have no idea how to use tracks, so I use streams even though they're depreciated
-        console.log(stream)
-        webcamStream = stream;
-        localVideo.srcObject = stream;
+        console.log(stream);
+        LocalStream = stream;
 }).catch(function(e) {
         alert("Oh no!\n" + e)
 });
@@ -68,8 +66,12 @@ async function leaveGroup() {
 
     //close rtc connections
     Object.keys(connections).forEach((uid) => {
-        closeVideoStream(uid);
-        if(connections[uid].signalingState !== 'closed') closeConnection(uid)
+        if(connections[uid].signalingState !== 'closed') { //Ignore already closed connections
+            console.log("closing connection to "+ uid);
+            connections[uid].close();
+            database.ref('/groups/' + groupID + /joined/ + uid + /closing/ + ourID ).set("");
+        }
+        removeAudioElement(uid); //remove all the users we listed to html, even if we forgot them earlier
     });
 
     groupID = null;
@@ -96,7 +98,7 @@ function createRTCConnection(uid) {
     ICELists[uid] = [];
     connection.onicecandidate = onGenerateICE;
 
-    connection.addStream(webcamStream);
+    connection.addStream(LocalStream);
 
     return connection;
 }
@@ -134,7 +136,7 @@ async function onReceiveOffer(snapshot) {
     database.ref('/groups/' + groupID + '/joined/' + uid + '/answers/' + ourID)
         .set(JSON.stringify(answer));
 
-    openVideoStream(uid);
+    addAudioElement(uid);
 }
 
 async function onReceiveAnswer(snapshot) {
@@ -145,16 +147,16 @@ async function onReceiveAnswer(snapshot) {
     console.log("Answer accepted from " + uid + ".");
     //delete answer
 
-    openVideoStream(uid);
+    addAudioElement(uid);
     //register any ice candidates we might have received up to now and had ignored
     onReceiveICE(await database.ref('/groups/' + groupID + '/joined/' + ourID + '/ice/' + uid).once('value'));
 }
 
 function onClose(snapshot){
     const uid = snapshot.key;
-    closeVideoStream(uid);
+    removeAudioElement(uid);
     connections[uid].close();
-    //connections[uid] = null; //we're supposed to do this, but it crashes things
+    //connections[uid] = null; //TODO: we're supposed to do this, but it crashes things
 }
 
 function onGenerateICE(event) {
@@ -175,7 +177,7 @@ function onReceiveICE(snapshot) {
     const uid = snapshot.key;
 
     // Check if we have a connection object with this host and if the host is registered.
-    // If we haven't done that yet, we can skip it now and pick it up later
+    // If we haven't done that yet, we can skip reading ICE for now and come back in onRecieveAnswer()
     if(!connections.hasOwnProperty(uid)) return;
     const connection = connections[uid];
 
@@ -193,26 +195,19 @@ function onReceiveICE(snapshot) {
     }
 }
 
-function closeConnection(key) {
-    console.log("closing connection to "+ key);
-    closeVideoStream(uid);
-    connections[key].close();
-    database.ref('/groups/' + groupID + /joined/ + key + /closing/ + ourID ).set("");
-}
-
-
 //UI Functions
-function openVideoStream(uid) {
+function addAudioElement(uid) {
     const remoteStream = connections[uid].getRemoteStreams()[0];
-    const display = document.createElement("video");
-    display.id = uid;
-    display.autoplay = true;
-    display.playsinline = true;
-    display.srcObject = remoteStream;
-    document.getElementById("videos").appendChild(display);
+    const listItem = document.createElement("li");
+    listItem.id = uid;
+    listItem.innerText = uid;
+    const audio = document.createElement("audio")
+    audio.srcObject = remoteStream;
+    listItem.appendChild(audio)
+    document.getElementById("connected").appendChild(listItem);
 }
 
-function closeVideoStream(uid) {
+function removeAudioElement(uid) {
     try {
         document.getElementById(uid).remove();
     } catch (e) {}
