@@ -33,7 +33,6 @@ public class InsideGroupActivity extends AppCompatActivity
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         groupsRef = database.getReference().child("groups");
-        //usersRef = database.getReference().child("users");
 
         FirebaseAuth auth = FirebaseAuth.getInstance();
         uid = auth.getCurrentUser().getUid();
@@ -51,7 +50,6 @@ public class InsideGroupActivity extends AppCompatActivity
 
         try {
             groupID = getIntent().getExtras().getString("groupID");
-            System.out.println(groupID);
         }
         catch (NullPointerException e) {
             groupID = "ERROR";
