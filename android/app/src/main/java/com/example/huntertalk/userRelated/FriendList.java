@@ -1,4 +1,4 @@
-package com.example.huntertalk;
+package com.example.huntertalk.userRelated;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -15,6 +15,7 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.huntertalk.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -49,7 +50,6 @@ public class FriendList extends AppCompatActivity {
         Button searchButton = findViewById(R.id.searchButton);
 
         mDatabase = FirebaseDatabase.getInstance().getReference("users");
-       // mDatabase.child(uid).child("friends").push();
         lp.setMargins(10, 10, 5, 10);
         /**
          * Enabling the back button

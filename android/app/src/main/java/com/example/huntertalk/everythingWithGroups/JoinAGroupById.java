@@ -1,4 +1,4 @@
-package com.example.huntertalk;
+package com.example.huntertalk.everythingWithGroups;
 
 import android.content.Intent;
 import android.support.annotation.NonNull;
@@ -17,19 +17,17 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.huntertalk.ui.firstLaunch.Home_page;
+import com.example.huntertalk.R;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.GenericTypeIndicator;
 import com.google.firebase.database.ValueEventListener;
 
-import java.util.List;
-
-public class join_create extends AppCompatActivity {
-    private DatabaseReference usersRef, groupRef, mDatabase, sDatabase;
+public class JoinAGroupById extends AppCompatActivity {
+    private DatabaseReference usersRef, groupRef, mDatabase;
     private TableLayout tableInvitations;
     private TextView tv1;
     private int rowNumber;
@@ -49,7 +47,7 @@ public class join_create extends AppCompatActivity {
 
      final  EditText groupIDInput = findViewById(R.id.etgroupid);
 
-        //create invitationlist on start
+        //create invitation list on start
         mDatabase.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -63,7 +61,7 @@ public class join_create extends AppCompatActivity {
                                 String users=user.getKey();
                                 if(users.equals(uid)){
                                     groupID=groups.getKey();
-                                    createTable(groupID);
+                                    addRow(groupID);
                                 }
                             }
                         }
@@ -102,6 +100,7 @@ public class join_create extends AppCompatActivity {
         //The user joins the group number he entered
         joinButton.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v){
+                if(!groupIDInput.getText().toString().equals("")){
                 final int content = Integer.parseInt(groupIDInput.getText().toString());
                 FirebaseDatabase database = FirebaseDatabase.getInstance();
                 groupRef = database.getReference().child("groups");
@@ -161,6 +160,9 @@ public class join_create extends AppCompatActivity {
 
                     }
                 });
+            } else {
+                    groupIDInput.setError("Please enter group ID");
+                }
             }
         });
     }
@@ -193,8 +195,8 @@ public class join_create extends AppCompatActivity {
     }
 
     //Create invitations table
-    private void createTable(final String ID){
-        rowNumber=0;
+    private void addRow(final String ID){
+            rowNumber=0;
             final TableRow row = new TableRow(getBaseContext());
             TableRow.LayoutParams lp = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT);
             lp.setMargins(10, 10, 5, 10);
@@ -218,7 +220,6 @@ public class join_create extends AppCompatActivity {
                     String id= text.getText().toString();
                     mDatabase.child(id).child("invited").child(uid).removeValue();
                     mDatabase.child(id).child("joined").child(uid).setValue(uid);
-
                     tableInvitations.removeView(row);
                 }
             });

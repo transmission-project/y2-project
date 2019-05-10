@@ -1,4 +1,4 @@
-package com.example.huntertalk;
+package com.example.huntertalk.userRelated;
 
 import android.content.Intent;
 import android.support.v7.app.ActionBar;
@@ -8,16 +8,15 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-
+import android.widget.Toast;
+import android.view.View;
 import android.view.Gravity;
 import android.view.MenuItem;
 
-import android.widget.Toast;
-
-import com.example.huntertalk.ui.login.LoginActivity;
+import com.example.huntertalk.R;
+import com.example.huntertalk.ui.firstLaunch.LoginActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -27,8 +26,6 @@ public class SettingsPage extends AppCompatActivity {
     private Boolean passwordChange= false;
     private Boolean password2Change= false;
     private DatabaseReference mDatabase;
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,14 +47,18 @@ public class SettingsPage extends AppCompatActivity {
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
-addFriends.setOnClickListener(new View.OnClickListener() {
+    addFriends.setOnClickListener(new View.OnClickListener() {
     @Override
     public void onClick(View v) {
         Intent intent = new Intent(getApplicationContext(), FriendList.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
     }
-});
+    });
+
+        /**
+         *  Conduct the required changes and update the values in the data base
+         */
         applyChanges.setOnClickListener((new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -65,6 +66,9 @@ addFriends.setOnClickListener(new View.OnClickListener() {
                 String nickname1= nickname.getText().toString().trim();
                 String confirmPassword1=confirmPassword.getText().toString().trim();
 
+                /**
+                 * Password related checks
+                 */
                 if(passwordChange==true||password2Change==true){
                     if (TextUtils.isEmpty(password1)) {
                         password.setError("Enter Password");
@@ -89,6 +93,9 @@ addFriends.setOnClickListener(new View.OnClickListener() {
                      */
                     auth.getCurrentUser().updatePassword(password1);
                 }
+                /**
+                 *  Nickname related changes
+                 */
                 if (nicknameChange){
                     if (nickname1.length() == 0) {
                         nickname.setError("Nickname can't be empty");
@@ -104,7 +111,6 @@ addFriends.setOnClickListener(new View.OnClickListener() {
                     /**
                      * Add connection to DB
                      */
-
                     mDatabase.child("users").child(uid).child("nickname").setValue(nickname1);
                 }
                 if(passwordChange==false &&password2Change==false && nicknameChange==false){
@@ -114,6 +120,10 @@ addFriends.setOnClickListener(new View.OnClickListener() {
             }
 
         }));
+
+        /**
+         *  Checks for user changes in the fields
+         */
         nickname.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -166,13 +176,18 @@ addFriends.setOnClickListener(new View.OnClickListener() {
             }
         });
 
+        /**
+         * Logout button
+         */
         logoutbutton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 logout();
             }
         });
     }
-
+    /**
+     * Logout functionality
+     */
     private void logout(){
         FirebaseAuth.getInstance().signOut();
         Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
@@ -181,6 +196,10 @@ addFriends.setOnClickListener(new View.OnClickListener() {
 
     }
 
+
+    /**
+     *  Functionality of the back button with leave confirmation if anything was changed
+     */
     boolean secondPress =false;
 
     @Override
@@ -193,7 +212,7 @@ addFriends.setOnClickListener(new View.OnClickListener() {
                     if (secondPress){
                         this.finish();}
                     else{
-                        Toast message= Toast.makeText(SettingsPage.this, "Press once again to cancel the changes",
+                        Toast message= Toast.makeText(SettingsPage.this, "Press again to cancel the changes",
                                 Toast.LENGTH_LONG);
                         message.setGravity(Gravity.TOP, 0,0);
                         message.show();

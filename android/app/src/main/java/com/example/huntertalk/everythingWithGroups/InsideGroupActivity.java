@@ -1,7 +1,8 @@
-package com.example.huntertalk;
+package com.example.huntertalk.everythingWithGroups;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
@@ -13,9 +14,16 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 
+import com.example.huntertalk.LeaveGroupPopUp;
+import com.example.huntertalk.R;
+import com.example.huntertalk.userRelated.SettingsPage;
+import com.example.huntertalk.ui.firstLaunch.Home_page;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class InsideGroupActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -33,7 +41,6 @@ public class InsideGroupActivity extends AppCompatActivity
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         groupsRef = database.getReference().child("groups");
-        //usersRef = database.getReference().child("users");
 
         FirebaseAuth auth = FirebaseAuth.getInstance();
         uid = auth.getCurrentUser().getUid();
@@ -51,7 +58,6 @@ public class InsideGroupActivity extends AppCompatActivity
 
         try {
             groupID = getIntent().getExtras().getString("groupID");
-            System.out.println(groupID);
         }
         catch (NullPointerException e) {
             groupID = "ERROR";
@@ -65,7 +71,8 @@ public class InsideGroupActivity extends AppCompatActivity
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
-            super.onBackPressed();
+
+            startActivity(new Intent(InsideGroupActivity.this, LeaveGroupPopUp.class));
         }
     }
 
@@ -115,7 +122,19 @@ public class InsideGroupActivity extends AppCompatActivity
              */
         } else if (id == R.id.nav_leave) {
             groupsRef.child(groupID).child("joined").child(uid).removeValue();
+            groupsRef.child(groupID).addListenerForSingleValueEvent((new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    if(!dataSnapshot.hasChild("joined")){
+                        groupsRef.child(groupID).child("invited").removeValue();
+                    }
+                }
 
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            }));
             Intent i =  new Intent(InsideGroupActivity.this, Home_page.class);
             this.finish();
             startActivity(i);

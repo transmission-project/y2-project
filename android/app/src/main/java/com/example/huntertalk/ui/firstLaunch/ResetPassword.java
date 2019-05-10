@@ -1,4 +1,4 @@
-package com.example.huntertalk;
+package com.example.huntertalk.ui.firstLaunch;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -15,7 +15,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.example.huntertalk.ui.login.LoginActivity;
+import com.example.huntertalk.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -36,8 +36,10 @@ public class ResetPassword extends AppCompatActivity {
         if(getSupportActionBar()!=null){
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
-
-        sendEmail = findViewById(R.id.sendEmail);
+        
+        /**
+         * Functionality on the text field for entering the email to reset password for
+         */
         enterEmail = findViewById(R.id.enterEmail);
         enterEmail.addTextChangedListener(new TextWatcher() {
             @Override
@@ -56,7 +58,12 @@ public class ResetPassword extends AppCompatActivity {
 
             }
         });
+
+        /**
+         * Functionality of send email button
+         */
         mAuth = FirebaseAuth.getInstance();
+        sendEmail = findViewById(R.id.sendEmail);
         sendEmail.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -65,6 +72,8 @@ public class ResetPassword extends AppCompatActivity {
                     enterEmail.setError("Invalid email address");
                     return;
                 }
+
+                //reset password method (defined by the Firebase)
                 mAuth.sendPasswordResetEmail(emailAddress)
                         .addOnCompleteListener(new OnCompleteListener<Void>() {
                             @Override
@@ -84,6 +93,10 @@ public class ResetPassword extends AppCompatActivity {
             }
         });
     }
+
+    /**
+     * Functionality of the back button with confirmation asking if any data was input by the user.
+     */
     boolean secondPress =false;
     @Override
     public boolean onOptionsItemSelected(MenuItem menuItem) {
