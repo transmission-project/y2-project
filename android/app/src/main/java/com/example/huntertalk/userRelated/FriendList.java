@@ -103,7 +103,6 @@ public class FriendList extends AppCompatActivity {
 
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                etSearch.setHint("Enter email");
                 return false;
             }
         });
