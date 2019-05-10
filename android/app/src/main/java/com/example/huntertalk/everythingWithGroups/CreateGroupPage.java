@@ -2,6 +2,7 @@ package com.example.huntertalk.everythingWithGroups;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.support.annotation.NonNull;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -27,7 +28,7 @@ public class CreateGroupPage extends AppCompatActivity {
 
     private Button btnCreate;
     private DatabaseReference usersRef, groupRef;
-    private TextView friend, tv, tv1;
+    private TextView friend, tick, tv1;
     private String friendName, friendId;
     private TableLayout tableRecHunted,tableFriends;
     private int k = 0;
@@ -151,27 +152,45 @@ public class CreateGroupPage extends AppCompatActivity {
             final String keyForStoringId =key;
             final TableRow row = new TableRow(getBaseContext());
             TableRow.LayoutParams lp = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT);
-            lp.setMargins(10, 10, 5, 10);
+            lp.setMargins(10, 15, 5,10);
             row.setLayoutParams(lp);
             tv1 = new TextView(getBaseContext());
             tv1.setText(nickname);
             tv1.setId(f+k + 1000);
+
+            tick = new TextView(getBaseContext());
+            tick.setText("\u2713");
+            tick.setTextColor(Color.WHITE);
+            tick.setTextSize(16);
+            tick.setId(f+k + 2000);
+
+
+            tv1.setTextColor(Color.BLACK);
+            tv1.setTextSize(16);
+
+
             row.setId(f+k);
+            row.addView(tick, lp);
             row.addView(tv1, lp);
+
             row.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     int clicked_id = v.getId();
                     friend = (TextView) findViewById(clicked_id + 1000);
+                    tick = (TextView) findViewById(clicked_id + 2000);
                     String nameRH = friend.getText().toString();
                     if (selected[clicked_id][0]== null) {
-                        friend.setTextColor(Color.GREEN);
+                        friend.setTextColor(Color.parseColor("#355e3b"));
+                        tick.setTextColor(Color.parseColor("#355e3b"));
                         selected[clicked_id][0] = nameRH;
                         selected[clicked_id][1] = keyForStoringId;
                     }
                     else {
                         friend.setTextColor(Color.BLACK);
+                        tick.setTextColor(Color.WHITE);
                         selected[clicked_id][0] = null;
+
                     }
                 }
             }
