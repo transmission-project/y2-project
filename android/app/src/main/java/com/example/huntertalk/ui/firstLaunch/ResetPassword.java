@@ -1,4 +1,4 @@
-package com.example.huntertalk;
+package com.example.huntertalk.ui.firstLaunch;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -15,12 +15,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.example.huntertalk.ui.login.LoginActivity;
+import com.example.huntertalk.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 
-public class signIn extends AppCompatActivity {
+public class ResetPassword extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private static final String TAG = "LoginActivity";
     private Button sendEmail;
@@ -74,13 +74,13 @@ public class signIn extends AppCompatActivity {
                                 }
                             }
                         });
-                Toast message= Toast.makeText(signIn.this, "Check your email. If you have an account at Hunter Talk you should have received a password reset link.",
+                Toast message= Toast.makeText(ResetPassword.this, "Check your email. If you have an account at Hunter Talk you should have received a password reset link.",
                         Toast.LENGTH_LONG);
                         message.setGravity(Gravity.TOP, 0,0);
                         message.show();
-                Intent intent = new Intent(signIn.this, LoginActivity.class);
+                Intent intent = new Intent(ResetPassword.this, LoginActivity.class);
                 startActivity(intent);
-                signIn.this.finish();
+                ResetPassword.this.finish();
             }
         });
     }
@@ -90,14 +90,14 @@ public class signIn extends AppCompatActivity {
         switch (menuItem.getItemId()) {
             case android.R.id.home:
                 if(!changed){
-                    Intent intent = new Intent(signIn.this, LoginActivity.class);
+                    Intent intent = new Intent(ResetPassword.this, LoginActivity.class);
                     startActivity(intent);
                 }else{
                 if (secondPress){
-                    Intent intent = new Intent(signIn.this, LoginActivity.class);
+                    Intent intent = new Intent(ResetPassword.this, LoginActivity.class);
                     startActivity(intent);}
                 else{
-                    Toast message= Toast.makeText(signIn.this, "Press once again to cancel the reset",
+                    Toast message= Toast.makeText(ResetPassword.this, "Press once again to cancel the reset",
                             Toast.LENGTH_LONG);
                     message.setGravity(Gravity.TOP, 0,0);
                     message.show();

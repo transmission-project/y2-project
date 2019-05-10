@@ -4,14 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".SettingsPage">
+    tools:context=".userRelated.SettingsPage">
 
     <EditText
         android:id="@+id/etchangenickname"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="136dp"
+        android:layout_marginTop="70dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
         android:ems="10"
@@ -42,7 +42,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="36dp"
+        android:layout_marginTop="32dp"
         android:layout_marginEnd="8dp"
         android:ems="10"
         android:hint="Confirm Password"
@@ -69,8 +69,8 @@
 
     <Button
         android:id="@+id/apply"
-        android:layout_width="128dp"
-        android:layout_height="63dp"
+        android:layout_width="116dp"
+        android:layout_height="62dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="56dp"
         android:layout_marginEnd="8dp"
@@ -85,16 +85,16 @@
 
     <Button
         android:id="@+id/addFriends"
-        android:layout_width="122dp"
-        android:layout_height="78dp"
+        android:layout_width="116dp"
+        android:layout_height="62dp"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
-        android:text="Button"
+        android:text="Add Friends"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/apply"
-        app:layout_constraintVertical_bias="0.349" />
+        app:layout_constraintVertical_bias="0.125" />
 </android.support.constraint.ConstraintLayout>

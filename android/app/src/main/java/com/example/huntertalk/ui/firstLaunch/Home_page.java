@@ -1,4 +1,4 @@
-package com.example.huntertalk;
+package com.example.huntertalk.ui.firstLaunch;
 
 import android.content.Intent;
 import android.support.annotation.NonNull;
@@ -16,6 +16,12 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
+import com.example.huntertalk.userRelated.FriendList;
+import com.example.huntertalk.R;
+import com.example.huntertalk.userRelated.SettingsPage;
+import com.example.huntertalk.everythingWithGroups.CreateGroupPage;
+import com.example.huntertalk.everythingWithGroups.JoinAGroupById;
 
 public class Home_page extends AppCompatActivity  {
 
@@ -53,7 +59,7 @@ public class Home_page extends AppCompatActivity  {
         bjoin = (Button) findViewById(R.id.bjoin);
         bjoin.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v){
-                Intent i=new Intent(Home_page.this,join_create.class);
+                Intent i=new Intent(Home_page.this, JoinAGroupById.class);
                 startActivity(i);
             }
         });
@@ -61,10 +67,11 @@ public class Home_page extends AppCompatActivity  {
         Button createButton = findViewById(R.id.button3);
         createButton.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v){
-                Intent i=new Intent(Home_page.this,CreateGroupPage.class);
+                Intent i=new Intent(Home_page.this, CreateGroupPage.class);
                 startActivity(i);
             }
         });
+
 
     }
     // create an action bar button
@@ -78,7 +85,12 @@ public class Home_page extends AppCompatActivity  {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.mybutton) {
-            Intent i=new Intent(Home_page.this,SettingsPage.class);
+            Intent i=new Intent(Home_page.this, SettingsPage.class);
+            startActivity(i);
+            this.finish();
+        }
+        if (id == R.id.addFriends) {
+            Intent i=new Intent(Home_page.this, FriendList.class);
             startActivity(i);
             this.finish();
         }

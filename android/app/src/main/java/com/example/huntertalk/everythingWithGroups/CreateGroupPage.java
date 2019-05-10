@@ -1,4 +1,4 @@
-package com.example.huntertalk;
+package com.example.huntertalk.everythingWithGroups;
 
 import android.content.Intent;
 import android.graphics.Color;
@@ -6,14 +6,13 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
+import com.example.huntertalk.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -49,13 +48,13 @@ public class CreateGroupPage extends AppCompatActivity {
         if(getSupportActionBar()!=null){
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
+
         groupRef = database.getReference().child("groups");
         usersRef = database.getReference().child("users");
         GroupId groupIdObject = new GroupId();
         final String groupId = Integer.toString(groupIdObject.getId());
         FirebaseAuth auth = FirebaseAuth.getInstance();
         final String uid = auth.getCurrentUser().getUid();
-
 
         btnCreate = (Button) findViewById(R.id.createButton);
         btnCreate.setOnClickListener(new View.OnClickListener(){
@@ -79,12 +78,13 @@ public class CreateGroupPage extends AppCompatActivity {
                  * Adding people to invite list
                  * Nicknames are stored at 0 ids are at 1
                  */
+
                 for(int i = 0; i < k+f; i++) {
                     if(selected[i][0] != null){
                         groupRef.child(groupId).child("invited").child(selected[i][1]).setValue(selected[i][0]);
                     }
                 }
-                Intent intent =new Intent(CreateGroupPage.this,InsideGroupActivity.class);
+                Intent intent =new Intent(CreateGroupPage.this, InsideGroupActivity.class);
                 intent.putExtra("groupID", groupId);
                 startActivity(intent);
             }
@@ -94,16 +94,16 @@ public class CreateGroupPage extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                tableRecHunted = (TableLayout) findViewById(R.id.tableGroupMembers);
+                tableRecHunted = (TableLayout) findViewById(R.id.tableGroupMembers1);
                 tableRecHunted.removeAllViews();
                 k = 0;
 
                 tableFriends = (TableLayout) findViewById(R.id.tableFriends);
                 tableFriends.removeAllViews();
                 f=0;
-/**
- * Method to output all the recently hunted and friends
- */
+            /**
+            * Method to output all the recently hunted and friends
+            */
                 for (DataSnapshot info : dataSnapshot.getChildren()) {
                     if (info.getKey().equals("recentlyHunted") ) {
                         for (DataSnapshot person : info.getChildren()) {
@@ -142,6 +142,9 @@ public class CreateGroupPage extends AppCompatActivity {
             }
     });
 }
+    /**
+     *  Create a table based on Hash Map
+     */
     private void createTable(HashMap<String, String> people, String command){
         for (String key: people.keySet()){
             String nickname= people.get(key);

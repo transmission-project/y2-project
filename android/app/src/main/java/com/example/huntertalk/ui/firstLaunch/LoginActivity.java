@@ -1,4 +1,4 @@
-package com.example.huntertalk.ui.login;
+package com.example.huntertalk.ui.firstLaunch;
 
 import android.content.Intent;
 import android.graphics.Paint;
@@ -14,10 +14,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.huntertalk.Home_page;
 import com.example.huntertalk.R;
-import com.example.huntertalk.RegistrationActivity;
-import com.example.huntertalk.signIn;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -68,6 +65,9 @@ public class LoginActivity extends AppCompatActivity {
                     return;
                 }
 
+            /**
+             *  Method that does the authentification (done by Firebase)
+             */
                 mAuth.signInWithEmailAndPassword(email, password)
                         .addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
                             @Override
@@ -118,7 +118,7 @@ public class LoginActivity extends AppCompatActivity {
         startActivity(intent);
     }
     private void moveToSignIn(){
-        Intent intent = new Intent(LoginActivity.this, signIn.class);
+        Intent intent = new Intent(LoginActivity.this, ResetPassword.class);
         startActivity(intent);
     }
 }

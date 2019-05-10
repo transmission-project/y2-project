@@ -1,29 +1,28 @@
-package com.example.huntertalk;
+package com.example.huntertalk.everythingWithGroups;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.util.Log;
 import android.view.MenuItem;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
-
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 
+import com.example.huntertalk.R;
+import com.example.huntertalk.userRelated.SettingsPage;
+import com.example.huntertalk.ui.firstLaunch.Home_page;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-
 
 public class InsideGroupActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -116,14 +115,15 @@ public class InsideGroupActivity extends AppCompatActivity
             Intent i =  new Intent(InsideGroupActivity.this, SettingsPage.class);
             startActivity(i);
 
-        //removes user from group
+            /**
+             * Remove current user from the group (on pressing "Leave Group")
+             */
         } else if (id == R.id.nav_leave) {
             groupsRef.child(groupID).child("joined").child(uid).removeValue();
-
-            groupsRef.child(groupID).addListenerForSingleValueEvent(new ValueEventListener() {
+            groupsRef.child(groupID).addListenerForSingleValueEvent((new ValueEventListener() {
                 @Override
-                public void onDataChange(DataSnapshot snapshot) {
-                    if (!snapshot.hasChild("joined")) {
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    if(!dataSnapshot.hasChild("joined")){
                         groupsRef.child(groupID).child("invited").removeValue();
                     }
                 }
@@ -132,9 +132,9 @@ public class InsideGroupActivity extends AppCompatActivity
                 public void onCancelled(@NonNull DatabaseError databaseError) {
 
                 }
-            });
-
+            }));
             Intent i =  new Intent(InsideGroupActivity.this, Home_page.class);
+            this.finish();
             startActivity(i);
         }
         DrawerLayout drawer = findViewById(R.id.drawer_layout);

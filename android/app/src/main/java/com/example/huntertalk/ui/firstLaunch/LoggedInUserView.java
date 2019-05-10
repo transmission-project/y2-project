@@ -1,4 +1,4 @@
-package com.example.huntertalk.ui.login;
+package com.example.huntertalk.ui.firstLaunch;
 
 /**
  * Class exposing authenticated user details to the UI.
