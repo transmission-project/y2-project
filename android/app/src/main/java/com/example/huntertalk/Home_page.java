@@ -19,7 +19,6 @@ import com.google.firebase.database.ValueEventListener;
 
 public class Home_page extends AppCompatActivity  {
 
-    private Button bjoin;
     private FirebaseAuth auth = FirebaseAuth.getInstance();
     final private String uid = auth.getCurrentUser().getUid();
     private DatabaseReference usersRef;
@@ -50,7 +49,7 @@ public class Home_page extends AppCompatActivity  {
             }
         });
 
-        bjoin = (Button) findViewById(R.id.bjoin);
+        Button bjoin = (Button) findViewById(R.id.buttonJoin);
         bjoin.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v){
                 Intent i=new Intent(Home_page.this,join_create.class);
@@ -58,7 +57,7 @@ public class Home_page extends AppCompatActivity  {
             }
         });
 
-        Button createButton = findViewById(R.id.button3);
+        Button createButton = findViewById(R.id.buttonCreate);
         createButton.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v){
                 Intent i=new Intent(Home_page.this,CreateGroupPage.class);
@@ -66,6 +65,14 @@ public class Home_page extends AppCompatActivity  {
             }
         });
 
+        Button buttonPopUp = (Button) findViewById(R.id.buttonPopUp);
+        buttonPopUp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(Home_page.this, LeaveGroupPopUp.class));
+
+            }
+        });
     }
     // create an action bar button
     @Override

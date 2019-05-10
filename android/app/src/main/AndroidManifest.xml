@@ -50,6 +50,9 @@
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
+        <activity android:name=".LeaveGroupPopUp"
+            android:theme="@style/AppTheme.CustomPopupTheme"
+            ></activity>
     </application>
 
 </manifest>

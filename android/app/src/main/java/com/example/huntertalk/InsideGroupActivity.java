@@ -71,7 +71,8 @@ public class InsideGroupActivity extends AppCompatActivity
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
-            super.onBackPressed();
+
+            startActivity(new Intent(InsideGroupActivity.this, LeaveGroupPopUp.class));
         }
     }
 
