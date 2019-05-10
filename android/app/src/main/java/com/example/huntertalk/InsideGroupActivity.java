@@ -115,6 +115,7 @@ public class InsideGroupActivity extends AppCompatActivity
              */
         } else if (id == R.id.nav_leave) {
             groupsRef.child(groupID).child("joined").child(uid).removeValue();
+
             Intent i =  new Intent(InsideGroupActivity.this, Home_page.class);
             this.finish();
             startActivity(i);

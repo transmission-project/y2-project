@@ -30,14 +30,14 @@ public class GroupOverviewFragment extends Fragment implements NavigationView.On
     private FirebaseAuth mAuth;
     private TextView tv;
     private TableLayout tb;
-    private HashMap <String, String> membersInTheGroup=new HashMap<String, String>();
+    private HashMap <String, String> membersInTheGroup;
     View myView;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         myView = inflater.inflate(R.layout.group_overview_layout, container, false);
-
+        membersInTheGroup=new HashMap<String, String>();
         /**
          *   Sets the group id as the nameof the group for current user
          */
