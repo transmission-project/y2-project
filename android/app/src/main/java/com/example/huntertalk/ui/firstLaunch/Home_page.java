@@ -8,6 +8,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -59,7 +60,7 @@ public class Home_page extends AppCompatActivity  {
         /**
          * Functionality on button press of button join
          */
-        Button bjoin = (Button) findViewById(R.id.buttonJoin);
+        LinearLayout bjoin = (LinearLayout) findViewById(R.id.buttonJoin);
         bjoin.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v){
                 Intent i=new Intent(Home_page.this, JoinAGroupById.class);
@@ -70,7 +71,7 @@ public class Home_page extends AppCompatActivity  {
         /**
          * Functionality on button press of create button
         */
-        Button createButton = findViewById(R.id.buttonCreate);
+        LinearLayout createButton = findViewById(R.id.buttonCreate);
         createButton.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v){
                 Intent i=new Intent(Home_page.this, CreateGroupPage.class);
