@@ -31,18 +31,14 @@ public class WebTestActivity extends AppCompatActivity {
 
     private void startVoiceWebView() {
 
-        //Check for record audio permission and ask for it
+        //Check for audio permissions required for webRTC and ask for them
         if(ContextCompat.checkSelfPermission(WebTestActivity.this, Manifest.permission.RECORD_AUDIO)
                 != PackageManager.PERMISSION_GRANTED) {
-
             ActivityCompat.requestPermissions(WebTestActivity.this,
                     new String[]{Manifest.permission.RECORD_AUDIO}, MICROPHONE_REQUEST);
         }
-
-        //Check for record audio permission and ask for it
         if(ContextCompat.checkSelfPermission(WebTestActivity.this, Manifest.permission.MODIFY_AUDIO_SETTINGS)
                 != PackageManager.PERMISSION_GRANTED) {
-
             ActivityCompat.requestPermissions(WebTestActivity.this,
                     new String[]{Manifest.permission.MODIFY_AUDIO_SETTINGS}, MICROPHONE_REQUEST);
         }
@@ -56,28 +52,27 @@ public class WebTestActivity extends AppCompatActivity {
 
         WebView.setWebContentsDebuggingEnabled(true); //TODO: disable this for production
 
-        voiceWebView.setWebChromeClient(new WebChromeClient() {
+        voiceWebView.setWebChromeClient(
+            new WebChromeClient() {
+                @Override // Pass JS console messages to Logcat
+                public boolean onConsoleMessage(ConsoleMessage m) {
+                    Log.d("getUserMedia, WebView", m.message() + " -- From line "
+                            + m.lineNumber() + " of "
+                            + m.sourceId());
 
-            @Override
-            public boolean onConsoleMessage(ConsoleMessage m) {
-                Log.d("getUserMedia, WebView", m.message() + " -- From line "
-                        + m.lineNumber() + " of "
-                        + m.sourceId());
-
-                return true;
+                    return true;
+                }
+                @Override //Accept webRTC media request
+                public void onPermissionRequest(final PermissionRequest request) {
+                    WebTestActivity.this.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            request.grant(request.getResources());
+                        }
+                    });
+                }
             }
-
-            @Override
-            public void onPermissionRequest(final PermissionRequest request) {
-                WebTestActivity.this.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        request.grant(request.getResources());
-                    }
-                });
-            }
-
-        });
+        );
 
         voiceWebView.loadUrl("file:///android_asset/index.html");
         // TODO: JS interface for choosing group to connect to, push to talk, stream activity
