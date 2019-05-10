@@ -28,7 +28,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.List;
 
-public class join_create extends AppCompatActivity {
+public class joinAGroupById extends AppCompatActivity {
     private DatabaseReference usersRef, groupRef, mDatabase, sDatabase;
     private TableLayout tableInvitations;
     private TextView tv1;
@@ -63,7 +63,8 @@ public class join_create extends AppCompatActivity {
                                 String users=user.getKey();
                                 if(users.equals(uid)){
                                     groupID=groups.getKey();
-                                    createTable(groupID);
+                                    String nickname=user.getValue().toString();
+                                    createTable(groupID,nickname);
                                 }
                             }
                         }
@@ -140,7 +141,7 @@ public class join_create extends AppCompatActivity {
                                     }
                                 }
 
-                                Intent i = new Intent(JoinAGroupById.this, InsideGroupActivity.class);
+                                Intent i = new Intent(joinAGroupById.this, InsideGroupActivity.class);
                                 i.putExtra("groupID", groupIDInput.getText().toString());
                                 startActivity(i);
                                 break;
@@ -167,15 +168,15 @@ public class join_create extends AppCompatActivity {
             case android.R.id.home:
 
                 if(!changed){
-                    Intent intent = new Intent(JoinAGroupById.this, Home_page.class);
+                    Intent intent = new Intent(joinAGroupById.this, Home_page.class);
                     startActivity(intent);
                 }else {
                     if (secondPress) {
-                        Intent intent = new Intent(JoinAGroupById.this, Home_page.class);
+                        Intent intent = new Intent(joinAGroupById.this, Home_page.class);
                         startActivity(intent);
                         this.finish();
                     } else {
-                        Toast message = Toast.makeText(JoinAGroupById.this, "Press once again to cancel joining a group",
+                        Toast message = Toast.makeText(joinAGroupById.this, "Press once again to cancel joining a group",
                                 Toast.LENGTH_LONG);
                         message.setGravity(Gravity.TOP, 0, 0);
                         message.show();
@@ -188,8 +189,8 @@ public class join_create extends AppCompatActivity {
     }
 
     //Create invitations table
-    private void createTable(final String ID){
-        rowNumber=0;
+    private void createTable(final String ID, final String nickname){
+            rowNumber=0;
             final TableRow row = new TableRow(getBaseContext());
             TableRow.LayoutParams lp = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT);
             lp.setMargins(10, 10, 5, 10);
@@ -212,8 +213,10 @@ public class join_create extends AppCompatActivity {
                     TextView text=(TextView) row.getChildAt(1);
                     String id= text.getText().toString();
                     mDatabase.child(id).child("invited").child(uid).removeValue();
-                    mDatabase.child(id).child("joined").child(uid).setValue(uid);
-
+                    mDatabase.child(id).child("joined").child(uid).setValue(nickname);
+                    Intent intent = new Intent(joinAGroupById.this, InsideGroupActivity.class);
+                    intent.putExtra("groupID", id);
+                    startActivity(intent);
                     tableInvitations.removeView(row);
                 }
             });
@@ -229,7 +232,7 @@ public class join_create extends AppCompatActivity {
             });
 
             tv1 = new TextView(getBaseContext());
-            tv1.setText(ID);
+            tv1.setText("Group " + ID);
             tv1.setId(i + k + 10000);
             row.setId(k);
             row.addView(btn3);

@@ -20,7 +20,7 @@ public class Home_page extends AppCompatActivity  {
         bjoin = (Button) findViewById(R.id.bjoin);
         bjoin.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v){
-                Intent i=new Intent(Home_page.this, JoinAGroupById.class);
+                Intent i=new Intent(Home_page.this, joinAGroupById.class);
                 startActivity(i);
             }
         });
