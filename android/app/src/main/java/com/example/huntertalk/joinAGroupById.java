@@ -117,9 +117,9 @@ public class join_create extends AppCompatActivity {
                             int value = Integer.parseInt(ds.getKey());
                             if(content==value){
                                 final DataSnapshot ds1=ds;
-                    /**
-                    * Gets all joined people from the group
-                    */
+                                /**
+                                 * Gets acurrent user id and nickname and adds to the list of joined
+                                 */
                                 usersRef.child(uid).child("nickname").addListenerForSingleValueEvent(new ValueEventListener() {
                                     @Override
                                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -132,6 +132,11 @@ public class join_create extends AppCompatActivity {
                                     }
                                 });
 
+                /**
+                * Remove previous "recently Hunted and get all joined people from the group
+                * as new recently hunted
+                */
+                                usersRef.child(uid).child("recentlyHunted").removeValue();
                                 for (DataSnapshot ch: ds.child("joined").getChildren()) {
                                     String id= ch.getKey();
                                     String rcNickname= ch.getValue().toString();
