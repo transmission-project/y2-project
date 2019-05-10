@@ -1,4 +1,4 @@
-package com.example.huntertalk;
+package com.example.huntertalk.userRelated;
 
 import android.content.Intent;
 import android.support.v7.app.ActionBar;
@@ -17,7 +17,8 @@ import android.view.MenuItem;
 
 import android.widget.Toast;
 
-import com.example.huntertalk.ui.login.LoginActivity;
+import com.example.huntertalk.R;
+import com.example.huntertalk.ui.firstLaunch.LoginActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;

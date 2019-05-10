@@ -11,27 +11,27 @@
         android:theme="@style/AppTheme">
 
         <activity
-            android:name=".FriendList"
+            android:name=".userRelated.FriendList"
             android:label="@string/friendList"
-            android:parentActivityName=".Home_page"></activity>
-        <activity android:name=".SettingsPage" />
+            android:parentActivityName=".ui.firstLaunch.Home_page"></activity>
+        <activity android:name=".userRelated.SettingsPage" />
         <activity
-            android:name=".ResetPassword"
+            android:name=".ui.firstLaunch.ResetPassword"
             android:label="@string/title_activity_sign_in"
-            android:parentActivityName=".ui.login.LoginActivity" />
+            android:parentActivityName=".ui.firstLaunch.LoginActivity" />
         <activity
-            android:name=".CreateGroupPage"
+            android:name=".everythingWithGroups.CreateGroupPage"
             android:label="@string/title_create_group"
-            android:parentActivityName=".Home_page" />
+            android:parentActivityName=".ui.firstLaunch.Home_page" />
         <activity
-            android:name=".InsideGroupActivity"
+            android:name=".everythingWithGroups.InsideGroupActivity"
             android:label="@string/title_activity_inside_group"
-            android:parentActivityName=".ui.login.LoginActivity"
+            android:parentActivityName=".ui.firstLaunch.LoginActivity"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".JoinAGroupById"/>
-        <activity android:name=".Home_page" />
+        <activity android:name=".everythingWithGroups.JoinAGroupById"/>
+        <activity android:name=".ui.firstLaunch.Home_page" />
         <activity
-            android:name=".ui.login.LoginActivity"
+            android:name=".ui.firstLaunch.LoginActivity"
             android:label="@string/title_activity_login">
              <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -39,9 +39,9 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".RegistrationActivity"
+            android:name=".ui.firstLaunch.RegistrationActivity"
             android:label="@string/title_activity_register"
-            android:parentActivityName=".ui.login.LoginActivity">
+            android:parentActivityName=".ui.firstLaunch.LoginActivity">
             <intent-filter>
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>

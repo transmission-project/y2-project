@@ -1,4 +1,4 @@
-package com.example.huntertalk;
+package com.example.huntertalk.everythingWithGroups;
 
 import android.content.Intent;
 import android.graphics.Color;
@@ -12,6 +12,7 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
+import com.example.huntertalk.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -83,7 +84,7 @@ public class CreateGroupPage extends AppCompatActivity {
                         groupRef.child(groupId).child("invited").child(selected[i][1]).setValue(selected[i][0]);
                     }
                 }
-                Intent intent =new Intent(CreateGroupPage.this,InsideGroupActivity.class);
+                Intent intent =new Intent(CreateGroupPage.this, InsideGroupActivity.class);
                 intent.putExtra("groupID", groupId);
                 startActivity(intent);
             }
