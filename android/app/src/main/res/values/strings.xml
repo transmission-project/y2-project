@@ -37,4 +37,5 @@
     <string name="welcome_user">Welcome %1$s !</string>
     <string name="create_group">Create group</string>
     <string name="join_group">Join group</string>
+    <string name="leave_group_confirmaation">Are you sure you want to leave the group?</string>
 </resources>

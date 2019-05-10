@@ -193,7 +193,7 @@ addFriends.setOnClickListener(new View.OnClickListener() {
                     if (secondPress){
                         this.finish();}
                     else{
-                        Toast message= Toast.makeText(SettingsPage.this, "Press once again to cancel the changes",
+                        Toast message= Toast.makeText(SettingsPage.this, "Press again to cancel the changes",
                                 Toast.LENGTH_LONG);
                         message.setGravity(Gravity.TOP, 0,0);
                         message.show();
