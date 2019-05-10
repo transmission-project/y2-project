@@ -34,4 +34,7 @@
     <string name="title_show_group_members">Group members</string>
     <string name="welcome_create_group_page">Welcome! Create your group here: </string>
     <string name="add_button">Add</string>
+    <string name="welcome_user">Welcome %1$s !</string>
+    <string name="create_group">Create group</string>
+    <string name="join_group">Join group</string>
 </resources>

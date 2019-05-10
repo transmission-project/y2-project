@@ -16,9 +16,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
-import android.widget.TableLayout;
-import android.widget.TableRow;
-import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -44,7 +41,6 @@ public class InsideGroupActivity extends AppCompatActivity
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         groupsRef = database.getReference().child("groups");
-        //usersRef = database.getReference().child("users");
 
         FirebaseAuth auth = FirebaseAuth.getInstance();
         uid = auth.getCurrentUser().getUid();
@@ -62,7 +58,6 @@ public class InsideGroupActivity extends AppCompatActivity
 
         try {
             groupID = getIntent().getExtras().getString("groupID");
-            System.out.println(groupID);
         }
         catch (NullPointerException e) {
             groupID = "ERROR";

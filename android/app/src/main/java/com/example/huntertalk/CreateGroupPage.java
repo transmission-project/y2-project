@@ -57,8 +57,6 @@ public class CreateGroupPage extends AppCompatActivity {
         final String uid = auth.getCurrentUser().getUid();
 
 
-
-
         btnCreate = (Button) findViewById(R.id.createButton);
         btnCreate.setOnClickListener(new View.OnClickListener(){
 
