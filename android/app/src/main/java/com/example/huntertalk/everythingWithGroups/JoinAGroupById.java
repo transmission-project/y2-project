@@ -34,8 +34,8 @@ public class JoinAGroupById extends AppCompatActivity {
     private int rowNumber;
     private int i = 150;
     private int k;
-    Boolean changed=false;
-    private final FirebaseAuth auth =FirebaseAuth.getInstance();
+    Boolean changed = false;
+    private final FirebaseAuth auth = FirebaseAuth.getInstance();
     final String uid = auth.getCurrentUser().getUid();
     String groupID;
 
@@ -43,26 +43,26 @@ public class JoinAGroupById extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_join_create);
-        Button joinButton= findViewById(R.id.btjoin);
+        Button joinButton = findViewById(R.id.btjoin);
         mDatabase = FirebaseDatabase.getInstance().getReference("groups");
-        final  EditText groupIDInput = findViewById(R.id.etgroupid);
+        final EditText groupIDInput = findViewById(R.id.etgroupid);
 
         //create invitationlist on start
         mDatabase.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                tableInvitations= (TableLayout) findViewById(R.id.tableInvitations);
+                tableInvitations = (TableLayout) findViewById(R.id.tableInvitations);
                 tableInvitations.removeAllViews();
                 for (DataSnapshot groups : dataSnapshot.getChildren()) {
                     for (DataSnapshot subgroups : groups.getChildren()) {
-                        String subgroup=subgroups.getKey();
-                        if(subgroup.equals("invited")){
+                        String subgroup = subgroups.getKey();
+                        if (subgroup.equals("invited")) {
                             for (DataSnapshot user : subgroups.getChildren()) {
-                                String users=user.getKey();
-                                if(users.equals(uid)){
-                                    groupID=groups.getKey();
-                                    String nickname=user.getValue().toString();
-                                    createTable(groupID,nickname);
+                                String users = user.getKey();
+                                if (users.equals(uid)) {
+                                    groupID = groups.getKey();
+                                    String nickname = user.getValue().toString();
+                                    createTable(groupID, nickname);
                                 }
                             }
                         }
@@ -84,8 +84,8 @@ public class JoinAGroupById extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if(s.length() != 0)
-                    changed=true;
+                if (s.length() != 0)
+                    changed = true;
             }
 
             @Override
@@ -95,94 +95,94 @@ public class JoinAGroupById extends AppCompatActivity {
         });
         ActionBar actionBar = getSupportActionBar();
         actionBar.setTitle("Join Group");
-        if(getSupportActionBar()!=null){
+        if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
         //The user joins the group number he entered
-        joinButton.setOnClickListener(new View.OnClickListener(){
-            public void onClick(View v){
+        joinButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
 
-                if(!groupIDInput.getText().toString().equals("")){
-                final int content = Integer.parseInt(groupIDInput.getText().toString());
-                FirebaseDatabase database = FirebaseDatabase.getInstance();
-                groupRef = database.getReference().child("groups");
-                usersRef = database.getReference().child("users");
-                final String uid= FirebaseAuth.getInstance().getCurrentUser().getUid();
+                if (!groupIDInput.getText().toString().equals("")) {
+                    final int content = Integer.parseInt(groupIDInput.getText().toString());
+                    FirebaseDatabase database = FirebaseDatabase.getInstance();
+                    groupRef = database.getReference().child("groups");
+                    usersRef = database.getReference().child("users");
+                    final String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
-                groupRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                    groupRef.addListenerForSingleValueEvent(new ValueEventListener() {
 
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        long dscount=dataSnapshot.getChildrenCount();
-                        for(DataSnapshot ds: dataSnapshot.getChildren()){
-                            int value = Integer.parseInt(ds.getKey());
-                            if(content==value){
-                                final DataSnapshot ds1=ds;
-                                /**
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            long dscount = dataSnapshot.getChildrenCount();
+                            for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                                int value = Integer.parseInt(ds.getKey());
+                                if (content == value) {
+                                    final DataSnapshot ds1 = ds;
+                                    /**
+                                     * Gets acurrent user id and nickname and adds to the list of joined
+                                     * Gets all joined people from the group
+                                     */
+                                    usersRef.child(uid).child("nickname").addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                            String nickname = dataSnapshot.getValue().toString();
+                                            groupRef.child(ds1.getKey()).child("joined").child(uid).setValue(nickname);
+                                            groupRef.child(ds1.getKey()).child("invited").child(uid).removeValue();
+                                        }
 
-                                 * Gets acurrent user id and nickname and adds to the list of joined
-                                 * Gets all joined people from the group
-                                 */
-                                usersRef.child(uid).child("nickname").addListenerForSingleValueEvent(new ValueEventListener() {
-                                    @Override
-                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                        String nickname = dataSnapshot.getValue().toString();
-                                        groupRef.child(ds1.getKey()).child("joined").child(uid).setValue(nickname);
-                                        groupRef.child(ds1.getKey()).child("invited").child(uid).removeValue();
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError databaseError) {
+                                        }
+                                    });
+
+                                    /**
+                                     * Remove previous "recently Hunted and get all joined people from the group
+                                     * as new recently hunted
+                                     */
+                                    usersRef.child(uid).child("recentlyHunted").removeValue();
+                                    for (DataSnapshot ch : ds.child("joined").getChildren()) {
+                                        String id = ch.getKey();
+                                        String rcNickname = ch.getValue().toString();
+                                        if (!id.equals(uid)) {
+                                            usersRef.child(uid).child("recentlyHunted").child(id).setValue(rcNickname);
+                                        }
                                     }
 
-                                    @Override
-                                    public void onCancelled(@NonNull DatabaseError databaseError) {
-                                    }
-                                });
-
-                /**
-                * Remove previous "recently Hunted and get all joined people from the group
-                * as new recently hunted
-                */
-                                usersRef.child(uid).child("recentlyHunted").removeValue();
-                                for (DataSnapshot ch: ds.child("joined").getChildren()) {
-                                    String id= ch.getKey();
-                                    String rcNickname= ch.getValue().toString();
-                                    if (!id.equals(uid)){
-                                    usersRef.child(uid).child("recentlyHunted").child(id).setValue(rcNickname);
-                                    }
+                                    Intent i = new Intent(JoinAGroupById.this, InsideGroupActivity.class);
+                                    i.putExtra("groupID", groupIDInput.getText().toString());
+                                    startActivity(i);
+                                    break;
+                                } else if (dscount == 1) {
+                                    Toast.makeText(getApplicationContext(), "Group not found", Toast.LENGTH_SHORT).show();
                                 }
-
-                                Intent i = new Intent(JoinAGroupById.this, InsideGroupActivity.class);
-                                i.putExtra("groupID", groupIDInput.getText().toString());
-                                startActivity(i);
-                                break;
+                                dscount--;
                             }
-                            else if(dscount==1) {
-                                Toast.makeText(getApplicationContext(),"Group not found",Toast.LENGTH_SHORT).show();
-                            }
-                            dscount--;
                         }
-                    }
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
 
-                    }
-                });
-                  
-            } else {
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
+
+                } else {
                     groupIDInput.setError("Please enter group ID");
                 }
             }
         });
     }
 
-    boolean secondPress =false;
+    boolean secondPress = false;
+
     @Override
     public boolean onOptionsItemSelected(MenuItem menuItem) {
         switch (menuItem.getItemId()) {
             case android.R.id.home:
 
-                if(!changed){
+                if (!changed) {
                     Intent intent = new Intent(JoinAGroupById.this, Home_page.class);
                     startActivity(intent);
-                }else {
+                } else {
                     if (secondPress) {
                         Intent intent = new Intent(JoinAGroupById.this, Home_page.class);
                         startActivity(intent);
@@ -201,29 +201,29 @@ public class JoinAGroupById extends AppCompatActivity {
     }
 
     //Create invitations table
-    private void createTable(final String ID, final String nickname){
-        rowNumber=0;
+    private void createTable(final String ID, final String nickname) {
+        rowNumber = 0;
         final TableRow row = new TableRow(getBaseContext());
         TableRow.LayoutParams lp = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT);
         lp.setMargins(10, 10, 5, 10);
         row.setLayoutParams(lp);
         Button btn1 = new Button(this);
         btn1.setText("Accept");
-        btn1.setId(i+k+100);
+        btn1.setId(i + k + 100);
         btn1.setVisibility(View.VISIBLE);
         Button btn2 = new Button(this);
         btn2.setText("Decline");
-        btn2.setId(i+k);
+        btn2.setId(i + k);
         btn2.setVisibility(View.VISIBLE);
         Button btn3 = new Button(this);
         btn3.setText("Invisible");
-        btn3.setId(i+k+1000);
+        btn3.setId(i + k + 1000);
         btn3.setVisibility(View.GONE);
         btn1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                TextView text=(TextView) row.getChildAt(1);
-                String id= text.getText().toString();
+                TextView text = (TextView) row.getChildAt(1);
+                String id = text.getText().toString();
                 mDatabase.child(id).child("invited").child(uid).removeValue();
                 mDatabase.child(id).child("joined").child(uid).setValue(nickname);
                 Intent intent = new Intent(JoinAGroupById.this, InsideGroupActivity.class);
@@ -236,8 +236,8 @@ public class JoinAGroupById extends AppCompatActivity {
         btn2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                TextView text=(TextView) row.getChildAt(1);
-                String id= text.getText().toString();
+                TextView text = (TextView) row.getChildAt(1);
+                String id = text.getText().toString();
                 mDatabase.child(id).child("invited").child(uid).removeValue();
                 tableInvitations.removeView(row);
             }
