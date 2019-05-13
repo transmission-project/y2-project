@@ -73,12 +73,11 @@ public class LeaveGroupPopUp extends Activity {
                     }
                 });
 
+                //set finish to finish if user choose to leave group so that inside group activity finishes
                 finish = "finish";
 
                 Intent intent = new Intent(LeaveGroupPopUp.this, InsideGroupActivity.class);
                 intent.putExtra("finish", finish);
-                System.out.println("HEJSAN" + finish);
-
                 LeaveGroupPopUp.this.finish();
                 Intent i =  new Intent(LeaveGroupPopUp.this, Home_page.class);
                 startActivity(i);

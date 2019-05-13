@@ -80,9 +80,9 @@ public class InsideGroupActivity extends AppCompatActivity
         }
     }
 
+    //When activity restarts after pop up, check intent and finish or do nothing
     @Override
     protected void onRestart() {
-
         try {
             finish = getIntent().getExtras().getString("groupID");
         }
@@ -90,13 +90,10 @@ public class InsideGroupActivity extends AppCompatActivity
             finish = "ERROR";
         }
 
-
+        //If finish does not give null pointer exception finish activity
         if (!finish.equals("ERROR")){
             this.finish();
         }
-
-        System.out.println("HEJ" + finish);
-
         super.onRestart();
     }
 
