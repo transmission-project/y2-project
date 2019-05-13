@@ -60,7 +60,7 @@ public class FriendList extends AppCompatActivity {
 
 
         /**
-         *  Create a friend list when launch
+         *  Create a friend list on launch
          */
        mDatabase.child(uid).child("friends").addValueEventListener(new ValueEventListener() {
             @Override
@@ -78,6 +78,10 @@ public class FriendList extends AppCompatActivity {
             public void onCancelled(@NonNull DatabaseError databaseError) {
             }
         });
+
+        /**
+         *  Create a Recently Hunted list on launch
+         */
         mDatabase.child(uid).child("recentlyHunted").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -179,6 +183,7 @@ public class FriendList extends AppCompatActivity {
 
                             /**
                              * Add friends to the list with the nickname.
+                             * Also add current user to the list "friend of" of the future friend
                              */
                                 mDatabase.child(futureFriend).child("nickname").addListenerForSingleValueEvent(new ValueEventListener() {
                                     @Override
