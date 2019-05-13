@@ -83,6 +83,7 @@ public class FriendList extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 tableRecHunted = (TableLayout) findViewById(R.id.tableGroupMembers2);
                 tableRecHunted.removeAllViews();
+                k=0;
                 /**
                  * Method to output all the recently hunted and friends
                  */
@@ -334,13 +335,9 @@ public class FriendList extends AppCompatActivity {
 
         TableRow row=new TableRow(getBaseContext());
 
-
         TableRow.LayoutParams lp = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT);
 
         lp.setMargins(10, 10, 5, 10);
-
-
-
 
         row.setLayoutParams(lp);
         row.setGravity(Gravity.CENTER_VERTICAL);
@@ -369,13 +366,19 @@ public class FriendList extends AppCompatActivity {
      * @return
      */
     @Override
-        public boolean onOptionsItemSelected (MenuItem menuItem){
-            switch (menuItem.getItemId()) {
-                case android.R.id.home:
-                    FriendList.this.finish();
-                    return true;
-            }
-            return (super.onOptionsItemSelected(menuItem));
+    public boolean onOptionsItemSelected (MenuItem menuItem){
+        switch (menuItem.getItemId()) {
+            case android.R.id.home:
+                FriendList.this.finish();
+                return true;
         }
+        return (super.onOptionsItemSelected(menuItem));
+    }
+
+    @Override
+    public void onBackPressed() {
+        this.finish();
+        super.onBackPressed();
+    }
 }
 

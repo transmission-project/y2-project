@@ -31,6 +31,7 @@ public class InsideGroupActivity extends AppCompatActivity
     private DatabaseReference groupsRef;
     private String groupID;
     private String uid;
+    private String finish;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,7 +75,29 @@ public class InsideGroupActivity extends AppCompatActivity
             i.putExtra("groupID", groupID);
             i.putExtra("uid",uid);
             startActivity(i);
+
+
         }
+    }
+
+    @Override
+    protected void onRestart() {
+
+        try {
+            finish = getIntent().getExtras().getString("groupID");
+        }
+        catch (NullPointerException e) {
+            finish = "ERROR";
+        }
+
+
+        if (!finish.equals("ERROR")){
+            this.finish();
+        }
+
+        System.out.println("HEJ" + finish);
+
+        super.onRestart();
     }
 
     @Override

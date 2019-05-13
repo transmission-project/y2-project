@@ -150,6 +150,7 @@ public class JoinAGroupById extends AppCompatActivity {
 
                                     Intent i = new Intent(JoinAGroupById.this, InsideGroupActivity.class);
                                     i.putExtra("groupID", groupIDInput.getText().toString());
+                                    JoinAGroupById.this.finish();
                                     startActivity(i);
                                     break;
                                 } else if (dscount == 1) {
@@ -168,6 +169,7 @@ public class JoinAGroupById extends AppCompatActivity {
                 } else {
                     groupIDInput.setError("Please enter group ID");
                 }
+
             }
         });
     }

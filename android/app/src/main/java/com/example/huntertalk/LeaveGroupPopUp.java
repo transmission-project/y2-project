@@ -7,6 +7,8 @@ import android.support.annotation.NonNull;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.ImageButton;
+
+import com.example.huntertalk.everythingWithGroups.InsideGroupActivity;
 import com.example.huntertalk.ui.firstLaunch.Home_page;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -19,6 +21,7 @@ public class LeaveGroupPopUp extends Activity {
 
     String groupID;
     String uid;
+    String finish;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,6 +73,12 @@ public class LeaveGroupPopUp extends Activity {
                     }
                 });
 
+                finish = "finish";
+
+                Intent intent = new Intent(LeaveGroupPopUp.this, InsideGroupActivity.class);
+                intent.putExtra("finish", finish);
+                System.out.println("HEJSAN" + finish);
+
                 LeaveGroupPopUp.this.finish();
                 Intent i =  new Intent(LeaveGroupPopUp.this, Home_page.class);
                 startActivity(i);
@@ -84,5 +93,11 @@ public class LeaveGroupPopUp extends Activity {
                 LeaveGroupPopUp.this.finish();
             }
         });
+    }
+
+    @Override
+    protected void onDestroy() {
+
+        super.onDestroy();
     }
 }
