@@ -73,14 +73,6 @@ public class Home_page extends AppCompatActivity  {
             }
         });
 
-        Button buttonPopUp = (Button) findViewById(R.id.buttonPopUp);
-        buttonPopUp.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(Home_page.this, LeaveGroupPopUp.class));
-            
-            }
-        });
     }
     // create an action bar button
     @Override
