@@ -44,4 +44,7 @@
     <string name="leave_group_confirmaation">Are you sure you want to leave the group?</string>
     <string name="title_activity_maps">Map </string>
     <string name="google_map_api_key">AIzaSyDali61cQ9d3x3--oY2_LHlteaLtypuORI</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

@@ -109,6 +109,9 @@ public class InsideGroupActivity extends AppCompatActivity
 
         } else if (id == R.id.nav_map) {
 
+            fragmentManager.beginTransaction().replace(R.id.content_frame, new MapFragment()).commit();
+
+
         } else if (id == R.id.nav_chat) {
 
         } else if (id == R.id.nav_invite) {
