@@ -43,5 +43,5 @@
     <string name="join_group">Join group</string>
     <string name="leave_group_confirmaation">Are you sure you want to leave the group?</string>
     <string name="title_activity_maps">Map </string>
-    <string name="google_maps_key">AIzaSyB5v9H8aQPs9pbhHGZ6-ORBpcqo02TifbA </string>
+    <string name="google_map_api_key">AIzaSyDali61cQ9d3x3--oY2_LHlteaLtypuORI</string>
 </resources>
