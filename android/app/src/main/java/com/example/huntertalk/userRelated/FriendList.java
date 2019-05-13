@@ -60,7 +60,7 @@ public class FriendList extends AppCompatActivity {
 
 
         /**
-         *  Create a friend list when launch
+         *  Create a friend list on launch
          */
        mDatabase.child(uid).child("friends").addValueEventListener(new ValueEventListener() {
             @Override
@@ -78,11 +78,16 @@ public class FriendList extends AppCompatActivity {
             public void onCancelled(@NonNull DatabaseError databaseError) {
             }
         });
+
+        /**
+         *  Create a Recently Hunted list on launch
+         */
         mDatabase.child(uid).child("recentlyHunted").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 tableRecHunted = (TableLayout) findViewById(R.id.tableGroupMembers2);
                 tableRecHunted.removeAllViews();
+                k=0;
                 /**
                  * Method to output all the recently hunted and friends
                  */
@@ -178,12 +183,14 @@ public class FriendList extends AppCompatActivity {
 
                             /**
                              * Add friends to the list with the nickname.
+                             * Also add current user to the list "friend of" of the future friend
                              */
                                 mDatabase.child(futureFriend).child("nickname").addListenerForSingleValueEvent(new ValueEventListener() {
                                     @Override
                                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                         String nickname3 = dataSnapshot.getValue().toString();
                                         mDatabase.child(uid).child("friends").child(futureFriend).setValue(nickname3);
+                                        mDatabase.child(futureFriend).child("friendOf").child(uid).setValue("fr");
                                         friendName=nickname3;
                                         nickNames.put(futureFriend,nickname3);
                                         addRow(nickname3,futureFriend, "fr");
@@ -292,6 +299,7 @@ public class FriendList extends AppCompatActivity {
                     TextView textNickname=(TextView) row.getChildAt(0);
                     String nickname= textNickname.getText().toString();
                     mDatabase.child(uid).child("friends").child(id).setValue(nickname);
+                    mDatabase.child(id).child("friendOf").child(uid).setValue("fr");
                     if(!nickNames.containsKey(id)){
                         nickNames.put(id,nickname);
                         addRow(nickname,id,"fr");
@@ -316,6 +324,7 @@ public class FriendList extends AppCompatActivity {
                     TextView text=(TextView) row.getChildAt(1);
                     String id= text.getText().toString();
                     mDatabase.child(uid).child("friends").child(id).removeValue();
+                    mDatabase.child(id).child("friendOf").child(uid).removeValue();
                     nickNames.remove(id);
                     tableFriends.removeView(row);
                 }
