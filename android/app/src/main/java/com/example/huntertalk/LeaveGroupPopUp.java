@@ -84,6 +84,5 @@ public class LeaveGroupPopUp extends Activity {
                 LeaveGroupPopUp.this.finish();
             }
         });
-
     }
 }

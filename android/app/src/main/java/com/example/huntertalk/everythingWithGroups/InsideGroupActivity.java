@@ -62,7 +62,6 @@ public class InsideGroupActivity extends AppCompatActivity
         catch (NullPointerException e) {
             groupID = "ERROR";
         }
-        System.out.println("horse: " + groupID);
     }
 
     @Override
@@ -71,8 +70,6 @@ public class InsideGroupActivity extends AppCompatActivity
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
-            System.out.println("horse: " + groupID);
-
             Intent i = new Intent(InsideGroupActivity.this, LeaveGroupPopUp.class);
             i.putExtra("groupID", groupID);
             i.putExtra("uid",uid);
