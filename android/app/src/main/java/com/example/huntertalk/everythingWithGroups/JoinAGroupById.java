@@ -16,7 +16,7 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
-
+import com.example.huntertalk.LeaveGroupPopUp;
 import com.example.huntertalk.ui.firstLaunch.Home_page;
 import com.example.huntertalk.R;
 import com.google.firebase.auth.FirebaseAuth;
@@ -27,7 +27,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 public class JoinAGroupById extends AppCompatActivity {
-    private DatabaseReference usersRef, groupRef, mDatabase, sDatabase;
+
+    private DatabaseReference usersRef, groupRef, mDatabase;
     private TableLayout tableInvitations;
     private TextView tv1;
     private int rowNumber;
@@ -44,7 +45,6 @@ public class JoinAGroupById extends AppCompatActivity {
         setContentView(R.layout.activity_join_create);
         Button joinButton= findViewById(R.id.btjoin);
         mDatabase = FirebaseDatabase.getInstance().getReference("groups");
-
         final  EditText groupIDInput = findViewById(R.id.etgroupid);
 
         //create invitationlist on start
@@ -101,12 +101,13 @@ public class JoinAGroupById extends AppCompatActivity {
         //The user joins the group number he entered
         joinButton.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v){
+
+                if(!groupIDInput.getText().toString().equals("")){
                 final int content = Integer.parseInt(groupIDInput.getText().toString());
                 FirebaseDatabase database = FirebaseDatabase.getInstance();
                 groupRef = database.getReference().child("groups");
                 usersRef = database.getReference().child("users");
                 final String uid= FirebaseAuth.getInstance().getCurrentUser().getUid();
-
 
                 groupRef.addListenerForSingleValueEvent(new ValueEventListener() {
 
@@ -118,6 +119,8 @@ public class JoinAGroupById extends AppCompatActivity {
                             if(content==value){
                                 final DataSnapshot ds1=ds;
                                 /**
+
+                                 * Gets acurrent user id and nickname and adds to the list of joined
                                  * Gets all joined people from the group
                                  */
                                 usersRef.child(uid).child("nickname").addListenerForSingleValueEvent(new ValueEventListener() {
@@ -133,11 +136,16 @@ public class JoinAGroupById extends AppCompatActivity {
                                     }
                                 });
 
+                /**
+                * Remove previous "recently Hunted and get all joined people from the group
+                * as new recently hunted
+                */
+                                usersRef.child(uid).child("recentlyHunted").removeValue();
                                 for (DataSnapshot ch: ds.child("joined").getChildren()) {
                                     String id= ch.getKey();
                                     String rcNickname= ch.getValue().toString();
                                     if (!id.equals(uid)){
-                                        usersRef.child(uid).child("recentlyHunted").child(id).setValue(rcNickname);
+                                    usersRef.child(uid).child("recentlyHunted").child(id).setValue(rcNickname);
                                     }
                                 }
 
@@ -157,6 +165,10 @@ public class JoinAGroupById extends AppCompatActivity {
 
                     }
                 });
+                  
+            } else {
+                    groupIDInput.setError("Please enter group ID");
+                }
             }
         });
     }

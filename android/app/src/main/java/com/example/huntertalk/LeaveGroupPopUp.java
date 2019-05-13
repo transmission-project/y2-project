@@ -17,7 +17,8 @@ import com.google.firebase.database.ValueEventListener;
 
 public class LeaveGroupPopUp extends Activity {
 
-    private String groupID;
+    String groupID;
+    String uid;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,8 +32,10 @@ public class LeaveGroupPopUp extends Activity {
         int width = displayMetrics.widthPixels;
         int height = displayMetrics.heightPixels;
 
-        //getWindow().setLayout((int)(width * .8), (int)(height * .25));
+        //set window size relative to screen size
+        getWindow().setLayout((int)(width * .8), (int)(height * .25));
 
+        //If yes button is pressed user is removed from group in database
         ImageButton yes = (ImageButton) findViewById(R.id.buttonCheck);
         yes.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -41,14 +44,15 @@ public class LeaveGroupPopUp extends Activity {
                 FirebaseDatabase database = FirebaseDatabase.getInstance();
                 final DatabaseReference groupsRef = database.getReference().child("groups");
 
-                FirebaseAuth auth = FirebaseAuth.getInstance();
-                String uid = auth.getCurrentUser().getUid();
-
+                //get group ID and user ID from Inside Group Page
                 try {
                     groupID = getIntent().getExtras().getString("groupID");
+                    uid = getIntent().getExtras().getString("uid");
+
                 }
                 catch (NullPointerException e) {
                     groupID = "ERROR";
+                    uid = "ERROR";
                 }
 
                 groupsRef.child(groupID).child("joined").child(uid).removeValue();
@@ -72,6 +76,7 @@ public class LeaveGroupPopUp extends Activity {
             }
         });
 
+        //If no button is pressed the activity is closed
         ImageButton no = (ImageButton) findViewById(R.id.buttonCross);
         no.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -79,6 +84,5 @@ public class LeaveGroupPopUp extends Activity {
                 LeaveGroupPopUp.this.finish();
             }
         });
-
     }
 }

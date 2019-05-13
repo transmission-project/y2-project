@@ -77,17 +77,6 @@ public class Home_page extends AppCompatActivity  {
                 startActivity(i);
             }
         });
-
-        /**
-         * Functionality on button press for popup button (to be removed later, when popup will be set to trigger)
-         */
-        Button buttonPopUp = (Button) findViewById(R.id.buttonPopUp);
-        buttonPopUp.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(Home_page.this, LeaveGroupPopUp.class));
-            }
-        });
     }
     // create an action bar button
     @Override
