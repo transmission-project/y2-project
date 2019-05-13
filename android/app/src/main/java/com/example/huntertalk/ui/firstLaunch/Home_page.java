@@ -1,6 +1,5 @@
 package com.example.huntertalk.ui.firstLaunch;
 
-
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -11,7 +10,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.example.huntertalk.LeaveGroupPopUp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -19,6 +17,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import com.example.huntertalk.LeaveGroupPopUp;
 import com.example.huntertalk.userRelated.FriendList;
 import com.example.huntertalk.R;
 import com.example.huntertalk.userRelated.SettingsPage;
@@ -57,6 +56,9 @@ public class Home_page extends AppCompatActivity  {
             }
         });
 
+        /**
+         * Functionality on button press of button join
+         */
         Button bjoin = (Button) findViewById(R.id.buttonJoin);
         bjoin.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v){
@@ -65,6 +67,9 @@ public class Home_page extends AppCompatActivity  {
             }
         });
 
+        /**
+         * Functionality on button press of create button
+        */
         Button createButton = findViewById(R.id.buttonCreate);
         createButton.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v){
@@ -72,7 +77,6 @@ public class Home_page extends AppCompatActivity  {
                 startActivity(i);
             }
         });
-
     }
     // create an action bar button
     @Override
