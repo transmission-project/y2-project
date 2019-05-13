@@ -1,15 +1,18 @@
 package com.example.huntertalk.userRelated;
 
+import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -36,9 +39,6 @@ public class FriendList extends AppCompatActivity {
     final String uid = auth.getCurrentUser().getUid();
     private HashMap<String,String> nickNames = new HashMap<String, String>();
     private HashMap<String,String> recentlyHunted = new HashMap<String, String>();
-    private TableRow.LayoutParams lp = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT);
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,7 +50,6 @@ public class FriendList extends AppCompatActivity {
         Button searchButton = findViewById(R.id.searchButton);
 
         mDatabase = FirebaseDatabase.getInstance().getReference("users");
-        lp.setMargins(10, 10, 5, 10);
         /**
          * Enabling the back button
          */
@@ -277,12 +276,15 @@ public class FriendList extends AppCompatActivity {
          * and adds them to the row. Then adds the row to the appropriate TableLayout
          */
         if (command.equals("rc")) {
-           final Button btn = new Button(this);
-            btn.setText("Add Friend");
-            btn.setId(i+k+f+1000);
+
+            ImageView addbtn = new ImageView(this);
+            addbtn.setBackgroundResource(R.drawable.ic_person_add_green_24dp);
+            addbtn.setId(i+k+f+1000);
             i++;
-            btn.setVisibility(View.VISIBLE);
-            btn.setOnClickListener(new View.OnClickListener() {
+
+            addbtn.setVisibility(View.VISIBLE);
+
+            addbtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     TextView text=(TextView) row.getChildAt(1);
@@ -298,17 +300,17 @@ public class FriendList extends AppCompatActivity {
                     }
                 }
             });
-            row.addView(btn);
+            row.addView(addbtn);
             tableRecHunted.addView(row, k);
             k++;
         }
         if (command.equals("fr")){
-            Button btn = new Button(this);
-            btn.setText("X");
-            btn.setId(i+k+f+1000);
+            ImageView declinebtn = new ImageView(this);
+            declinebtn.setBackgroundResource(R.drawable.ic_close_black_24dp);
+            declinebtn.setId(i+k+f+1000);
             i++;
-            btn.setVisibility(View.VISIBLE);
-            btn.setOnClickListener(new View.OnClickListener() {
+            declinebtn.setVisibility(View.VISIBLE);
+            declinebtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     TextView text=(TextView) row.getChildAt(1);
@@ -318,7 +320,7 @@ public class FriendList extends AppCompatActivity {
                     tableFriends.removeView(row);
                 }
             });
-            row.addView(btn);
+            row.addView(declinebtn);
             tableFriends.addView(row, f);
             f++;
         }
@@ -329,11 +331,26 @@ public class FriendList extends AppCompatActivity {
      */
 
     private TableRow createRow(String nickname, String id) {
+
         TableRow row=new TableRow(getBaseContext());
+
+
+        TableRow.LayoutParams lp = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT);
+
+        lp.setMargins(10, 10, 5, 10);
+
+
+
+
         row.setLayoutParams(lp);
+        row.setGravity(Gravity.CENTER_VERTICAL);
+
         tv1 = new TextView(getBaseContext());
         tv1.setText(nickname);
+        tv1.setTextSize(18);
+        tv1.setTextColor(Color.BLACK);
         tv1.setId(f+k +i + 1000);
+
         i++;
         tv = new TextView(getBaseContext());
         tv.setText(id);
