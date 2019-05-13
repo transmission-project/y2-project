@@ -9,11 +9,17 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <service
+            android:name=".MyFirebaseMessagingService">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
 
         <activity
             android:name=".userRelated.FriendList"
             android:label="@string/friendList"
-            android:parentActivityName=".ui.firstLaunch.Home_page"></activity>
+            android:parentActivityName=".ui.firstLaunch.Home_page" />
         <activity android:name=".userRelated.SettingsPage" />
         <activity
             android:name=".ui.firstLaunch.ResetPassword"
@@ -28,16 +34,16 @@
             android:label="@string/title_activity_inside_group"
             android:parentActivityName=".ui.firstLaunch.LoginActivity"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".everythingWithGroups.JoinAGroupById"/>
+        <activity android:name=".everythingWithGroups.JoinAGroupById" />
         <activity android:name=".ui.firstLaunch.Home_page" />
         <activity
             android:name=".ui.firstLaunch.LoginActivity"
             android:label="@string/title_activity_login"
             android:theme="@style/AppTheme.NoActionBar">
-             <intent-filter>
+            <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
 
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
@@ -45,19 +51,20 @@
             android:label="@string/title_activity_register"
             android:parentActivityName=".ui.firstLaunch.LoginActivity"
             android:theme="@style/AppTheme.NoActionBar">
-
             <intent-filter>
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <service android:name="InviteNotificationService">
+
+        <!--<service android:name=".InviteNotificationService">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
-        </service>
-        <activity android:name=".LeaveGroupPopUp"
-            android:theme="@style/AppTheme.CustomPopupTheme"
-            ></activity>
+        </service>-->
+
+        <activity
+            android:name=".LeaveGroupPopUp"
+            android:theme="@style/AppTheme.CustomPopupTheme" />
     </application>
 
 </manifest>
