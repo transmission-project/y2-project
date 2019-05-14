@@ -1,6 +1,7 @@
 package com.example.huntertalk.everythingWithGroups;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
@@ -25,8 +26,10 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import org.jetbrains.annotations.NotNull;
+
 public class InsideGroupActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, VoipFragment.OnFragmentInteractionListener {
 
     private DatabaseReference groupsRef;
     private String groupID;
@@ -150,6 +153,7 @@ public class InsideGroupActivity extends AppCompatActivity
 
 
         } else if (id == R.id.nav_chat) {
+            fragmentManager.beginTransaction().replace(R.id.content_frame, VoipFragment.newInstance("a","b")).commit();
 
         } else if (id == R.id.nav_invite) {
             fragmentManager.beginTransaction().replace(R.id.content_frame, new InviteToGroupFragment()).commit();
@@ -187,5 +191,8 @@ public class InsideGroupActivity extends AppCompatActivity
         return true;
     }
 
+    @Override
+    public void onFragmentInteraction(@NotNull Uri uri) {
 
+    }
 }
