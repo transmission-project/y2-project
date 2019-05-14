@@ -79,7 +79,9 @@ public class MapFragment extends Fragment {
             public void onMapReady(GoogleMap mMap1) {
                 mMap=mMap1;
                 mMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
+
                 groupRef.child(groupID).child("locations").child(uid).addValueEventListener(new ValueEventListener() {
+
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         for(DataSnapshot parameters: dataSnapshot.getChildren()){
@@ -166,6 +168,7 @@ public class MapFragment extends Fragment {
                         else {
                             groupRef.child(groupID).child("update").setValue("true");
                         }
+                        mMap.clear();
                     }
 
                     @Override
