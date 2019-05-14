@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
@@ -14,6 +15,10 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
+import android.view.MotionEvent;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ImageButton;
 
 import com.example.huntertalk.LeaveGroupPopUp;
 import com.example.huntertalk.R;
@@ -153,7 +158,21 @@ public class InsideGroupActivity extends AppCompatActivity
 
 
         } else if (id == R.id.nav_chat) {
-            fragmentManager.beginTransaction().replace(R.id.content_frame, VoipFragment.newInstance("a","b")).commit();
+            final VoipFragment voipFrag = VoipFragment.newInstance(Integer.parseInt(groupID));
+            fragmentManager.beginTransaction().replace(R.id.content_frame, voipFrag).commit();
+            //Connect PTT button
+            findViewById(R.id.ptt_button).setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    if(event.getAction() == MotionEvent.ACTION_DOWN) {
+                        voipFrag.startTalking();
+                    }
+                    else if(event.getAction() == MotionEvent.ACTION_UP) {
+                        voipFrag.stopTalking();
+                    }
+                    return true;
+                }
+            });
 
         } else if (id == R.id.nav_invite) {
             fragmentManager.beginTransaction().replace(R.id.content_frame, new InviteToGroupFragment()).commit();

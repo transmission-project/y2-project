@@ -1,10 +1,11 @@
 package com.example.huntertalk.everythingWithGroups
 
 import android.webkit.JavascriptInterface
+import android.webkit.WebView
 
 class VoipLayer(groupID: Int) {
     /**
-     * Methods for communication between VoipFragment and the javascript running inside voice_webview
+     * Methods for the javascript running inside voice_webview to interact with the Android app
      */
 
     val groupID: Int = groupID
@@ -19,13 +20,4 @@ class VoipLayer(groupID: Int) {
     fun onUserStopsTalking() {
         //stub
     }
-
-    fun startTalking() {
-        //stub
-    }
-
-    fun stopTalking() {
-        //stub
-    }
-
 }

@@ -5,29 +5,34 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
-import android.support.v4.app.ActivityCompat
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.ConsoleMessage
 import android.webkit.PermissionRequest
 import android.webkit.WebChromeClient
 import android.webkit.WebView
+import android.widget.ImageButton
 import android.widget.Toast
 
 import com.example.huntertalk.R
+import kotlinx.android.synthetic.main.activity_inside_group.*
+import kotlinx.android.synthetic.main.activity_inside_group.view.*
+import kotlinx.android.synthetic.main.app_bar_inside_group.*
+import kotlinx.android.synthetic.main.app_bar_inside_group.view.*
 import kotlinx.android.synthetic.main.fragment_voip.*
+import kotlinx.android.synthetic.main.fragment_voip.view.*
 
 // Permission request callback code
 private const val MICROPHONE_REQUEST = 1888
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
+private const val ARG_GROUPID = "groupID"
 
 /**
  * A simple [Fragment] subclass.
@@ -40,16 +45,15 @@ private const val ARG_PARAM2 = "param2"
  */
 class VoipFragment : Fragment() {
     // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+    private var groupID: Int? = null
     private var listener: OnFragmentInteractionListener? = null
+    private var voice_webview: WebView? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val context = activity!!.applicationContext
         arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
+            groupID = it.getInt(ARG_GROUPID)
         }
 
 
@@ -61,6 +65,7 @@ class VoipFragment : Fragment() {
         // Inflate the layout for this fragment
         val rootView = inflater.inflate(R.layout.fragment_voip, container, false)
 
+        voice_webview = rootView.voice_webview
         startVoiceWebView()
 
         return rootView
@@ -141,29 +146,27 @@ class VoipFragment : Fragment() {
          * Use this factory method to create a new instance of
          * this fragment using the provided parameters.
          *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
          * @return A new instance of fragment voipFragment.
          */
         // TODO: Rename and change types and number of parameters
         @JvmStatic
-        fun newInstance(param1: String, param2: String) =
+        fun newInstance(groupID: Int) =
                 VoipFragment().apply {
                     arguments = Bundle().apply {
-                        putString(ARG_PARAM1, param1)
-                        putString(ARG_PARAM2, param2)
+                        putInt(ARG_GROUPID, groupID)
                     }
                 }
     }
 
     private fun startVoiceWebView() {
-        voice_webview.settings.setJavaScriptEnabled(true)
-        voice_webview.settings.setAllowUniversalAccessFromFileURLs(true)
-        voice_webview.settings.setMediaPlaybackRequiresUserGesture(false)
+        val voiceWebview = voice_webview as WebView // hard cast because this function should only be called after onCreateView
+        voiceWebview.settings.setJavaScriptEnabled(true)
+        voiceWebview.settings.setAllowUniversalAccessFromFileURLs(true)
+        voiceWebview.settings.setMediaPlaybackRequiresUserGesture(false)
 
         WebView.setWebContentsDebuggingEnabled(true) //TODO: disable this for production
 
-        voice_webview.webChromeClient = object : WebChromeClient() {
+        voiceWebview.webChromeClient = object : WebChromeClient() {
             // Pass JS console messages to Logcat
             override fun onConsoleMessage(m: ConsoleMessage): Boolean {
                 Log.d("getUserMedia, WebView", m.message() + " -- From line "
@@ -178,7 +181,16 @@ class VoipFragment : Fragment() {
             }
         }
 
-        voice_webview.loadUrl("file:///android_asset/index.html")
-        // TODO: JS interface for choosing group to connect to, push to talk, stream activity
+        voiceWebview.addJavascriptInterface(VoipLayer(groupID = this.groupID!!), "androidInterface")
+
+        voiceWebview.loadUrl("file:///android_asset/index.html")
+    }
+
+    fun startTalking() {
+        voice_webview?.loadUrl("javascript:startTalking()")
+    }
+
+    fun stopTalking() {
+        voice_webview?.loadUrl("javascript:stopTalking()")
     }
 }
