@@ -58,7 +58,7 @@
             app:srcCompat="@android:drawable/ic_dialog_alert" />
 
         <ImageButton
-            android:id="@+id/imageButton"
+            android:id="@+id/ptt_button"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_marginStart="8dp"

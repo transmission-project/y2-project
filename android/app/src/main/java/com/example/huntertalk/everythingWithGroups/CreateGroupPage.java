@@ -102,6 +102,7 @@ public class CreateGroupPage extends AppCompatActivity {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         String nickname = dataSnapshot.child("nickname").getValue().toString();
+
                         groupRef.child(groupId).child("joined").child(uid).setValue(nickname);
 
                         usersRef.child(uid).child("currentGroup").setValue(groupId);
@@ -154,7 +155,12 @@ public class CreateGroupPage extends AppCompatActivity {
                             usersRef.child(friendId).child("nickname").addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                    String nickname = dataSnapshot.getValue().toString();
+                                    String nickname;
+                                    try {
+                                        nickname = dataSnapshot.getValue().toString();
+                                    } catch (NullPointerException e) {
+                                        nickname = "ERROR";
+                                    }
                                     recentlyHunted.put(friendId, nickname);
 
                                 }
