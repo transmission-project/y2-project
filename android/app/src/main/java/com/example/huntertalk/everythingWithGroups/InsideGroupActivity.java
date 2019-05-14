@@ -85,7 +85,28 @@ public class InsideGroupActivity extends AppCompatActivity
             i.putExtra("groupID", groupID);
             i.putExtra("uid",uid);
             startActivity(i);
+
         }
+    }
+
+    //When activity restarts after pop up, check intent and finish or do nothing
+    @Override
+    protected void onRestart() {
+
+        String finish;
+
+        try {
+            finish = getIntent().getExtras().getString("groupID");
+        }
+        catch (NullPointerException e) {
+            finish = "ERROR";
+        }
+
+        //If finish does not give null pointer exception finish activity
+        if (!finish.equals("ERROR")){
+            this.finish();
+        }
+        super.onRestart();
     }
 
     @Override
@@ -157,6 +178,7 @@ public class InsideGroupActivity extends AppCompatActivity
                 }
             }));
             Intent i =  new Intent(InsideGroupActivity.this, Home_page.class);
+            System.out.println("after intent");
             this.finish();
             startActivity(i);
         }
@@ -164,4 +186,6 @@ public class InsideGroupActivity extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
+
 }

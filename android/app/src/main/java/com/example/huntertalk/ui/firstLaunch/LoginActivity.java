@@ -67,7 +67,7 @@ public class LoginActivity extends AppCompatActivity {
                 }
 
             /**
-             *  Method that does the authentification (done by Firebase)
+             *  Method that does the authentication (done by Firebase)
              */
                 mAuth.signInWithEmailAndPassword(email, password)
                         .addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {

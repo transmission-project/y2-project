@@ -29,9 +29,10 @@ public class Home_page extends AppCompatActivity  {
 
     private FirebaseAuth auth = FirebaseAuth.getInstance();
     final private String uid = auth.getCurrentUser().getUid();
-    private DatabaseReference usersRef;
+    private DatabaseReference usersRef, groupsRef;
     private FirebaseDatabase database;
     private TextView welcomeNickname;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,13 +42,39 @@ public class Home_page extends AppCompatActivity  {
         //getting instance of database and reference to fetch nickname of current user
         database = FirebaseDatabase.getInstance();
         usersRef = database.getReference().child("users");
+        groupsRef = database.getReference().child("groups");
         welcomeNickname = (TextView) findViewById(R.id.textView);
 
         //getting a single value from the database
-        usersRef.child(uid).child("nickname").addListenerForSingleValueEvent(new ValueEventListener() {
+        usersRef.child(uid).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                String nickname = dataSnapshot.getValue().toString();
+
+                if(dataSnapshot.hasChild("currentGroup")){
+
+                    final String currentGroup = dataSnapshot.child("currentGroup").getValue().toString();
+
+                    groupsRef.child(currentGroup).child("joined").child(uid).removeValue();
+                    groupsRef.child(currentGroup).addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                            if (!dataSnapshot.child(currentGroup).hasChild("joined")) {
+                                groupsRef.child(currentGroup).child("invited").removeValue();
+                            }
+
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
+
+                    usersRef.child(uid).child("currentGroup").removeValue();
+                }
+
+                String nickname = dataSnapshot.child("nickname").getValue().toString();
                 welcomeNickname.setText("Welcome " + String.valueOf(nickname) + "!");
             }
 
@@ -79,6 +106,7 @@ public class Home_page extends AppCompatActivity  {
             }
         });
     }
+
     // create an action bar button
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

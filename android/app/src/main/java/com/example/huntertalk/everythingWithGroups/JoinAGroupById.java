@@ -1,6 +1,7 @@
 package com.example.huntertalk.everythingWithGroups;
 
 import android.content.Intent;
+
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.support.annotation.NonNull;
@@ -12,6 +13,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.Gravity;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -22,16 +24,23 @@ import android.widget.Toast;
 import com.example.huntertalk.LeaveGroupPopUp;
 import com.example.huntertalk.ui.firstLaunch.Home_page;
 import com.example.huntertalk.R;
+
+import com.example.huntertalk.userRelated.FriendList;
+
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnSuccessListener;
+
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
+import static android.widget.Toast.makeText;
+import static com.example.huntertalk.userRelated.FriendList.hideKeyboard;
 
 public class JoinAGroupById extends AppCompatActivity {
 
@@ -75,9 +84,11 @@ public class JoinAGroupById extends AppCompatActivity {
         setContentView(R.layout.activity_join_create);
         Button joinButton = findViewById(R.id.btjoin);
         mDatabase = FirebaseDatabase.getInstance().getReference("groups");
+        usersRef = FirebaseDatabase.getInstance().getReference().child("users");
+
         final EditText groupIDInput = findViewById(R.id.etgroupid);
 
-        //create invitationlist on start
+        //create invitation list on start
         mDatabase.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -147,20 +158,19 @@ public class JoinAGroupById extends AppCompatActivity {
                             for (final DataSnapshot ds : dataSnapshot.getChildren()) {
                                 int value = Integer.parseInt(ds.getKey());
                                 if (content == value) {
-
                                     /**
-                                     * Gets acurrent user id and nickname and adds to the list of joined
+                                     * Gets current user id and nickname and adds to the list of joined
                                      * Gets all joined people from the group
                                      */
-                                    usersRef.child(uid).child("nickname").addListenerForSingleValueEvent(new ValueEventListener() {
+                                    usersRef.child(uid).addListenerForSingleValueEvent(new ValueEventListener() {
                                         @Override
                                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                            String nickname = dataSnapshot.getValue().toString();
+
+                                            String nickname = dataSnapshot.child("nickname").getValue().toString();
                                             groupRef.child(ds.getKey()).child("joined").child(uid).setValue(nickname);
-                                            groupRef.child(ds.getKey()).child("locations").child(uid).setValue(lastKnownLocation);
-
                                             groupRef.child(ds.getKey()).child("invited").child(uid).removeValue();
-
+                                            usersRef.child(uid).child("currentGroup").setValue(ds.getKey());                                         
+                                            groupRef.child(ds.getKey()).child("locations").child(uid).setValue(lastKnownLocation);
                                         }
 
                                         @Override
@@ -185,10 +195,13 @@ public class JoinAGroupById extends AppCompatActivity {
 
                                     Intent i = new Intent(JoinAGroupById.this, InsideGroupActivity.class);
                                     i.putExtra("groupID", groupIDInput.getText().toString());
+                                    JoinAGroupById.this.finish();
                                     startActivity(i);
                                     break;
                                 } else if (dscount == 1) {
-                                    Toast.makeText(getApplicationContext(), "Group not found", Toast.LENGTH_SHORT).show();
+                                    Toast toast = makeText(getApplicationContext(), "Group not found", Toast.LENGTH_SHORT);
+                                    toast.setGravity(Gravity.BOTTOM,0,700);
+                                    toast.show();
                                 }
                                 dscount--;
                             }
@@ -203,6 +216,7 @@ public class JoinAGroupById extends AppCompatActivity {
                 } else {
                     groupIDInput.setError("Please enter group ID");
                 }
+
             }
         });
     }
@@ -223,7 +237,7 @@ public class JoinAGroupById extends AppCompatActivity {
                         startActivity(intent);
                         this.finish();
                     } else {
-                        Toast message = Toast.makeText(JoinAGroupById.this, "Press once again to cancel joining a group",
+                        Toast message = makeText(JoinAGroupById.this, "Press once again to cancel joining a group",
                                 Toast.LENGTH_LONG);
                         message.setGravity(Gravity.TOP, 0, 0);
                         message.show();
@@ -237,30 +251,34 @@ public class JoinAGroupById extends AppCompatActivity {
 
     //Create invitations table
     private void createTable(final String ID, final String nickname) {
+
         rowNumber = 0;
         final TableRow row = new TableRow(getBaseContext());
         TableRow.LayoutParams lp = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT);
         lp.setMargins(10, 10, 5, 10);
         row.setLayoutParams(lp);
-        Button btn1 = new Button(this);
-        btn1.setText("Accept");
-        btn1.setId(i + k + 100);
-        btn1.setVisibility(View.VISIBLE);
-        Button btn2 = new Button(this);
-        btn2.setText("Decline");
-        btn2.setId(i + k);
-        btn2.setVisibility(View.VISIBLE);
-        Button btn3 = new Button(this);
-        btn3.setText("Invisible");
-        btn3.setId(i + k + 1000);
-        btn3.setVisibility(View.GONE);
-        btn1.setOnClickListener(new View.OnClickListener() {
+        Button acceptButton = new Button(this);
+        acceptButton.setText("Accept");
+        acceptButton.setId(i + k + 100);
+        acceptButton.setVisibility(View.VISIBLE);
+        Button declineButton = new Button(this);
+        declineButton.setText("Decline");
+        declineButton.setId(i + k);
+        declineButton.setVisibility(View.VISIBLE);
+        Button invisibleButton = new Button(this);
+        invisibleButton.setText("Invisible");
+        invisibleButton.setId(i + k + 1000);
+        invisibleButton.setVisibility(View.GONE);
+        acceptButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 TextView text = (TextView) row.getChildAt(1);
                 String id = text.getText().toString();
-                mDatabase.child(id).child("invited").child(uid).removeValue();
-                mDatabase.child(id).child("joined").child(uid).setValue(nickname);
+                mDatabase.child(groupID).child("invited").child(uid).removeValue();
+                mDatabase.child(groupID).child("joined").child(uid).setValue(nickname);
+
+                usersRef.child(uid).child("currentGroup").setValue(id);
+
                 Intent intent = new Intent(JoinAGroupById.this, InsideGroupActivity.class);
                 intent.putExtra("groupID", id);
                 startActivity(intent);
@@ -268,7 +286,7 @@ public class JoinAGroupById extends AppCompatActivity {
             }
         });
 
-        btn2.setOnClickListener(new View.OnClickListener() {
+        declineButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 TextView text = (TextView) row.getChildAt(1);
@@ -283,11 +301,15 @@ public class JoinAGroupById extends AppCompatActivity {
         tv1.setTextSize(20);
         tv1.setId(i + k + 10000);
         row.setId(k);
-        row.addView(btn3);
+        row.addView(invisibleButton);
         row.addView(tv1, lp);
-        row.addView(btn1);
-        row.addView(btn2);
+        row.addView(acceptButton);
+        row.addView(declineButton);
         tableInvitations.addView(row, rowNumber);
         rowNumber++;
+    }
+    public boolean onTouchEvent(MotionEvent event) {
+        hideKeyboard(JoinAGroupById.this);
+        return super.onTouchEvent(event);
     }
 }
