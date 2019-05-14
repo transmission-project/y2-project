@@ -1,6 +1,7 @@
 package com.example.huntertalk.userRelated;
 
 import android.content.Intent;
+import android.support.annotation.NonNull;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -18,14 +19,22 @@ import android.view.MenuItem;
 import com.example.huntertalk.R;
 import com.example.huntertalk.ui.firstLaunch.LoginActivity;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
+
+/**
+ * Potential ddos vulnarability updating current nickname to the same one. due to database access
+ */
 public class SettingsPage extends AppCompatActivity {
     private Boolean nicknameChange= false;
     private Boolean passwordChange= false;
     private Boolean password2Change= false;
     private DatabaseReference mDatabase;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +47,7 @@ public class SettingsPage extends AppCompatActivity {
         final EditText password = findViewById(R.id.etchangepw);
         final EditText confirmPassword = findViewById(R.id.etchangepw2);
         mDatabase = FirebaseDatabase.getInstance().getReference();
+
 
         final FirebaseAuth auth = FirebaseAuth.getInstance();
         final String uid = auth.getCurrentUser().getUid();
@@ -63,7 +73,7 @@ public class SettingsPage extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 String password1= password.getText().toString().trim();
-                String nickname1= nickname.getText().toString().trim();
+               final String nickname1= nickname.getText().toString().trim();
                 String confirmPassword1=confirmPassword.getText().toString().trim();
 
                 /**
@@ -107,11 +117,60 @@ public class SettingsPage extends AppCompatActivity {
                         nicknameChange=false;
                         return;
                     }
+                    if (TextUtils.isEmpty(nickname1)) {
+                        Toast.makeText(getApplicationContext(), "You must have a nickname.", Toast.LENGTH_SHORT).show();
+                        nicknameChange=false;
+                        return;
+                    }
+                    mDatabase.child("users").child(uid).child("nickname").setValue(nickname1);
+                    try {
+                       String groupID = getIntent().getExtras().getString("groupNumber");
+                       System.out.println("The group id is "+ groupID);
+                       System.out.println("uid is "+ uid);
+                       mDatabase.child("groups").child(groupID).child("joined").child(uid).setValue(nickname1);
+
+                    }
+                    catch (NullPointerException e) {
+                        String groupID = "None";
+                    }
 
                     /**
-                     * Add connection to DB
+                    * Update nickname for all users that are friends with current user.
                      */
-                    mDatabase.child("users").child(uid).child("nickname").setValue(nickname1);
+                    mDatabase.child("users").child(uid).child("friendOf").addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            for(DataSnapshot friendsOfThisPerson: dataSnapshot.getChildren()){
+                                String friendId= friendsOfThisPerson.getKey();
+                                mDatabase.child("users").child(friendId).child("friends").child(uid).setValue(nickname1);
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
+
+                    /**
+                     * Update nickname for all recently hunted lists containing this user.
+                     */
+
+                    mDatabase.child("users").child(uid).child("recentlyHuntedOf").addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            for(DataSnapshot friendsOfThisPerson: dataSnapshot.getChildren()){
+                                String friendId= friendsOfThisPerson.getKey();
+                                mDatabase.child("users").child(friendId).child("recentlyHunted").child(uid).setValue(nickname1);
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
+
                 }
                 if(passwordChange==false &&password2Change==false && nicknameChange==false){
                     Toast.makeText(getApplicationContext(), "No changes done to your data", Toast.LENGTH_LONG).show();
