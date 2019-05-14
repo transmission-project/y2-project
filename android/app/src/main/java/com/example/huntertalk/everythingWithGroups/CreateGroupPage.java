@@ -155,7 +155,12 @@ public class CreateGroupPage extends AppCompatActivity {
                             usersRef.child(friendId).child("nickname").addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                    String nickname = dataSnapshot.getValue().toString();
+                                    String nickname;
+                                    try {
+                                        nickname = dataSnapshot.getValue().toString();
+                                    } catch (NullPointerException e) {
+                                        nickname = "ERROR";
+                                    }
                                     recentlyHunted.put(friendId, nickname);
 
                                 }
