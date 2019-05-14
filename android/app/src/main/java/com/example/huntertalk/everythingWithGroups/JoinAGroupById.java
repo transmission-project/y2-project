@@ -45,9 +45,11 @@ public class JoinAGroupById extends AppCompatActivity {
         setContentView(R.layout.activity_join_create);
         Button joinButton = findViewById(R.id.btjoin);
         mDatabase = FirebaseDatabase.getInstance().getReference("groups");
+        usersRef = FirebaseDatabase.getInstance().getReference().child("users");
+
         final EditText groupIDInput = findViewById(R.id.etgroupid);
 
-        //create invitationlist on start
+        //create invitation list on start
         mDatabase.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -119,15 +121,18 @@ public class JoinAGroupById extends AppCompatActivity {
                                 if (content == value) {
                                     final DataSnapshot ds1 = ds;
                                     /**
-                                     * Gets acurrent user id and nickname and adds to the list of joined
+                                     * Gets current user id and nickname and adds to the list of joined
                                      * Gets all joined people from the group
                                      */
-                                    usersRef.child(uid).child("nickname").addListenerForSingleValueEvent(new ValueEventListener() {
+                                    usersRef.child(uid).addListenerForSingleValueEvent(new ValueEventListener() {
                                         @Override
                                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                            String nickname = dataSnapshot.getValue().toString();
+                                            String nickname = dataSnapshot.child("nickname").getValue().toString();
                                             groupRef.child(ds1.getKey()).child("joined").child(uid).setValue(nickname);
                                             groupRef.child(ds1.getKey()).child("invited").child(uid).removeValue();
+
+                                            usersRef.child(uid).child("currentGroup").setValue(ds1.getKey());
+
                                         }
 
                                         @Override
@@ -204,30 +209,34 @@ public class JoinAGroupById extends AppCompatActivity {
 
     //Create invitations table
     private void createTable(final String ID, final String nickname) {
+
         rowNumber = 0;
         final TableRow row = new TableRow(getBaseContext());
         TableRow.LayoutParams lp = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT);
         lp.setMargins(10, 10, 5, 10);
         row.setLayoutParams(lp);
-        Button btn1 = new Button(this);
-        btn1.setText("Accept");
-        btn1.setId(i + k + 100);
-        btn1.setVisibility(View.VISIBLE);
-        Button btn2 = new Button(this);
-        btn2.setText("Decline");
-        btn2.setId(i + k);
-        btn2.setVisibility(View.VISIBLE);
-        Button btn3 = new Button(this);
-        btn3.setText("Invisible");
-        btn3.setId(i + k + 1000);
-        btn3.setVisibility(View.GONE);
-        btn1.setOnClickListener(new View.OnClickListener() {
+        Button acceptButton = new Button(this);
+        acceptButton.setText("Accept");
+        acceptButton.setId(i + k + 100);
+        acceptButton.setVisibility(View.VISIBLE);
+        Button declineButton = new Button(this);
+        declineButton.setText("Decline");
+        declineButton.setId(i + k);
+        declineButton.setVisibility(View.VISIBLE);
+        Button invisibleButton = new Button(this);
+        invisibleButton.setText("Invisible");
+        invisibleButton.setId(i + k + 1000);
+        invisibleButton.setVisibility(View.GONE);
+        acceptButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 TextView text = (TextView) row.getChildAt(1);
                 String id = text.getText().toString();
-                mDatabase.child(id).child("invited").child(uid).removeValue();
-                mDatabase.child(id).child("joined").child(uid).setValue(nickname);
+                mDatabase.child(groupID).child("invited").child(uid).removeValue();
+                mDatabase.child(groupID).child("joined").child(uid).setValue(nickname);
+
+                usersRef.child(uid).child("currentGroup").setValue(id);
+
                 Intent intent = new Intent(JoinAGroupById.this, InsideGroupActivity.class);
                 intent.putExtra("groupID", id);
                 startActivity(intent);
@@ -235,7 +244,7 @@ public class JoinAGroupById extends AppCompatActivity {
             }
         });
 
-        btn2.setOnClickListener(new View.OnClickListener() {
+        declineButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 TextView text = (TextView) row.getChildAt(1);
@@ -250,10 +259,10 @@ public class JoinAGroupById extends AppCompatActivity {
         tv1.setTextSize(20);
         tv1.setId(i + k + 10000);
         row.setId(k);
-        row.addView(btn3);
+        row.addView(invisibleButton);
         row.addView(tv1, lp);
-        row.addView(btn1);
-        row.addView(btn2);
+        row.addView(acceptButton);
+        row.addView(declineButton);
         tableInvitations.addView(row, rowNumber);
         rowNumber++;
     }

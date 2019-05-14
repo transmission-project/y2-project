@@ -31,7 +31,6 @@ public class InsideGroupActivity extends AppCompatActivity
     private DatabaseReference groupsRef;
     private String groupID;
     private String uid;
-    private String finish;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,13 +75,15 @@ public class InsideGroupActivity extends AppCompatActivity
             i.putExtra("uid",uid);
             startActivity(i);
 
-
         }
     }
 
     //When activity restarts after pop up, check intent and finish or do nothing
     @Override
     protected void onRestart() {
+
+        String finish;
+
         try {
             finish = getIntent().getExtras().getString("groupID");
         }
@@ -157,11 +158,21 @@ public class InsideGroupActivity extends AppCompatActivity
                 }
             }));
             Intent i =  new Intent(InsideGroupActivity.this, Home_page.class);
+            System.out.println("after intent");
             this.finish();
             startActivity(i);
         }
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    //remove user from group when app is killed from inside group
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+
+
     }
 }

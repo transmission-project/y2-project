@@ -72,7 +72,7 @@ public class InviteToGroupFragment extends Fragment {
                     return;
                 }
                 else {
-                    userDb.addValueEventListener(new ValueEventListener() {
+                    userDb.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                             for (DataSnapshot user: dataSnapshot.getChildren()){
@@ -88,7 +88,8 @@ public class InviteToGroupFragment extends Fragment {
 
                                 if(dbemail.equals(enteredemail)){
                                     String inviteduser=user.getKey();
-                                    groupDb.child(groupID).child("invited").child(inviteduser).setValue(inviteduser);
+                                    String nickname = user.child("nickname").getValue().toString();
+                                    groupDb.child(groupID).child("invited").child(inviteduser).setValue(nickname);
                                     etSearch.setHint("Enter email");
                                     Toast toast = makeText(getContext(), "Successfully invited to group!", Toast.LENGTH_LONG);
                                     toast.setGravity(Gravity.CENTER_VERTICAL,0,0);

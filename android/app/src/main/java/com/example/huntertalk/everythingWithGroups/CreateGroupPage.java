@@ -63,11 +63,13 @@ public class CreateGroupPage extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 //adds current user as joined to the group and
-                usersRef.child(uid).child("nickname").addListenerForSingleValueEvent(new ValueEventListener() {
+                usersRef.child(uid).addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        String nickname = dataSnapshot.getValue().toString();
+                        String nickname = dataSnapshot.child("nickname").getValue().toString();
                         groupRef.child(groupId).child("joined").child(uid).setValue(nickname);
+
+                        usersRef.child(uid).child("currentGroup").setValue(groupId);
                     }
 
                     @Override
