@@ -145,7 +145,7 @@ public class join_create extends AppCompatActivity {
                                     }
                                 }
 
-                                Intent i = new Intent(JoinAGroupById.this, WebTestActivity.class);
+                                Intent i = new Intent(JoinAGroupById.this, InsideGroupActivity.class);
                                 i.putExtra("groupID", groupIDInput.getText().toString());
                                 startActivity(i);
                                 break;
