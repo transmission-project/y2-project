@@ -36,7 +36,7 @@ public class MapFragment extends Fragment {
     private Location mLastKnownLocation;
     private Location mCurrentLocation;
     private CameraPosition mCameraPosition;
-    private float DEFAULT_ZOOM= 19;
+    private float DEFAULT_ZOOM= 0;
     private static final String KEY_CAMERA_POSITION = "camera_position";
     private static final String KEY_LOCATION = "location";
     private FusedLocationProviderClient mFusedLocationProviderClient;
