@@ -2,12 +2,11 @@ package com.example.huntertalk.everythingWithGroups;
 
 
 import android.annotation.SuppressLint;
-import android.content.Context;
+import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,14 +20,14 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
+
 
 public class MapFragment extends Fragment {
 
@@ -46,6 +45,7 @@ public class MapFragment extends Fragment {
     private String uid;
     private String groupID;
 
+
     public MapFragment() {
         // Required empty public constructor
     }
@@ -62,10 +62,18 @@ public class MapFragment extends Fragment {
         if (savedInstanceState != null) {
             mCurrentLocation = savedInstanceState.getParcelable(KEY_LOCATION);
             mCameraPosition = savedInstanceState.getParcelable(KEY_CAMERA_POSITION);
-
         }
-
+startTrackerService();
     }
+    //Start the TrackerService//
+    private void startTrackerService() {
+        Intent service= new Intent(this.getContext(), TrackingService.class);
+        service.putExtra("groupID", groupID);
+        service.putExtra("uid", uid);
+        getActivity().startService(service);
+        System.out.println("The tracking has been enabled");
+    }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,

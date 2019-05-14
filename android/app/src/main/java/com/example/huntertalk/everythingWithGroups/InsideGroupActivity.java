@@ -62,6 +62,17 @@ public class InsideGroupActivity extends AppCompatActivity
         catch (NullPointerException e) {
             groupID = "ERROR";
         }
+        startTrackerService();
+    }
+    // start the TrackerService//
+
+    //Start the TrackerService//
+    private void startTrackerService() {
+        Intent service= new Intent(this, TrackingService.class);
+        service.putExtra("groupID", groupID);
+        service.putExtra("uid", uid);
+        this.startService(service);
+        System.out.println("The tracking has been enabled");
     }
 
     @Override
