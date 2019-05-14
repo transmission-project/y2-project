@@ -9,6 +9,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import com.example.huntertalk.R;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -42,6 +43,7 @@ public class MapFragment extends Fragment {
     private DatabaseReference groupRef;
     private String uid;
     private String groupID;
+    private String update;
 
     public MapFragment() {
         // Required empty public constructor
@@ -52,7 +54,7 @@ public class MapFragment extends Fragment {
         super.onCreate(savedInstanceState);
         Bundle args= this.getArguments();
         groupID= args.getString("groupID");
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        final FirebaseDatabase database = FirebaseDatabase.getInstance();
         groupRef= database.getReference().child("groups");
         FirebaseAuth auth = FirebaseAuth.getInstance();
         uid = auth.getCurrentUser().getUid();
@@ -146,6 +148,31 @@ public class MapFragment extends Fragment {
 
 
 
+            }
+        });
+
+        Button refreshbtn = rootView.findViewById(R.id.refresh);
+
+        refreshbtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                groupRef.child(groupID).child("update").addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        update = dataSnapshot.getValue().toString();
+                        if (update.equals("true")){
+                            groupRef.child(groupID).child("update").setValue("false");
+                        }
+                        else {
+                            groupRef.child(groupID).child("update").setValue("true");
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
             }
         });
 

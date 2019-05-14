@@ -1,10 +1,15 @@
 package com.example.huntertalk.everythingWithGroups;
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.view.MenuItem;
@@ -18,6 +23,10 @@ import com.example.huntertalk.LeaveGroupPopUp;
 import com.example.huntertalk.R;
 import com.example.huntertalk.userRelated.SettingsPage;
 import com.example.huntertalk.ui.firstLaunch.Home_page;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -31,10 +40,16 @@ public class InsideGroupActivity extends AppCompatActivity
     private DatabaseReference groupsRef;
     private String groupID;
     private String uid;
+    private FusedLocationProviderClient fusedLocationClient;
+    private LatLng lastKnownLocation;
+    private Context mContext;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        mContext = this;
 
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.replace(R.id.content_frame, new GroupOverviewFragment()).commit();
@@ -62,6 +77,36 @@ public class InsideGroupActivity extends AppCompatActivity
         catch (NullPointerException e) {
             groupID = "ERROR";
         }
+
+        groupsRef.child(groupID).child("update").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                fusedLocationClient = LocationServices.getFusedLocationProviderClient(mContext);
+
+                if (ContextCompat.checkSelfPermission(mContext, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+
+                }
+                fusedLocationClient.getLastLocation()
+                        .addOnSuccessListener((Activity) mContext, new OnSuccessListener<Location>() {
+                            @Override
+                            public void onSuccess(Location location) {
+                                lastKnownLocation = new LatLng(-33.8523341, 151.2106085);
+                                if (location != null) {
+                                    lastKnownLocation = new LatLng(location.getLatitude(), location.getLongitude());
+                                    groupsRef.child(groupID).child("locations").child(uid).setValue(lastKnownLocation);
+                                }
+                            }
+                        });
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+
     }
 
     @Override
