@@ -1,9 +1,13 @@
 package com.example.huntertalk.everythingWithGroups;
 
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.location.Location;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -14,7 +18,12 @@ import android.widget.TableRow;
 import android.widget.TextView;
 
 import com.example.huntertalk.R;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.android.gms.location.LocationServices;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -31,16 +40,42 @@ public class CreateGroupPage extends AppCompatActivity {
     private TextView friend, tick, tv1;
     private String friendName, friendId;
     private TableLayout tableRecHunted,tableFriends;
+    private FusedLocationProviderClient fusedLocationClient;
     private int k = 0;
     private int f = 0;
     private String[][] selected;
     private HashMap<String,String> friends = new HashMap<String, String>();
     private HashMap<String,String> recentlyHunted = new HashMap<String, String>();
+    private LatLng lastKnownLocation;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+
+        if ( ContextCompat.checkSelfPermission( this, android.Manifest.permission.ACCESS_COARSE_LOCATION ) != PackageManager.PERMISSION_GRANTED ) {
+
+        }
+        fusedLocationClient.getLastLocation()
+                .addOnSuccessListener(this, new OnSuccessListener<Location>() {
+                    @Override
+                    public void onSuccess(Location location) {
+                        lastKnownLocation = new LatLng(-33.8523341, 151.2106085);
+                        if (location != null) {
+                            lastKnownLocation = new LatLng(location.getLatitude(), location.getLongitude());
+                        }
+                    }
+                });
+
+
+
+
+
+
+
+
         setContentView(R.layout.activity_create_group_page);
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         ActionBar actionBar = getSupportActionBar();
@@ -85,6 +120,9 @@ public class CreateGroupPage extends AppCompatActivity {
                         groupRef.child(groupId).child("invited").child(selected[i][1]).setValue(selected[i][0]);
                     }
                 }
+
+                groupRef.child(groupId).child("locations").child(uid).setValue(lastKnownLocation);
+
                 Intent intent =new Intent(CreateGroupPage.this, InsideGroupActivity.class);
                 intent.putExtra("groupID", groupId);
                 startActivity(intent);

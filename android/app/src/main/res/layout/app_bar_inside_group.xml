@@ -34,7 +34,9 @@
 
     <include
         android:id="@+id/include"
-        layout="@layout/content_inside_group" />
+        layout="@layout/content_inside_group"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"

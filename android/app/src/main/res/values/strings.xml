@@ -42,4 +42,9 @@
     <string name="create_group">Create group</string>
     <string name="join_group">Join group</string>
     <string name="leave_group_confirmaation">Are you sure you want to leave the group?</string>
+    <string name="title_activity_maps">Map </string>
+    <string name="google_map_api_key">AIzaSyB5v9H8aQPs9pbhHGZ6-ORBpcqo02TifbA</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

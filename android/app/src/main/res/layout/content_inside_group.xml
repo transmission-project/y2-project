@@ -9,6 +9,7 @@
     tools:context=".everythingWithGroups.InsideGroupActivity"
     tools:showIn="@layout/app_bar_inside_group">
 
+
     <FrameLayout
         android:id="@+id/content_frame"
         android:layout_width="match_parent"
