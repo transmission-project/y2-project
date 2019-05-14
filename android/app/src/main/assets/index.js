@@ -20,7 +20,7 @@ navigator.mediaDevices.getUserMedia({
       audio: true,
       video: false
 }).then( (stream) => { // I have no idea how to use tracks, so I use streams even though they're depreciated
-        console.log(stream);
+        stream.getTracks()[0].enabled = false; //mute mic by default
         LocalStream = stream;
 }).catch(function(e) {
         alert("Oh no!\n" + e)
@@ -194,6 +194,16 @@ function onReceiveICE(snapshot) {
         connection.addIceCandidate(candidate);
     }
 }
+
+//HunterTalk App Interface functions
+function startTalking() {
+    LocalStream.getTracks()[0].enabled = true
+}
+
+function stopTalking() {
+    LocalStream.getTracks()[0].enabled = false
+}
+
 
 //UI Functions
 function addAudioElement(uid) {
