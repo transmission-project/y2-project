@@ -103,10 +103,9 @@ public class TrackingService extends Service {
                     DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("groups");
                     Location location = locationResult.getLastLocation();
                     if (location != null) {
-
 //Save the location data to the database//
-
-                        ref.child(groupID).child("locations").child(uid).setValue(location);
+                        ref.child(groupID).child("locations").child(uid).child("longitude").setValue(location.getLongitude());
+                        ref.child(groupID).child("locations").child(uid).child("latitude").setValue(location.getLatitude());
                         System.out.println("Should be updated in the database now.");
                     }
                 }

@@ -5,6 +5,7 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -103,9 +104,26 @@ startTrackerService();
                         }
                         currentLocation= new LatLng(latitude,longitude);
                         // Add a marker in Sydney and move the camera
-                        mMap.addMarker(new MarkerOptions().position(currentLocation).title("Marker in Current Location"));
+                       // mMap.addMarker(new MarkerOptions().position(currentLocation).title("Marker in Current Location"));
                         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, DEFAULT_ZOOM));
 
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+                groupRef.child(groupID).child("locations").addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        mMap.clear();
+                        for (DataSnapshot user: dataSnapshot.getChildren()){
+                            double longitude= Double.parseDouble(user.child("longitude").getValue().toString());
+                            double latitude= Double.parseDouble(user.child("latitude").getValue().toString());
+                            LatLng currentLocationOfAUser= new LatLng(latitude,longitude);
+                            mMap.addMarker(new MarkerOptions().position(currentLocationOfAUser).title(user.getKey()));
+                        }
                     }
 
                     @Override
