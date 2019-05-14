@@ -1,7 +1,10 @@
 package com.example.huntertalk.everythingWithGroups;
 
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Location;
 import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -19,6 +22,10 @@ import android.widget.Toast;
 import com.example.huntertalk.LeaveGroupPopUp;
 import com.example.huntertalk.ui.firstLaunch.Home_page;
 import com.example.huntertalk.R;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -38,10 +45,33 @@ public class JoinAGroupById extends AppCompatActivity {
     private final FirebaseAuth auth = FirebaseAuth.getInstance();
     final String uid = auth.getCurrentUser().getUid();
     String groupID;
+    private FusedLocationProviderClient fusedLocationClient;
+    private LatLng lastKnownLocation;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+
+        if ( ContextCompat.checkSelfPermission( this, android.Manifest.permission.ACCESS_COARSE_LOCATION ) != PackageManager.PERMISSION_GRANTED ) {
+
+        }
+        fusedLocationClient.getLastLocation()
+                .addOnSuccessListener(this, new OnSuccessListener<Location>() {
+                    @Override
+                    public void onSuccess(Location location) {
+                        lastKnownLocation = new LatLng(-33.8523341, 151.2106085);
+                        if (location != null) {
+                            lastKnownLocation = new LatLng(location.getLatitude(), location.getLongitude());
+                        }
+                    }
+                });
+
+
         setContentView(R.layout.activity_join_create);
         Button joinButton = findViewById(R.id.btjoin);
         mDatabase = FirebaseDatabase.getInstance().getReference("groups");
@@ -127,6 +157,8 @@ public class JoinAGroupById extends AppCompatActivity {
                                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                             String nickname = dataSnapshot.getValue().toString();
                                             groupRef.child(ds1.getKey()).child("joined").child(uid).setValue(nickname);
+                                            groupRef.child(ds1.getKey()).child("locations").child(uid).setValue(lastKnownLocation);
+
                                             groupRef.child(ds1.getKey()).child("invited").child(uid).removeValue();
                                         }
 
