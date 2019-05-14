@@ -144,10 +144,10 @@ public class JoinAGroupById extends AppCompatActivity {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                             long dscount = dataSnapshot.getChildrenCount();
-                            for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                            for (final DataSnapshot ds : dataSnapshot.getChildren()) {
                                 int value = Integer.parseInt(ds.getKey());
                                 if (content == value) {
-                                    final DataSnapshot ds1 = ds;
+
                                     /**
                                      * Gets acurrent user id and nickname and adds to the list of joined
                                      * Gets all joined people from the group
@@ -156,10 +156,11 @@ public class JoinAGroupById extends AppCompatActivity {
                                         @Override
                                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                             String nickname = dataSnapshot.getValue().toString();
-                                            groupRef.child(ds1.getKey()).child("joined").child(uid).setValue(nickname);
-                                            groupRef.child(ds1.getKey()).child("locations").child(uid).setValue(lastKnownLocation);
+                                            groupRef.child(ds.getKey()).child("joined").child(uid).setValue(nickname);
+                                            groupRef.child(ds.getKey()).child("locations").child(uid).setValue(lastKnownLocation);
 
-                                            groupRef.child(ds1.getKey()).child("invited").child(uid).removeValue();
+                                            groupRef.child(ds.getKey()).child("invited").child(uid).removeValue();
+
                                         }
 
                                         @Override
@@ -171,14 +172,16 @@ public class JoinAGroupById extends AppCompatActivity {
                                      * Remove previous "recently Hunted and get all joined people from the group
                                      * as new recently hunted
                                      */
-                                    usersRef.child(uid).child("recentlyHunted").removeValue();
-                                    for (DataSnapshot ch : ds.child("joined").getChildren()) {
-                                        String id = ch.getKey();
-                                        String rcNickname = ch.getValue().toString();
-                                        if (!id.equals(uid)) {
-                                            usersRef.child(uid).child("recentlyHunted").child(id).setValue(rcNickname);
-                                        }
-                                    }
+
+                                            usersRef.child(uid).child("recentlyHunted").removeValue();
+                                            for (DataSnapshot ch : ds.child("joined").getChildren()) {
+                                                String id = ch.getKey();
+                                                String rcNickname = ch.getValue().toString();
+                                                if (!id.equals(uid)) {
+                                                    usersRef.child(uid).child("recentlyHunted").child(id).setValue(rcNickname);
+                                                    usersRef.child(id).child("recentlyHuntedOf").child(uid).setValue("rh");
+                                                }
+                                            }
 
                                     Intent i = new Intent(JoinAGroupById.this, InsideGroupActivity.class);
                                     i.putExtra("groupID", groupIDInput.getText().toString());

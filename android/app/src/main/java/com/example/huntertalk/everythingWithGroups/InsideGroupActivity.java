@@ -104,6 +104,7 @@ public class InsideGroupActivity extends AppCompatActivity
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             Intent i =  new Intent(InsideGroupActivity.this, SettingsPage.class);
+            i.putExtra("groupNumber", groupID);
             startActivity(i);
         }
         return super.onOptionsItemSelected(item);
@@ -134,6 +135,7 @@ public class InsideGroupActivity extends AppCompatActivity
 
         } else if (id == R.id.nav_settings) {
             Intent i =  new Intent(InsideGroupActivity.this, SettingsPage.class);
+            i.putExtra("groupNumber", groupID);
             startActivity(i);
 
             /**
