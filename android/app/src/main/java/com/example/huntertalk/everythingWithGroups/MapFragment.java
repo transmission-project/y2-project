@@ -23,22 +23,28 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import java.util.concurrent.Executor;
-
-import static android.support.constraint.Constraints.TAG;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class MapFragment extends Fragment {
 
-    private Context context =  MapFragment.this.getContext();
     private GoogleMap mMap;
     private Location mLastKnownLocation;
     private Location mCurrentLocation;
     private CameraPosition mCameraPosition;
-    private float DEFAULT_ZOOM= 100;
+    private float DEFAULT_ZOOM= 19;
     private static final String KEY_CAMERA_POSITION = "camera_position";
     private static final String KEY_LOCATION = "location";
     private FusedLocationProviderClient mFusedLocationProviderClient;
-    private final LatLng mDefaultLocation= new LatLng(-34, 151);
+    private  LatLng currentLocation;
+    private double latitude, longitude;
+    private DatabaseReference groupRef;
+    private String uid;
+    private String groupID;
 
     public MapFragment() {
         // Required empty public constructor
@@ -47,6 +53,12 @@ public class MapFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Bundle args= this.getArguments();
+        groupID= args.getString("groupID");
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        groupRef= database.getReference().child("groups");
+        FirebaseAuth auth = FirebaseAuth.getInstance();
+        uid = auth.getCurrentUser().getUid();
         if (savedInstanceState != null) {
             mCurrentLocation = savedInstanceState.getParcelable(KEY_LOCATION);
             mCameraPosition = savedInstanceState.getParcelable(KEY_CAMERA_POSITION);
@@ -69,46 +81,35 @@ public class MapFragment extends Fragment {
                 mMap=mMap1;
                 mMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
                 mMap.setMyLocationEnabled(true);
+                groupRef.child(groupID).child("locations").child(uid).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        for(DataSnapshot parameters: dataSnapshot.getChildren()){
+                            System.out.println("The key is "+ parameters.getKey());
+                            if(parameters.getKey().equals("latitude")){
+                                latitude= Double.parseDouble(parameters.getValue().toString());
+                            }
+                            if(parameters.getKey().equals("longitude")){
+                               longitude= Double.parseDouble(parameters.getValue().toString());
+                            }
+                        }
+                        currentLocation= new LatLng(latitude,longitude);
+                        // Add a marker in Sydney and move the camera
+                        mMap.addMarker(new MarkerOptions().position(currentLocation).title("Marker in Current Location"));
+                        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, DEFAULT_ZOOM));
 
-                // Add a marker in Sydney and move the camera
-                LatLng sydney =new LatLng(-34, 151);
-                mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-                mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+
             }
         });
 
 
         return rootView;
-    }
-    private void getDeviceLocation() {
-        /*
-         * Get the best and most recent location of the device, which may be null in rare
-         * cases when a location is not available.
-         */
-        try {
-            if (true) {
-                Task locationResult = mFusedLocationProviderClient.getLastLocation();
-                locationResult.addOnCompleteListener((Executor) this, new OnCompleteListener() {
-                    @Override
-                    public void onComplete(@NonNull Task task) {
-                        if (task.isSuccessful()) {
-                            // Set the map's camera position to the current location of the device.
-                            mLastKnownLocation = (Location) task.getResult();
-                            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
-                                    new LatLng(mLastKnownLocation.getLatitude(),
-                                            mLastKnownLocation.getLongitude()), DEFAULT_ZOOM));
-                        } else {
-                            Log.d(TAG, "Current location is null. Using defaults.");
-                            Log.e(TAG, "Exception: %s", task.getException());
-                            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mDefaultLocation, DEFAULT_ZOOM));
-                            mMap.getUiSettings().setMyLocationButtonEnabled(false);
-
-                        }
-                    }
-                });
-            }
-        } catch(SecurityException e)  {
-            Log.e("Exception: %s", e.getMessage());
-        }
     }
 }

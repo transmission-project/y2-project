@@ -108,8 +108,12 @@ public class InsideGroupActivity extends AppCompatActivity
             fragmentManager.beginTransaction().replace(R.id.content_frame, new GroupOverviewFragment()).commit();
 
         } else if (id == R.id.nav_map) {
-
-            fragmentManager.beginTransaction().replace(R.id.content_frame, new MapFragment()).commit();
+            Bundle bundle = new Bundle();
+            bundle.putString("groupID", groupID);
+            MapFragment map= new MapFragment();
+            map.setArguments(bundle);
+            fragmentManager.beginTransaction().replace(R.id.content_frame, map).commit();
+           // i.putExtra("groupID", groupID);
 
 
         } else if (id == R.id.nav_chat) {
