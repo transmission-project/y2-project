@@ -1,6 +1,7 @@
 package com.example.huntertalk.everythingWithGroups;
 
 import android.content.Intent;
+import android.graphics.Paint;
 import android.support.annotation.NonNull;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -9,6 +10,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.Gravity;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -19,12 +21,16 @@ import android.widget.Toast;
 import com.example.huntertalk.LeaveGroupPopUp;
 import com.example.huntertalk.ui.firstLaunch.Home_page;
 import com.example.huntertalk.R;
+import com.example.huntertalk.userRelated.FriendList;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
+import static android.widget.Toast.makeText;
+import static com.example.huntertalk.userRelated.FriendList.hideKeyboard;
 
 public class JoinAGroupById extends AppCompatActivity {
 
@@ -119,6 +125,7 @@ public class JoinAGroupById extends AppCompatActivity {
                             for (DataSnapshot ds : dataSnapshot.getChildren()) {
                                 int value = Integer.parseInt(ds.getKey());
                                 if (content == value) {
+
                                     final DataSnapshot ds1 = ds;
                                     /**
                                      * Gets current user id and nickname and adds to the list of joined
@@ -159,7 +166,9 @@ public class JoinAGroupById extends AppCompatActivity {
                                     startActivity(i);
                                     break;
                                 } else if (dscount == 1) {
-                                    Toast.makeText(getApplicationContext(), "Group not found", Toast.LENGTH_SHORT).show();
+                                    Toast toast = makeText(getApplicationContext(), "Group not found", Toast.LENGTH_SHORT);
+                                    toast.setGravity(Gravity.BOTTOM,0,700);
+                                    toast.show();
                                 }
                                 dscount--;
                             }
@@ -195,7 +204,7 @@ public class JoinAGroupById extends AppCompatActivity {
                         startActivity(intent);
                         this.finish();
                     } else {
-                        Toast message = Toast.makeText(JoinAGroupById.this, "Press once again to cancel joining a group",
+                        Toast message = makeText(JoinAGroupById.this, "Press once again to cancel joining a group",
                                 Toast.LENGTH_LONG);
                         message.setGravity(Gravity.TOP, 0, 0);
                         message.show();
@@ -265,5 +274,9 @@ public class JoinAGroupById extends AppCompatActivity {
         row.addView(declineButton);
         tableInvitations.addView(row, rowNumber);
         rowNumber++;
+    }
+    public boolean onTouchEvent(MotionEvent event) {
+        hideKeyboard(JoinAGroupById.this);
+        return super.onTouchEvent(event);
     }
 }

@@ -1,5 +1,7 @@
 package com.example.huntertalk.everythingWithGroups;
 
+import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -11,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -31,14 +34,28 @@ public class InviteToGroupFragment extends Fragment {
     private DatabaseReference userDb;
     private DatabaseReference groupDb;
 
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         myView = inflater.inflate(R.layout.invite_to_group_layout, container, false);
+        final EditText etSearch = myView.findViewById(R.id.etsearchmember);
 
         super.onCreate(savedInstanceState);
 
-        final EditText etSearch = myView.findViewById(R.id.etsearchmember);
+        //hide keyboard when pressing outside
+        myView.setOnTouchListener(new View.OnTouchListener(){
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+
+                if (event.getAction() == MotionEvent.ACTION_MOVE){
+                    hideKeyboardFrom(getContext(), v);
+                    etSearch.setHint("Enter email");
+                }
+                return true;
+            }
+        });
+
         Button searchButton = myView.findViewById(R.id.btnsearch);
 
         userDb = FirebaseDatabase.getInstance().getReference("users");
@@ -91,8 +108,12 @@ public class InviteToGroupFragment extends Fragment {
                                     String nickname = user.child("nickname").getValue().toString();
                                     groupDb.child(groupID).child("invited").child(inviteduser).setValue(nickname);
                                     etSearch.setHint("Enter email");
-                                    Toast toast = makeText(getContext(), "Successfully invited to group!", Toast.LENGTH_LONG);
-                                    toast.setGravity(Gravity.CENTER_VERTICAL,0,0);
+                                    etSearch.setText("");
+
+                                    hideKeyboardFrom(getContext(), getView());
+
+                                    Toast toast = makeText(getContext(), "Invitation sent", Toast.LENGTH_LONG);
+                                    toast.setGravity(Gravity.BOTTOM,0,600);
                                     toast.show();
                                 }
                             }
@@ -106,5 +127,9 @@ public class InviteToGroupFragment extends Fragment {
             }
             });
         return myView;
+    }
+    public static void hideKeyboardFrom(Context context, View view) {
+        InputMethodManager imm = (InputMethodManager) context.getSystemService(Activity.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 }

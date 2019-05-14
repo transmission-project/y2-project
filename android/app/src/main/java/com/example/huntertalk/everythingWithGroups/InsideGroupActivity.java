@@ -167,12 +167,5 @@ public class InsideGroupActivity extends AppCompatActivity
         return true;
     }
 
-    //remove user from group when app is killed from inside group
-    @Override
-    protected void onStop() {
-        super.onStop();
 
-
-
-    }
 }

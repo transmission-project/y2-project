@@ -1,5 +1,6 @@
 package com.example.huntertalk.userRelated;
 
+import android.app.Activity;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -10,6 +11,7 @@ import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -48,6 +50,7 @@ public class FriendList extends AppCompatActivity {
 
         final EditText etSearch = findViewById(R.id.etsearch);
         Button searchButton = findViewById(R.id.searchButton);
+        etSearch.setHint("Enter email");
 
         mDatabase = FirebaseDatabase.getInstance().getReference("users");
         /**
@@ -103,6 +106,8 @@ public class FriendList extends AppCompatActivity {
 
             @Override
             public boolean onTouch(View v, MotionEvent event) {
+
+                etSearch.setText("");
                 return false;
             }
         });
@@ -130,6 +135,7 @@ public class FriendList extends AppCompatActivity {
                         return;
                     }
 
+                hideKeyboard(FriendList.this);
                 /**
                  * Check if email provided for potential friend exists.
                  */
@@ -180,20 +186,22 @@ public class FriendList extends AppCompatActivity {
                             /**
                              * Add friends to the list with the nickname.
                              */
-                                mDatabase.child(futureFriend).child("nickname").addListenerForSingleValueEvent(new ValueEventListener() {
-                                    @Override
-                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                        String nickname3 = dataSnapshot.getValue().toString();
-                                        mDatabase.child(uid).child("friends").child(futureFriend).setValue(nickname3);
-                                        friendName=nickname3;
-                                        nickNames.put(futureFriend,nickname3);
-                                        addRow(nickname3,futureFriend, "fr");
-                                    }
+                            mDatabase.child(futureFriend).child("nickname").addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                    String nickname3 = dataSnapshot.getValue().toString();
+                                    mDatabase.child(uid).child("friends").child(futureFriend).setValue(nickname3);
+                                    friendName=nickname3;
+                                    nickNames.put(futureFriend,nickname3);
+                                    addRow(nickname3,futureFriend, "fr");
+                                    etSearch.setText("");
+                                    etSearch.setHint("Enter email");
+                                }
 
-                                    @Override
-                                    public void onCancelled(@NonNull DatabaseError databaseError) {
-                                    }
-                                });
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
+                                }
+                            });
                         }
                         @Override
                         public void onCancelled(@NonNull DatabaseError databaseError) {
@@ -379,6 +387,23 @@ public class FriendList extends AppCompatActivity {
     public void onBackPressed() {
         this.finish();
         super.onBackPressed();
+    }
+
+    public static void hideKeyboard(Activity activity) {
+        InputMethodManager imm = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
+        //Find the currently focused view, so we can grab the correct window token from it.
+        View view = activity.getCurrentFocus();
+        //If no view currently has focus, create a new one, just so we can grab a window token from it
+        if (view == null) {
+            view = new View(activity);
+        }
+        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        hideKeyboard(FriendList.this);
+        return super.onTouchEvent(event);
     }
 }
 
