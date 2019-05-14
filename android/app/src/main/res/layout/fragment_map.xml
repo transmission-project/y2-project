@@ -1,11 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".everythingWithGroups.MapFragment"
     tools:showIn="@layout/app_bar_inside_group">
 
+    <Button
+        android:id="@+id/refresh"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="REFRESH"
+        android:textColor="@color/hunterGreen"
+        android:backgroundTint="#ffffff"
+        android:textSize="16dp"
+        android:textStyle="bold"
+        />
 
     <fragment
         android:name="com.google.android.gms.maps.SupportMapFragment"
@@ -15,4 +25,5 @@
         android:layout_marginBottom="150dp"
         />
 
-</FrameLayout>
+
+</RelativeLayout>
