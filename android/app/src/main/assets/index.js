@@ -203,7 +203,8 @@ function addAudioElement(uid) {
     listItem.innerText = uid;
     const audio = document.createElement("audio")
     audio.srcObject = remoteStream;
-    listItem.appendChild(audio)
+    audio.autoplay = true;
+    listItem.appendChild(audio);
     document.getElementById("connected").appendChild(listItem);
 }
 
