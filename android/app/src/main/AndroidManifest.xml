@@ -48,9 +48,6 @@
             android:required="false" />
 
         <activity
-            android:name=".map.MapsActivity"
-            android:label="@string/title_activity_maps"></activity>
-        <activity
             android:name=".userRelated.FriendList"
             android:label="@string/friendList"></activity>
         <activity android:name=".userRelated.SettingsPage" />
