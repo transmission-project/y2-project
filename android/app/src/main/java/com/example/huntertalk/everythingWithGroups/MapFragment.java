@@ -36,10 +36,9 @@ public class MapFragment extends Fragment {
     private Location mLastKnownLocation;
     private Location mCurrentLocation;
     private CameraPosition mCameraPosition;
-    private float DEFAULT_ZOOM= 0;
+    private float DEFAULT_ZOOM= 17;
     private static final String KEY_CAMERA_POSITION = "camera_position";
     private static final String KEY_LOCATION = "location";
-    private FusedLocationProviderClient mFusedLocationProviderClient;
     private  LatLng currentLocation;
     private double latitude, longitude;
     private DatabaseReference groupRef;
@@ -119,10 +118,22 @@ startTrackerService();
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         mMap.clear();
                         for (DataSnapshot user: dataSnapshot.getChildren()){
-                            double longitude= Double.parseDouble(user.child("longitude").getValue().toString());
-                            double latitude= Double.parseDouble(user.child("latitude").getValue().toString());
-                            LatLng currentLocationOfAUser= new LatLng(latitude,longitude);
-                            mMap.addMarker(new MarkerOptions().position(currentLocationOfAUser).title(user.getKey()));
+                           final double longitude= Double.parseDouble(user.child("longitude").getValue().toString());
+                           final double latitude= Double.parseDouble(user.child("latitude").getValue().toString());
+                            groupRef.child(groupID).child("joined").child(user.getKey()).addValueEventListener(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                    String nickname= dataSnapshot.getValue().toString();
+                                    LatLng currentLocationOfAUser= new LatLng(latitude,longitude);
+                                    mMap.addMarker(new MarkerOptions().position(currentLocationOfAUser).title(nickname));
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                }
+                            });
+
                         }
                     }
 

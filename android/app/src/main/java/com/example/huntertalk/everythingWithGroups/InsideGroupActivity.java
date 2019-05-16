@@ -30,8 +30,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.database.annotations.NotNull;
 
-import org.jetbrains.annotations.NotNull;
 
 public class InsideGroupActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, VoipFragment.OnFragmentInteractionListener {
@@ -187,11 +187,13 @@ public class InsideGroupActivity extends AppCompatActivity
              */
         } else if (id == R.id.nav_leave) {
             groupsRef.child(groupID).child("joined").child(uid).removeValue();
+            groupsRef.child(groupID).child("locations").child(uid).removeValue();
             groupsRef.child(groupID).addListenerForSingleValueEvent((new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     if(!dataSnapshot.hasChild("joined")){
                         groupsRef.child(groupID).child("invited").removeValue();
+                        groupsRef.child(groupID).child("locations").removeValue();
                     }
                 }
 

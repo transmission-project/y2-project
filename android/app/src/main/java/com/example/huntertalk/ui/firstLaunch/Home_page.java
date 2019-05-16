@@ -55,12 +55,14 @@ public class Home_page extends AppCompatActivity  {
                     final String currentGroup = dataSnapshot.child("currentGroup").getValue().toString();
 
                     groupsRef.child(currentGroup).child("joined").child(uid).removeValue();
+                    groupsRef.child(currentGroup).child("locations").child(uid).removeValue();
                     groupsRef.child(currentGroup).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
                             if (!dataSnapshot.child(currentGroup).hasChild("joined")) {
                                 groupsRef.child(currentGroup).child("invited").removeValue();
+                                groupsRef.child(currentGroup).child("locations").removeValue();
                             }
 
                         }
