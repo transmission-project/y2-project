@@ -11,7 +11,7 @@ import com.google.firebase.messaging.RemoteMessage;
 //new class for using firebase cloud messaging tutorial: https://www.youtube.com/watch?v=QXPgMUSfYFI
 public class InviteNotificationService extends FirebaseMessagingService {
 
-    /*@Override
+    @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
         super.onMessageReceived(remoteMessage);
 
@@ -33,5 +33,5 @@ public class InviteNotificationService extends FirebaseMessagingService {
         super.onNewToken(s);
 
         Log.d("TOKENFIREBASE", s);
-    }*/
+    }
 }
