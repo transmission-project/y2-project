@@ -52,8 +52,7 @@
             android:label="@string/title_activity_maps"></activity>
         <activity
             android:name=".userRelated.FriendList"
-            android:label="@string/friendList"
-            android:parentActivityName=".ui.firstLaunch.Home_page" />
+            android:label="@string/friendList"></activity>
         <activity android:name=".userRelated.SettingsPage" />
         <activity
             android:name=".ui.firstLaunch.ResetPassword"
@@ -61,12 +60,10 @@
             android:parentActivityName=".ui.firstLaunch.LoginActivity" />
         <activity
             android:name=".everythingWithGroups.CreateGroupPage"
-            android:label="@string/title_create_group"
-            android:parentActivityName=".ui.firstLaunch.Home_page" />
+            android:label="@string/title_create_group" />
         <activity
             android:name=".everythingWithGroups.InsideGroupActivity"
             android:label="@string/title_activity_inside_group"
-            android:parentActivityName=".ui.firstLaunch.LoginActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".everythingWithGroups.JoinAGroupById" />
         <activity android:name=".ui.firstLaunch.Home_page" />

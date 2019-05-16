@@ -89,37 +89,34 @@ public class InviteToGroupFragment extends Fragment {
                     return;
                 }
                 else {
-                    userDb.orderByChild("email").equalTo(enteredemail).addListenerForSingleValueEvent(new ValueEventListener() {
+                    userDb.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-        for (DataSnapshot user: dataSnapshot.getChildren()) {
+                            for (DataSnapshot user: dataSnapshot.getChildren()){
+                                String dbemail=user.child("email").getValue().toString();
 
-            
-            String dbemail = user.child("email").getValue().toString();
-            System.out.println("dbemail is " + dbemail);
+                                String groupID;
+                                try {
+                                    groupID = getActivity().getIntent().getExtras().getString("groupID");
+                                }
+                                catch (NullPointerException e) {
+                                    groupID = "ERROR";
+                                }
 
-            String groupID;
-            try {
-                groupID = getActivity().getIntent().getExtras().getString("groupID");
-            } catch (NullPointerException e) {
-                groupID = "ERROR";
-            }
+                                if(dbemail.equals(enteredemail)){
+                                    String inviteduser=user.getKey();
+                                    String nickname = user.child("nickname").getValue().toString();
+                                    groupDb.child(groupID).child("invited").child(inviteduser).setValue(nickname);
+                                    etSearch.setHint("Enter email");
+                                    etSearch.setText("");
 
-            if (dbemail.equals(enteredemail)) {
-                String inviteduser = user.getKey();
+                                    hideKeyboardFrom(getContext(), getView());
 
-                String nickname = user.child("nickname").getValue().toString();
-                groupDb.child(groupID).child("invited").child(inviteduser).setValue(nickname);
-                etSearch.setHint("Enter email");
-                etSearch.setText("");
-
-                hideKeyboardFrom(getContext(), getView());
-
-                Toast toast = makeText(getContext(), "Invitation sent", Toast.LENGTH_LONG);
-                toast.setGravity(Gravity.BOTTOM, 0, 600);
-                toast.show();
-            }
-        }
+                                    Toast toast = makeText(getContext(), "Invitation sent", Toast.LENGTH_LONG);
+                                    toast.setGravity(Gravity.BOTTOM,0,600);
+                                    toast.show();
+                                }
+                            }
                         }
                         @Override
                         public void onCancelled(@NonNull DatabaseError databaseError) {

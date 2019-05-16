@@ -114,6 +114,26 @@ public class InsideGroupActivity extends AppCompatActivity
         super.onRestart();
     }
 
+    //When activity restarts after pop up, check intent and finish or do nothing
+    @Override
+    protected void onRestart() {
+
+        String finish;
+
+        try {
+            finish = getIntent().getExtras().getString("groupID");
+        }
+        catch (NullPointerException e) {
+            finish = "ERROR";
+        }
+
+        //If finish does not give null pointer exception finish activity
+        if (!finish.equals("ERROR")){
+            this.finish();
+        }
+        super.onRestart();
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.

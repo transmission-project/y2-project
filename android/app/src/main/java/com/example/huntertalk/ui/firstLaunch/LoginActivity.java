@@ -15,11 +15,17 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.huntertalk.R;
+import com.example.huntertalk.everythingWithGroups.InsideGroupActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -28,6 +34,8 @@ public class LoginActivity extends AppCompatActivity {
     private TextView resetpw;
     private FirebaseAuth mAuth;
     private static final String TAG = "LoginActivity";
+    private DatabaseReference usersRef, groupsRef;
+    private FirebaseDatabase database;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -99,11 +107,41 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     public void onStart() {
         super.onStart();
+
+        database = FirebaseDatabase.getInstance();
+        usersRef = database.getReference().child("users");
+        groupsRef = database.getReference().child("groups");
+
         // Check if user is signed in (non-null) and update UI accordingly.
-        FirebaseUser currentUser = mAuth.getCurrentUser();
+        final FirebaseUser currentUser = mAuth.getCurrentUser();
         if (currentUser!=null){
+
+            usersRef.child(currentUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                    if(dataSnapshot.hasChild("currentGroup")){
+
+                        final String currentGroup = dataSnapshot.child("currentGroup").getValue().toString();
+
+                        Intent intent = new Intent(LoginActivity.this, InsideGroupActivity.class);
+                        intent.putExtra("groupID", currentGroup);
+                        startActivity(intent);
+                        LoginActivity.this.finish();
+                    }
+
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+
             moveToMainActivity();
         }
+
+
     }
    /* private void updateUiWithUser(LoggedInUserView model) {
         //String welcome = getString(R.string.welcome) + model.getDisplayName();
