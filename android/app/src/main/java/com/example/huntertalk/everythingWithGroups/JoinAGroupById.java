@@ -144,75 +144,80 @@ public class JoinAGroupById extends AppCompatActivity {
             public void onClick(View v) {
 
                 if (!groupIDInput.getText().toString().equals("")) {
-                    final int content = Integer.parseInt(groupIDInput.getText().toString());
-                    FirebaseDatabase database = FirebaseDatabase.getInstance();
-                    groupRef = database.getReference().child("groups");
-                    usersRef = database.getReference().child("users");
-                    final String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                   try {
+                       final int content = Integer.parseInt(groupIDInput.getText().toString());
+                       FirebaseDatabase database = FirebaseDatabase.getInstance();
+                       groupRef = database.getReference().child("groups");
+                       usersRef = database.getReference().child("users");
+                       final String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
-                    groupRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                       groupRef.addListenerForSingleValueEvent(new ValueEventListener() {
 
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            long dscount = dataSnapshot.getChildrenCount();
-                            for (final DataSnapshot ds : dataSnapshot.getChildren()) {
-                                int value = Integer.parseInt(ds.getKey());
-                                if (content == value) {
-                                    /**
-                                     * Gets current user id and nickname and adds to the list of joined
-                                     * Gets all joined people from the group
-                                     */
-                                    usersRef.child(uid).addListenerForSingleValueEvent(new ValueEventListener() {
-                                        @Override
-                                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                           @Override
+                           public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                               long dscount = dataSnapshot.getChildrenCount();
+                               for (final DataSnapshot ds : dataSnapshot.getChildren()) {
+                                   int value = Integer.parseInt(ds.getKey());
+                                   if (content == value) {
+                                       /**
+                                        * Gets current user id and nickname and adds to the list of joined
+                                        * Gets all joined people from the group
+                                        */
+                                       usersRef.child(uid).addListenerForSingleValueEvent(new ValueEventListener() {
+                                           @Override
+                                           public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                                            String nickname = dataSnapshot.child("nickname").getValue().toString();
-                                            groupRef.child(ds.getKey()).child("joined").child(uid).setValue(nickname);
-                                            groupRef.child(ds.getKey()).child("invited").child(uid).removeValue();
-                                            usersRef.child(uid).child("currentGroup").setValue(ds.getKey());                                         
-                                            groupRef.child(ds.getKey()).child("locations").child(uid).setValue(lastKnownLocation);
-                                        }
+                                               String nickname = dataSnapshot.child("nickname").getValue().toString();
+                                               groupRef.child(ds.getKey()).child("joined").child(uid).setValue(nickname);
+                                               groupRef.child(ds.getKey()).child("invited").child(uid).removeValue();
+                                               usersRef.child(uid).child("currentGroup").setValue(ds.getKey());
+                                               groupRef.child(ds.getKey()).child("locations").child(uid).setValue(lastKnownLocation);
+                                           }
 
-                                        @Override
-                                        public void onCancelled(@NonNull DatabaseError databaseError) {
-                                        }
-                                    });
+                                           @Override
+                                           public void onCancelled(@NonNull DatabaseError databaseError) {
+                                           }
+                                       });
 
-                                    /**
-                                     * Remove previous "recently Hunted and get all joined people from the group
-                                     * as new recently hunted
-                                     */
+                                       /**
+                                        * Remove previous "recently Hunted and get all joined people from the group
+                                        * as new recently hunted
+                                        */
 
-                                            usersRef.child(uid).child("recentlyHunted").removeValue();
-                                            for (DataSnapshot ch : ds.child("joined").getChildren()) {
-                                                String id = ch.getKey();
-                                                String rcNickname = ch.getValue().toString();
-                                                if (!id.equals(uid)) {
-                                                    usersRef.child(uid).child("recentlyHunted").child(id).setValue(rcNickname);
-                                                    usersRef.child(id).child("recentlyHuntedOf").child(uid).setValue("rh");
-                                                }
-                                            }
+                                       usersRef.child(uid).child("recentlyHunted").removeValue();
+                                       for (DataSnapshot ch : ds.child("joined").getChildren()) {
+                                           String id = ch.getKey();
+                                           String rcNickname = ch.getValue().toString();
+                                           if (!id.equals(uid)) {
+                                               usersRef.child(uid).child("recentlyHunted").child(id).setValue(rcNickname);
+                                               usersRef.child(id).child("recentlyHuntedOf").child(uid).setValue("rh");
+                                           }
+                                       }
 
-                                    Intent i = new Intent(JoinAGroupById.this, InsideGroupActivity.class);
-                                    i.putExtra("groupID", groupIDInput.getText().toString());
-                                    JoinAGroupById.this.finish();
-                                    startActivity(i);
-                                    break;
-                                } else if (dscount == 1) {
-                                    Toast toast = makeText(getApplicationContext(), "Group not found", Toast.LENGTH_SHORT);
-                                    toast.setGravity(Gravity.BOTTOM,0,700);
-                                    toast.show();
-                                }
-                                dscount--;
-                            }
-                        }
+                                       Intent i = new Intent(JoinAGroupById.this, InsideGroupActivity.class);
+                                       i.putExtra("groupID", groupIDInput.getText().toString());
+                                       JoinAGroupById.this.finish();
+                                       startActivity(i);
+                                       break;
+                                   } else if (dscount == 1) {
+                                       Toast toast = makeText(getApplicationContext(), "Group not found", Toast.LENGTH_SHORT);
+                                       toast.setGravity(Gravity.BOTTOM, 0, 700);
+                                       toast.show();
+                                   }
+                                   dscount--;
+                               }
+                           }
 
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError databaseError) {
+                           @Override
+                           public void onCancelled(@NonNull DatabaseError databaseError) {
 
-                        }
-                    });
+                           }
+                       });
 
+                   }
+                catch(NumberFormatException numEx){
+                    groupIDInput.setError("Group ID is a number");
+                   }
                 } else {
                     groupIDInput.setError("Please enter group ID");
                 }
