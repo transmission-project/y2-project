@@ -49,7 +49,6 @@ public class Home_page extends AppCompatActivity  {
         usersRef.child(uid).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
                 String nickname = dataSnapshot.child("nickname").getValue().toString();
                 welcomeNickname.setText("Welcome " + String.valueOf(nickname) + "!");
             }
