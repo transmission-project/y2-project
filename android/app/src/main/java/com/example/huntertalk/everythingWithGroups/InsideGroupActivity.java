@@ -168,9 +168,11 @@ public class InsideGroupActivity extends AppCompatActivity
                 public boolean onTouch(View v, MotionEvent event) {
                     if(event.getAction() == MotionEvent.ACTION_DOWN) {
                         voipFrag.startTalking();
+                        groupsRef.child("muted").child(uid).setValue(false);
                     }
                     else if(event.getAction() == MotionEvent.ACTION_UP) {
                         voipFrag.stopTalking();
+                        groupsRef.child("muted").child(uid).setValue(true);
                     }
                     return true;
                 }
