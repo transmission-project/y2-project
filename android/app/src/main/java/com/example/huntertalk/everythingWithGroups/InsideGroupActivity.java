@@ -95,14 +95,14 @@ public class InsideGroupActivity extends AppCompatActivity
         String finish;
 
         try {
-            finish = getIntent().getExtras().getString("groupID");
+            finish = getIntent().getExtras().getString("finish");
         }
         catch (NullPointerException e) {
             finish = "ERROR";
         }
 
-        //If finish does not give null pointer exception finish activity
-        if (!finish.equals("ERROR")){
+        //If variable finish equals finish and is not null, finish the activity
+        if ((finish != null) && finish.equals("finish")){
             this.finish();
         }
         super.onRestart();
@@ -122,8 +122,10 @@ public class InsideGroupActivity extends AppCompatActivity
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         //noinspection SimplifiableIfStatement
+        //put extra to inform of which the previous activity was
         if (id == R.id.action_settings) {
             Intent i =  new Intent(InsideGroupActivity.this, SettingsPage.class);
+            i.putExtra("previousPage", "insideGroupPage");
             i.putExtra("groupNumber", groupID);
             startActivity(i);
         }
@@ -155,6 +157,7 @@ public class InsideGroupActivity extends AppCompatActivity
 
         } else if (id == R.id.nav_settings) {
             Intent i =  new Intent(InsideGroupActivity.this, SettingsPage.class);
+            i.putExtra("previousPage", "insideGroupPage");
             i.putExtra("groupNumber", groupID);
             startActivity(i);
 
@@ -177,7 +180,6 @@ public class InsideGroupActivity extends AppCompatActivity
                 }
             }));
             Intent i =  new Intent(InsideGroupActivity.this, Home_page.class);
-            System.out.println("after intent");
             this.finish();
             startActivity(i);
         }

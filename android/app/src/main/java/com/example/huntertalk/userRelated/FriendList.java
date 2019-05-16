@@ -1,6 +1,7 @@
 package com.example.huntertalk.userRelated;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -21,6 +22,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.huntertalk.R;
+import com.example.huntertalk.ui.firstLaunch.Home_page;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -41,12 +43,20 @@ public class FriendList extends AppCompatActivity {
     final String uid = auth.getCurrentUser().getUid();
     private HashMap<String,String> nickNames = new HashMap<String, String>();
     private HashMap<String,String> recentlyHunted = new HashMap<String, String>();
+    private String previousPage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_friend_list);
+
+        try {
+            previousPage = getIntent().getExtras().getString("previousPage");
+        }
+        catch (NullPointerException e){
+
+        }
 
         final EditText etSearch = findViewById(R.id.etsearch);
         Button searchButton = findViewById(R.id.searchButton);
@@ -390,12 +400,6 @@ public class FriendList extends AppCompatActivity {
         return (super.onOptionsItemSelected(menuItem));
     }
 
-    @Override
-    public void onBackPressed() {
-        this.finish();
-        super.onBackPressed();
-    }
-
     public static void hideKeyboard(Activity activity) {
         InputMethodManager imm = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
         //Find the currently focused view, so we can grab the correct window token from it.
@@ -411,6 +415,22 @@ public class FriendList extends AppCompatActivity {
     public boolean onTouchEvent(MotionEvent event) {
         hideKeyboard(FriendList.this);
         return super.onTouchEvent(event);
+    }
+
+    //check which page we came from and go to that activity
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+
+        if ((previousPage != null) && previousPage.equals("insideGroupPage")){
+            this.finish();
+        }
+        else if ((previousPage != null) && previousPage.equals("homePage")){
+            Intent intent = new Intent(FriendList.this, Home_page.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+
+        }
     }
 }
 
