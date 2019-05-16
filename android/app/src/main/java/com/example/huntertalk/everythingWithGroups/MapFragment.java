@@ -5,7 +5,6 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -13,7 +12,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.huntertalk.R;
-import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -122,11 +120,13 @@ startTrackerService();
                            final double latitude= Double.parseDouble(user.child("latitude").getValue().toString());
                             groupRef.child(groupID).child("joined").child(user.getKey()).addValueEventListener(new ValueEventListener() {
                                 @Override
-                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) throws NullPointerException {
-                                    String nickname= dataSnapshot.getValue().toString();
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot)  {
+                                    try{ String nickname= dataSnapshot.getValue().toString();
                                     LatLng currentLocationOfAUser= new LatLng(latitude,longitude);
-                                    mMap.addMarker(new MarkerOptions().position(currentLocationOfAUser).title(nickname));
-
+                                    mMap.addMarker(new MarkerOptions().position(currentLocationOfAUser).title(nickname));}
+                                    catch (NullPointerException nullEx){
+                                      System.out.println("Null Pointer inside map fragment");
+                                    }
                                 }
 
                                 @Override
