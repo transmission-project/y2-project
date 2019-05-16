@@ -62,6 +62,17 @@ public class InsideGroupActivity extends AppCompatActivity
         catch (NullPointerException e) {
             groupID = "ERROR";
         }
+        startTrackerService();
+    }
+    // start the TrackerService//
+
+    //Start the TrackerService//
+    private void startTrackerService() {
+        Intent service= new Intent(this, TrackingService.class);
+        service.putExtra("groupID", groupID);
+        service.putExtra("uid", uid);
+        this.startService(service);
+        System.out.println("The tracking has been enabled");
     }
 
     @Override
@@ -113,6 +124,7 @@ public class InsideGroupActivity extends AppCompatActivity
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             Intent i =  new Intent(InsideGroupActivity.this, SettingsPage.class);
+            i.putExtra("groupNumber", groupID);
             startActivity(i);
         }
         return super.onOptionsItemSelected(item);
@@ -128,6 +140,13 @@ public class InsideGroupActivity extends AppCompatActivity
             fragmentManager.beginTransaction().replace(R.id.content_frame, new GroupOverviewFragment()).commit();
 
         } else if (id == R.id.nav_map) {
+            Bundle bundle = new Bundle();
+            bundle.putString("groupID", groupID);
+            MapFragment map= new MapFragment();
+            map.setArguments(bundle);
+            fragmentManager.beginTransaction().replace(R.id.content_frame, map).commit();
+           // i.putExtra("groupID", groupID);
+
 
         } else if (id == R.id.nav_chat) {
 
@@ -136,6 +155,7 @@ public class InsideGroupActivity extends AppCompatActivity
 
         } else if (id == R.id.nav_settings) {
             Intent i =  new Intent(InsideGroupActivity.this, SettingsPage.class);
+            i.putExtra("groupNumber", groupID);
             startActivity(i);
 
             /**
