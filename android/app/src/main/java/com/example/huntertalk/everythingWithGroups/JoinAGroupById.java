@@ -235,12 +235,13 @@ public class JoinAGroupById extends AppCompatActivity {
 
                 if (!changed) {
                     Intent intent = new Intent(JoinAGroupById.this, Home_page.class);
+                    this.finish();
                     startActivity(intent);
                 } else {
                     if (secondPress) {
                         Intent intent = new Intent(JoinAGroupById.this, Home_page.class);
-                        startActivity(intent);
                         this.finish();
+                        startActivity(intent);
                     } else {
                         Toast message = makeText(JoinAGroupById.this, "Press once again to cancel joining a group",
                                 Toast.LENGTH_LONG);
@@ -286,6 +287,7 @@ public class JoinAGroupById extends AppCompatActivity {
 
                 Intent intent = new Intent(JoinAGroupById.this, InsideGroupActivity.class);
                 intent.putExtra("groupID", id);
+                JoinAGroupById.this.finish();
                 startActivity(intent);
                 tableInvitations.removeView(row);
             }

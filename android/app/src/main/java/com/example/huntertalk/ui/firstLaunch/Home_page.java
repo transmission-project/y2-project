@@ -97,14 +97,23 @@ public class Home_page extends AppCompatActivity  {
         int id = item.getItemId();
         if (id == R.id.mybutton) {
             Intent i=new Intent(Home_page.this, SettingsPage.class);
+            i.putExtra("previousPage", "homePage");
             startActivity(i);
             this.finish();
         }
         if (id == R.id.addFriends) {
             Intent i=new Intent(Home_page.this, FriendList.class);
+            i.putExtra("previousPage", "homePage");
             startActivity(i);
             this.finish();
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    //Back button is currently disabled from home page
+    @Override
+    public void onBackPressed() {
+        //super.onBackPressed();
+
     }
 }
