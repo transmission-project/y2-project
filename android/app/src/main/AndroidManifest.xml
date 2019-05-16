@@ -60,6 +60,7 @@
             android:parentActivityName=".ui.firstLaunch.LoginActivity" />
         <activity
             android:name=".everythingWithGroups.CreateGroupPage"
+            android:parentActivityName=".ui.firstLaunch.Home_page"
             android:label="@string/title_create_group" />
         <activity
             android:name=".everythingWithGroups.InsideGroupActivity"
