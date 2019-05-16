@@ -3,6 +3,7 @@ package com.example.huntertalk.everythingWithGroups;
 import android.content.Intent;
 
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Location;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
@@ -17,6 +18,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -247,21 +249,68 @@ public class JoinAGroupById extends AppCompatActivity {
 
         rowNumber = 0;
         final TableRow row = new TableRow(getBaseContext());
-        TableRow.LayoutParams lp = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT);
-        lp.setMargins(10, 10, 5, 10);
+
+        TableRow.LayoutParams lp = new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT);
+
+        lp.setMargins(3, 10, 3, 10);
+
         row.setLayoutParams(lp);
+
+        row.setLayoutParams(lp);
+
+        lp = new TableRow.LayoutParams(0,
+                TableRow.LayoutParams.WRAP_CONTENT);
+
+        lp.setMargins(3, 10, 3, 10);
+
+        LinearLayout layout = new LinearLayout(getBaseContext());
+        lp.weight = 1;
+        layout.setLayoutParams(lp);
+        layout.setWeightSum(1);
+
+        LinearLayout.LayoutParams chiledParams = new LinearLayout.LayoutParams(0,
+                LinearLayout.LayoutParams.WRAP_CONTENT);
+        chiledParams.setMargins(3, 0, 3, 0);
+        chiledParams.weight = (float) 1;
+
+        tv1 = new TextView(getBaseContext());
+        tv1.setText(ID);
+        tv1.setTextSize(20);
+        tv1.setId(i + k + 10000);
+        tv1.setLayoutParams(chiledParams);
+
+        layout.addView(tv1);
+
+        LinearLayout.LayoutParams chiledParams1 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT);
+        chiledParams1.setMargins(3, 0, 3, 0);
+
+        chiledParams1.gravity = Gravity.RIGHT;
+
         Button acceptButton = new Button(this);
+
         acceptButton.setText("Accept");
+
         acceptButton.setId(i + k + 100);
-        acceptButton.setVisibility(View.VISIBLE);
+
+        acceptButton.setBackgroundColor(Color.parseColor("#355e3b"));
+        acceptButton.setTextColor(Color.WHITE);
+
+        acceptButton.setLayoutParams(chiledParams1);
+
         Button declineButton = new Button(this);
+
         declineButton.setText("Decline");
+
+        declineButton.setBackgroundColor(Color.WHITE);
+        declineButton.setTextColor(Color.parseColor("#355e3b"));
+
         declineButton.setId(i + k);
-        declineButton.setVisibility(View.VISIBLE);
-        Button invisibleButton = new Button(this);
-        invisibleButton.setText("Invisible");
-        invisibleButton.setId(i + k + 1000);
-        invisibleButton.setVisibility(View.GONE);
+        declineButton.setLayoutParams(chiledParams1);
+
+        layout.addView(acceptButton);
+        layout.addView(declineButton);
+
         acceptButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -290,15 +339,11 @@ public class JoinAGroupById extends AppCompatActivity {
             }
         });
 
-        tv1 = new TextView(getBaseContext());
-        tv1.setText(ID);
-        tv1.setTextSize(20);
-        tv1.setId(i + k + 10000);
+
+
+
         row.setId(k);
-        row.addView(invisibleButton);
-        row.addView(tv1, lp);
-        row.addView(acceptButton);
-        row.addView(declineButton);
+        row.addView(layout);
         tableInvitations.addView(row, rowNumber);
         rowNumber++;
     }

@@ -50,7 +50,6 @@ public class InviteToGroupFragment extends Fragment {
 
                 if (event.getAction() == MotionEvent.ACTION_MOVE){
                     hideKeyboardFrom(getContext(), v);
-                    etSearch.setHint("Enter email");
                 }
                 return true;
             }
@@ -69,7 +68,6 @@ public class InviteToGroupFragment extends Fragment {
 
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                etSearch.setHint("");
                 return false;
             }
         });

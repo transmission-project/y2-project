@@ -1,34 +1,66 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    tools:context=".ui.firstLaunch.ResetPassword"
+    android:orientation="vertical"
+    android:gravity="center_horizontal">
 
-    xmlns:app="http://schemas.android.com/apk/res-auto">
-
-        <EditText
-            android:id="@+id/etsearchmember"
-            style="?attr/searchViewStyle"
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="96dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginTop="100dp"
-            android:ems="10"
-            android:inputType="textPersonName" />
+            android:text="Invite friend"
+            android:textSize="26dp"
+            android:textColor="#000"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Enter the email address linked to your friend's account"
+            android:textSize="14dp"
+            android:layout_marginTop="2dp"/>
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="25dp"
+            android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:labelFor="@+id/enterEmail"
+                    android:text="@string/prompt_email"
+                    android:textColor="@color/hunterGreen" />
+
+                <EditText
+                    android:id="@+id/etsearchmember"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:inputType="textEmailAddress"
+                    android:backgroundTint="@color/hunterGreen"
+                    android:drawableTint="@color/hunterGreen"
+                    android:foregroundTint="@color/hunterGreen" />
+
+        </LinearLayout>
 
         <Button
             android:id="@+id/btnsearch"
-            android:layout_width="103dp"
-            android:layout_height="43dp"
-            android:layout_alignParentEnd="true"
-            android:layout_marginTop="100dp"
-            android:layout_marginStart="14dp"
-            android:layout_marginEnd="29dp"
-            android:layout_toEndOf="@+id/etsearchmember"
-            android:text="@string/add_button" />
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/hunterGreen"
+            android:text="Send invitation"
+            android:textColor="#ffffff"
+            android:textSize="16dp"
+            android:textStyle="bold"
+            android:layout_marginTop="10dp"/>
 
-
-
-
-</RelativeLayout>
+</LinearLayout>
