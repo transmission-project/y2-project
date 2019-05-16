@@ -36,6 +36,7 @@ public class InsideGroupActivity extends AppCompatActivity
     private DatabaseReference groupsRef;
     private String groupID;
     private String uid;
+    private Intent service;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,7 +74,7 @@ public class InsideGroupActivity extends AppCompatActivity
 
     //Start the TrackerService//
     private void startTrackerService() {
-        Intent service= new Intent(this, TrackingService.class);
+        service= new Intent(this, TrackingService.class);
         service.putExtra("groupID", groupID);
         service.putExtra("uid", uid);
         this.startService(service);
@@ -92,26 +93,6 @@ public class InsideGroupActivity extends AppCompatActivity
             startActivity(i);
 
         }
-    }
-
-    //When activity restarts after pop up, check intent and finish or do nothing
-    @Override
-    protected void onRestart() {
-
-        String finish;
-
-        try {
-            finish = getIntent().getExtras().getString("groupID");
-        }
-        catch (NullPointerException e) {
-            finish = "ERROR";
-        }
-
-        //If finish does not give null pointer exception finish activity
-        if (!finish.equals("ERROR")){
-            this.finish();
-        }
-        super.onRestart();
     }
 
     //When activity restarts after pop up, check intent and finish or do nothing
@@ -202,14 +183,17 @@ public class InsideGroupActivity extends AppCompatActivity
              * Remove current user from the group (on pressing "Leave Group")
              */
         } else if (id == R.id.nav_leave) {
+            System.out.println("The group ID of the group being left to "+ groupID);
+           this.stopService(service);
             groupsRef.child(groupID).child("joined").child(uid).removeValue();
             groupsRef.child(groupID).child("locations").child(uid).removeValue();
             groupsRef.child(groupID).addListenerForSingleValueEvent((new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    System.out.println("The data snapshot is "+ dataSnapshot.toString());
                     if(!dataSnapshot.hasChild("joined")){
-                        groupsRef.child(groupID).child("invited").removeValue();
-                        groupsRef.child(groupID).child("locations").removeValue();
+                        System.out.println("Inside the total removal of invited and locations");
+                        groupsRef.child(groupID).removeValue();
                     }
                 }
 

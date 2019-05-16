@@ -70,7 +70,7 @@ public class LeaveGroupPopUp extends Activity {
                     @Override
                     public void onDataChange(DataSnapshot snapshot) {
                         if (!snapshot.hasChild("joined")) {
-                            groupsRef.child(groupID).child("invited").removeValue();
+                            groupsRef.child(groupID).removeValue();
 
                         }
                     }
