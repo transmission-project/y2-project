@@ -122,10 +122,11 @@ startTrackerService();
                            final double latitude= Double.parseDouble(user.child("latitude").getValue().toString());
                             groupRef.child(groupID).child("joined").child(user.getKey()).addValueEventListener(new ValueEventListener() {
                                 @Override
-                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) throws NullPointerException {
                                     String nickname= dataSnapshot.getValue().toString();
                                     LatLng currentLocationOfAUser= new LatLng(latitude,longitude);
                                     mMap.addMarker(new MarkerOptions().position(currentLocationOfAUser).title(nickname));
+
                                 }
 
                                 @Override
