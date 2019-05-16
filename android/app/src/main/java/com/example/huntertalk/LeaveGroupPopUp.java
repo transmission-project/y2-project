@@ -46,6 +46,8 @@ public class LeaveGroupPopUp extends Activity {
 
                 FirebaseDatabase database = FirebaseDatabase.getInstance();
                 final DatabaseReference groupsRef = database.getReference().child("groups");
+                final DatabaseReference usersRef = database.getReference().child("users");
+
 
                 //get group ID and user ID from Inside Group Page
                 try {
@@ -57,6 +59,10 @@ public class LeaveGroupPopUp extends Activity {
                     groupID = "ERROR";
                     uid = "ERROR";
                 }
+
+                usersRef.child(uid).child("currentGroup").removeValue();
+
+
 
                 groupsRef.child(groupID).child("joined").child(uid).removeValue();
                 groupsRef.child(groupID).addListenerForSingleValueEvent(new ValueEventListener() {

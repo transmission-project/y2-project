@@ -74,7 +74,6 @@ public class InsideGroupActivity extends AppCompatActivity
             i.putExtra("groupID", groupID);
             i.putExtra("uid",uid);
             startActivity(i);
-
         }
     }
 
