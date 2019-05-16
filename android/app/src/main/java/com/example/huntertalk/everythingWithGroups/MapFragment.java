@@ -115,18 +115,20 @@ startTrackerService();
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         mMap.clear();
-                        for (DataSnapshot user: dataSnapshot.getChildren()){
+                        try{
+                            for (DataSnapshot user: dataSnapshot.getChildren()){
                            final double longitude= Double.parseDouble(user.child("longitude").getValue().toString());
                            final double latitude= Double.parseDouble(user.child("latitude").getValue().toString());
                             groupRef.child(groupID).child("joined").child(user.getKey()).addValueEventListener(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot dataSnapshot)  {
-                                    try{ String nickname= dataSnapshot.getValue().toString();
+                                  try{   String nickname= dataSnapshot.getValue().toString();
                                     LatLng currentLocationOfAUser= new LatLng(latitude,longitude);
-                                    mMap.addMarker(new MarkerOptions().position(currentLocationOfAUser).title(nickname));}
-                                    catch (NullPointerException nullEx){
-                                      System.out.println("Null Pointer inside map fragment");
-                                    }
+                                    mMap.addMarker(new MarkerOptions().position(currentLocationOfAUser).title(nickname));
+                                }
+                                  catch (NullPointerException nullEx){
+                                      //Nothing needed, just prevent from crashing.
+                                }
                                 }
 
                                 @Override
@@ -135,6 +137,10 @@ startTrackerService();
                                 }
                             });
 
+                        }
+                        }
+                        catch (NullPointerException nullEx){
+                            //Nothing needed, just prevent from crashing.
                         }
                     }
 
