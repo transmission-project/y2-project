@@ -14,7 +14,7 @@ public class InviteNotificationService extends FirebaseMessagingService {
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
         super.onMessageReceived(remoteMessage);
-
+        Log.d("notification", "I received notification");
         showNotification(remoteMessage.getNotification().getTitle(), remoteMessage.getNotification().getBody());
     }
 

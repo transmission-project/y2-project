@@ -64,6 +64,7 @@ public class InviteToGroupFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 final String enteredemail = etSearch.getText().toString().trim();
+                FirebaseMessaging.getInstance().subscribeToTopic("invited");
 
                 FirebaseMessaging.getInstance().subscribeToTopic("invited")
                         .addOnCompleteListener(new OnCompleteListener<Void>() {
