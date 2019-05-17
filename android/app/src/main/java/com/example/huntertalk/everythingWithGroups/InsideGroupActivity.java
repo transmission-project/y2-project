@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
@@ -16,6 +17,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Toast;
 
 import com.example.huntertalk.LeaveGroupPopUp;
 import com.example.huntertalk.R;
@@ -37,6 +39,7 @@ public class InsideGroupActivity extends AppCompatActivity
     private String groupID;
     private String uid;
     private Intent service;
+    static final int POP_UP_REQUEST = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,32 +93,12 @@ public class InsideGroupActivity extends AppCompatActivity
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
-            Intent i = new Intent(InsideGroupActivity.this, LeaveGroupPopUp.class);
-            i.putExtra("groupID", groupID);
-            i.putExtra("uid",uid);
-            startActivity(i);
+            Intent intent = new Intent(InsideGroupActivity.this, LeaveGroupPopUp.class);
+            intent.putExtra("groupID", groupID);
+            intent.putExtra("uid",uid);
+            startActivityForResult(intent, POP_UP_REQUEST);
 
         }
-    }
-
-    //When activity restarts after pop up, check intent and finish or do nothing
-    @Override
-    protected void onRestart() {
-
-        String finish;
-
-        try {
-            finish = getIntent().getExtras().getString("finish");
-        }
-        catch (NullPointerException e) {
-            finish = "ERROR";
-        }
-
-        //If variable finish equals finish and is not null, finish the activity
-        if ((finish != null) && finish.equals("finish")){
-            this.finish();
-        }
-        super.onRestart();
     }
 
     @Override
@@ -220,5 +203,24 @@ public class InsideGroupActivity extends AppCompatActivity
     @Override
     public void onFragmentInteraction(@NotNull Uri uri) {
 
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == 1){
+            if (resultCode == RESULT_OK){
+                String popUp = data.getStringExtra("popUp");
+
+                if (popUp.equals("yes")){
+                    this.stopService(service);
+                    finish();
+                }
+            }
+            if (resultCode == RESULT_CANCELED){
+
+            }
+        }
     }
 }

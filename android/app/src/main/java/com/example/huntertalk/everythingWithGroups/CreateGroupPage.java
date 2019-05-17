@@ -72,14 +72,6 @@ public class CreateGroupPage extends AppCompatActivity {
                         }
                     }
                 });
-
-
-
-
-
-
-
-
         setContentView(R.layout.activity_create_group_page);
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         ActionBar actionBar = getSupportActionBar();
@@ -132,6 +124,7 @@ public class CreateGroupPage extends AppCompatActivity {
                 Intent intent =new Intent(CreateGroupPage.this, InsideGroupActivity.class);
                 intent.putExtra("groupID", groupId);
                 startActivity(intent);
+                finish();
             }
         });
 

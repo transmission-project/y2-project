@@ -63,8 +63,6 @@ public class LeaveGroupPopUp extends Activity {
 
                 usersRef.child(uid).child("currentGroup").removeValue();
 
-
-
                 groupsRef.child(groupID).child("joined").child(uid).removeValue();
                 groupsRef.child(groupID).child("locations").child(uid).removeValue();
                 groupsRef.child(groupID).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -81,24 +79,25 @@ public class LeaveGroupPopUp extends Activity {
 
                     }
                 });
+                //send yes to inside group and close
+                Intent popUpIntent = new Intent();
+                popUpIntent.putExtra("popUp", "yes");
 
-                //set finish to finish if user choose to leave group so that inside group activity finishes
-                finish = "finish";
-
-                intent = new Intent(LeaveGroupPopUp.this, InsideGroupActivity.class);
-                intent.putExtra("finish", finish);
-                LeaveGroupPopUp.this.finish();
-                Intent i =  new Intent(LeaveGroupPopUp.this, Home_page.class);
-                startActivity(i);
+                setResult(RESULT_OK, popUpIntent);
+                finish();
             }
         });
 
-        //If no button is pressed the activity is closed
+        //If no button is pressed send no and finish pop up
         ImageButton no = (ImageButton) findViewById(R.id.buttonCross);
         no.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                LeaveGroupPopUp.this.finish();
+                Intent popUpIntent = new Intent();
+                popUpIntent.putExtra("popUp", "no");
+
+                setResult(RESULT_OK, popUpIntent);
+                finish();
             }
         });
     }
