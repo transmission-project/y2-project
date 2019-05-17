@@ -213,7 +213,6 @@ public class InsideGroupActivity extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
-
     @Override
     public void onFragmentInteraction(@NotNull Uri uri) {
 

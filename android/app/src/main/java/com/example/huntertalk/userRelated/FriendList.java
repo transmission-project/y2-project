@@ -433,3 +433,20 @@ public class FriendList extends AppCompatActivity {
         }
     }
 }
+
+    //check which page we came from and go to that activity
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+
+        if ((previousPage != null) && previousPage.equals("insideGroupPage")){
+            this.finish();
+        }
+        else if ((previousPage != null) && previousPage.equals("homePage")){
+            Intent intent = new Intent(FriendList.this, Home_page.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+
+        }
+    }
+}
