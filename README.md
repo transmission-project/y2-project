@@ -36,7 +36,7 @@ We're creating an app that hunters can use as an alternative to the communicatio
 
 ![](sprint3-scheduling.jpg)
 
-### Sprint 4 **FINAL SPRINT**
+### Sprint 4 - **FINAL SPRINT**
 
 |  Goal         | Description   | Result  |
 | ------------- |:-------------:| -----:|
