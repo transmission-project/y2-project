@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.graphics.Paint;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.util.Patterns;
@@ -42,8 +41,6 @@ public class LoginActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        //ActionBar actionBar = getSupportActionBar();
-        //actionBar.setTitle("Sign in");
         loginButton = findViewById(R.id.login);
 
         loginButton.setEnabled(true);
@@ -82,13 +79,9 @@ public class LoginActivity extends AppCompatActivity {
                             @Override
                             public void onComplete(@NonNull Task<AuthResult> task) {
                                 if (task.isSuccessful()) {
-                                    // Sign in success, update UI with the signed-in user's information
-                                    Log.d(TAG, "signInWithEmail:success");
                                     FirebaseUser user = mAuth.getCurrentUser();
                                     moveToMainActivity();
                                 } else {
-                                    // If sign in fails, display a message to the user.
-                                       Log.w(TAG, "signInWithEmail:failure", task.getException());
                                     Toast.makeText(getApplicationContext(), "Incorrect username or password", Toast.LENGTH_SHORT).show();
                                 }
                             }
@@ -115,7 +108,6 @@ public class LoginActivity extends AppCompatActivity {
         // Check if user is signed in (non-null) and update UI accordingly.
         final FirebaseUser currentUser = mAuth.getCurrentUser();
         if (currentUser!=null){
-
             usersRef.child(currentUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -127,8 +119,10 @@ public class LoginActivity extends AppCompatActivity {
                           groupsRef.child(currentGroup).addListenerForSingleValueEvent(new ValueEventListener() {
                               @Override
                               public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                  //If somehow the group exists but is empty (due to some bug) delete the group.
                                   if(!dataSnapshot.hasChild("joined")){
                                       groupsRef.child(currentGroup).removeValue();
+                                      usersRef.child(currentUser.getUid()).child("currentGroup").removeValue();
                                   }else{
                                       Intent intent = new Intent(LoginActivity.this, InsideGroupActivity.class);
                                       intent.putExtra("groupID", currentGroup);
@@ -157,11 +151,6 @@ public class LoginActivity extends AppCompatActivity {
 
 
     }
-   /* private void updateUiWithUser(LoggedInUserView model) {
-        //String welcome = getString(R.string.welcome) + model.getDisplayName();
-        // TODO : initiate successful logged in experience
-        Toast.makeText(getApplicationContext(), welcome, Toast.LENGTH_LONG).show();
-    }*/
     private void moveToMainActivity(){
         Intent intent = new Intent(LoginActivity.this, Home_page.class);
         startActivity(intent);
