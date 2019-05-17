@@ -25,10 +25,11 @@ public class ResetPassword extends AppCompatActivity {
     private static final String TAG = "LoginActivity";
     private Button sendEmail;
     private EditText enterEmail;
-    Boolean changed=false;
+    private Boolean changed;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        changed=false;
         ActionBar actionBar = getSupportActionBar();
         actionBar.setTitle("Login help");
         super.onCreate(savedInstanceState);
