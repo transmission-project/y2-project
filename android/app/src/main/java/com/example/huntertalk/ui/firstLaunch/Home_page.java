@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -18,7 +17,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import com.example.huntertalk.LeaveGroupPopUp;
 import com.example.huntertalk.userRelated.FriendList;
 import com.example.huntertalk.R;
 import com.example.huntertalk.userRelated.SettingsPage;
@@ -46,10 +44,10 @@ public class Home_page extends AppCompatActivity  {
         welcomeNickname = (TextView) findViewById(R.id.textView);
 
         //getting a single value from the database to set welcome nickname
-        usersRef.child(uid).addListenerForSingleValueEvent(new ValueEventListener() {
+        usersRef.child(uid).child("nickname").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                String nickname = dataSnapshot.child("nickname").getValue().toString();
+                String nickname = dataSnapshot.getValue().toString();
                 welcomeNickname.setText("Welcome " + String.valueOf(nickname) + "!");
             }
 
@@ -62,8 +60,8 @@ public class Home_page extends AppCompatActivity  {
         /**
          * Functionality on button press of button join
          */
-        LinearLayout bjoin = (LinearLayout) findViewById(R.id.buttonJoin);
-        bjoin.setOnClickListener(new View.OnClickListener(){
+        LinearLayout bJoin = (LinearLayout) findViewById(R.id.buttonJoin);
+        bJoin.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v){
                 Intent i=new Intent(Home_page.this, JoinAGroupById.class);
                 startActivity(i);
@@ -94,7 +92,7 @@ public class Home_page extends AppCompatActivity  {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        if (id == R.id.mybutton) {
+        if (id == R.id.homePageSettings) {
             Intent i=new Intent(Home_page.this, SettingsPage.class);
             i.putExtra("previousPage", "homePage");
             startActivity(i);
@@ -112,7 +110,5 @@ public class Home_page extends AppCompatActivity  {
     //Back button is currently disabled from home page
     @Override
     public void onBackPressed() {
-        //super.onBackPressed();
-
     }
 }
