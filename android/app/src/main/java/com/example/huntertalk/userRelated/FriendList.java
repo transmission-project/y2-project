@@ -434,4 +434,4 @@ public class FriendList extends AppCompatActivity {
     }
 }
 
-
+    
