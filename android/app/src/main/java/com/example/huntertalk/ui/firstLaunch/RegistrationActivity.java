@@ -3,13 +3,11 @@ package com.example.huntertalk.ui.firstLaunch;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.Gravity;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -26,27 +24,24 @@ import com.google.firebase.database.FirebaseDatabase;
 
 public class RegistrationActivity extends AppCompatActivity {
 
-    private EditText inputEmail, inputPassword, inputPasswordConfirm;
-
-    private boolean changed=false;
-
-
+    private EditText inputEmail, inputPassword, inputPasswordConfirm, inputNickname;
+    private boolean changed;
+    private boolean secondPress;
     private TextView login;
-    private Button btnSignIn, registerButton, btnResetPassword;
+    private Button  registerButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registation);
-        //ActionBar actionBar = getSupportActionBar();
-        //actionBar.setTitle("Registration");
-        //actionBar.setHomeButtonEnabled(true); //maybe need to be removed
+        changed=false;
+        secondPress=false;
 
         registerButton = (Button) findViewById(R.id.register2);
         inputEmail = (EditText) findViewById(R.id.email);
         inputPassword = (EditText) findViewById(R.id.password);
         inputPasswordConfirm = (EditText) findViewById(R.id.confirmPassword);
-        final EditText inputNickname = (EditText) findViewById(R.id.displayName);
+        inputNickname = (EditText) findViewById(R.id.displayName);
         login = (TextView) findViewById(R.id.login2);
 
         login.setOnClickListener(new View.OnClickListener() {
@@ -57,74 +52,10 @@ public class RegistrationActivity extends AppCompatActivity {
             }
         });
 
-        inputEmail.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if(s.length() != 0)
-                    changed=true;
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
-        });
-        inputPassword.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if(s.length() != 0)
-                    changed=true;
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
-        });
-        inputPasswordConfirm.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if(s.length() != 0)
-                    changed=true;
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
-        });
-        inputNickname.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if(s.length() != 0)
-                    changed=true;
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
-        });
+       addWatcherForChanges(inputEmail);
+       addWatcherForChanges(inputPassword);
+       addWatcherForChanges(inputPasswordConfirm);
+       addWatcherForChanges(inputNickname);
 
         inputEmail.setOnClickListener(new View.OnClickListener(){
             @Override
@@ -141,13 +72,12 @@ public class RegistrationActivity extends AppCompatActivity {
                 String passwordConfirm = inputPasswordConfirm.getText().toString().trim();
                 String nickname = inputNickname.getText().toString().trim();
 
-
                 if (TextUtils.isEmpty(email)) {
-                    inputEmail.setError("Invalid email addresss");
+                    inputEmail.setError("Invalid email address");
                     return;
                 }
                 if (email.equals("") || !email.contains("@") || !email.contains(".")){
-                    inputEmail.setError("Invalid email addresss");
+                    inputEmail.setError("Invalid email address");
                     return;
                 }
                 if (TextUtils.isEmpty(password)) {
@@ -161,18 +91,13 @@ public class RegistrationActivity extends AppCompatActivity {
                 if (password.length() < 6) {
                     inputPassword.setError("Enter minimum 6 characters");
                     return;
-                }if (nickname.length() == 0) {
-                    inputPassword.setError("Nickname can't be empty");
-                    return;
                 }
                 if (TextUtils.isEmpty(nickname)) {
-                    Toast.makeText(getApplicationContext(), "You must have a nickname.", Toast.LENGTH_SHORT).show();
+                    inputPassword.setError("Nickname can't be empty");
                     return;
                 }
 
                 FirebaseAuth auth = FirebaseAuth.getInstance();
-
-
                 //create user and finish with our registerFollowup listener
                 auth.createUserWithEmailAndPassword(email, password)
                         .addOnCompleteListener(RegistrationActivity.this,
@@ -181,15 +106,12 @@ public class RegistrationActivity extends AppCompatActivity {
             }
         });
     }
+
     /**
-     * Makes user press twice
-     * Requires setHomeButtonEnabled() in onCreate().
+     * Makes user press twice to exit if anything was typed
      */
-    boolean secondPress =false;
     @Override
-    public boolean onOptionsItemSelected(MenuItem menuItem) {
-        switch (menuItem.getItemId()) {
-            case android.R.id.home:
+    public void onBackPressed() {
                 if(!changed){
                     Intent intent = new Intent(RegistrationActivity.this, LoginActivity.class);
                     startActivity(intent);
@@ -204,9 +126,23 @@ public class RegistrationActivity extends AppCompatActivity {
                     message.show();
                     secondPress=true;
                 }}
-                return true;
         }
-        return (super.onOptionsItemSelected(menuItem));
+
+    //Adding text watcher to edit text fields
+    private void addWatcherForChanges(EditText textField){
+        textField.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if(s.length() != 0)
+                    changed=true;
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {}
+        });
     }
 }
 
@@ -224,27 +160,22 @@ class registerFollowup implements OnCompleteListener<AuthResult> {
     @Override
     public void onComplete(@NonNull Task<AuthResult> task) {
         Toast.makeText(registrationActivity, "createUserWithEmail:onComplete:" + task.isSuccessful(), Toast.LENGTH_SHORT).show();
-        // If sign in fails, display a message to the user. If sign in succeeds
-        // the auth state listener will be notified and logic to handle the
-        // signed in user can be handled in the listener.
+
+        /** If sign in fails, display a message to the user. If sign in succeeds
+         *  the auth state listener will be notified and logic to handle the
+         *  signed in user can be handled in the listener.
+         */
         if (!task.isSuccessful()) {
             Toast.makeText(registrationActivity, "Authentication failed." + task.getException(),
                     Toast.LENGTH_SHORT).show();
         }
         else{
             FirebaseAuth auth = FirebaseAuth.getInstance();
-            //store user info in realtime database
             FirebaseDatabase database = FirebaseDatabase.getInstance();
-
             DatabaseReference usersTable = database.getReference().child("users");
-
             String uid = auth.getCurrentUser().getUid();
-
             usersTable.child(uid).child("nickname").setValue(nickname);
-
             usersTable.child(uid).child("email").setValue(email);
-
-
             Toast message = Toast.makeText(registrationActivity, "You have successfully registered. Redirecting to the main page.",
                     Toast.LENGTH_LONG);
             message.setGravity(Gravity.TOP, 0,0);
