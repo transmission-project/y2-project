@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
@@ -17,8 +16,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.Button;
-import android.widget.ImageButton;
 
 import com.example.huntertalk.LeaveGroupPopUp;
 import com.example.huntertalk.R;
@@ -30,15 +27,16 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.database.annotations.NotNull;
 
-import org.jetbrains.annotations.NotNull;
 
 public class InsideGroupActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, VoipFragment.OnFragmentInteractionListener {
 
-    private DatabaseReference groupsRef;
+    private DatabaseReference groupsRef, usersRef;
     private String groupID;
     private String uid;
+    private Intent service;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,9 +47,12 @@ public class InsideGroupActivity extends AppCompatActivity
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         groupsRef = database.getReference().child("groups");
+        usersRef= database.getReference().child("users");
 
         FirebaseAuth auth = FirebaseAuth.getInstance();
         uid = auth.getCurrentUser().getUid();
+        //Clear the Recently hunted list
+        usersRef.child(uid).child("recentlyHunted").removeValue();
 
         setContentView(R.layout.activity_inside_group);
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -76,7 +77,7 @@ public class InsideGroupActivity extends AppCompatActivity
 
     //Start the TrackerService//
     private void startTrackerService() {
-        Intent service= new Intent(this, TrackingService.class);
+        service= new Intent(this, TrackingService.class);
         service.putExtra("groupID", groupID);
         service.putExtra("uid", uid);
         this.startService(service);
@@ -156,7 +157,6 @@ public class InsideGroupActivity extends AppCompatActivity
             MapFragment map= new MapFragment();
             map.setArguments(bundle);
             fragmentManager.beginTransaction().replace(R.id.content_frame, map).commit();
-           // i.putExtra("groupID", groupID);
 
 
         } else if (id == R.id.nav_chat) {
@@ -189,12 +189,18 @@ public class InsideGroupActivity extends AppCompatActivity
              * Remove current user from the group (on pressing "Leave Group")
              */
         } else if (id == R.id.nav_leave) {
+            System.out.println("The group ID of the group being left to "+ groupID);
+            this.stopService(service);
             groupsRef.child(groupID).child("joined").child(uid).removeValue();
+            groupsRef.child(groupID).child("locations").child(uid).removeValue();
+            usersRef.child(uid).child("currentGroup").removeValue();
             groupsRef.child(groupID).addListenerForSingleValueEvent((new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    System.out.println("The data snapshot is "+ dataSnapshot.toString());
                     if(!dataSnapshot.hasChild("joined")){
-                        groupsRef.child(groupID).child("invited").removeValue();
+                        System.out.println("Inside the total removal of invited and locations");
+                        groupsRef.child(groupID).removeValue();
                     }
                 }
 
@@ -204,7 +210,6 @@ public class InsideGroupActivity extends AppCompatActivity
                 }
             }));
             Intent i =  new Intent(InsideGroupActivity.this, Home_page.class);
-            System.out.println("after intent");
             this.finish();
             startActivity(i);
         }

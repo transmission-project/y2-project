@@ -124,10 +124,24 @@ public class LoginActivity extends AppCompatActivity {
 
                         final String currentGroup = dataSnapshot.child("currentGroup").getValue().toString();
 
-                        Intent intent = new Intent(LoginActivity.this, InsideGroupActivity.class);
-                        intent.putExtra("groupID", currentGroup);
-                        startActivity(intent);
-                        LoginActivity.this.finish();
+                          groupsRef.child(currentGroup).addListenerForSingleValueEvent(new ValueEventListener() {
+                              @Override
+                              public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                  if(!dataSnapshot.hasChild("joined")){
+                                      groupsRef.child(currentGroup).removeValue();
+                                  }else{
+                                      Intent intent = new Intent(LoginActivity.this, InsideGroupActivity.class);
+                                      intent.putExtra("groupID", currentGroup);
+                                      startActivity(intent);
+                                      LoginActivity.this.finish();
+                                  }
+                              }
+
+                              @Override
+                              public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                              }
+                          });
                     }
 
                 }
@@ -161,4 +175,3 @@ public class LoginActivity extends AppCompatActivity {
         startActivity(intent);
     }
 }
-

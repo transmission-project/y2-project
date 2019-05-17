@@ -5,7 +5,6 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -13,7 +12,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.huntertalk.R;
-import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -36,10 +34,9 @@ public class MapFragment extends Fragment {
     private Location mLastKnownLocation;
     private Location mCurrentLocation;
     private CameraPosition mCameraPosition;
-    private float DEFAULT_ZOOM= 0;
+    private float DEFAULT_ZOOM= 17;
     private static final String KEY_CAMERA_POSITION = "camera_position";
     private static final String KEY_LOCATION = "location";
-    private FusedLocationProviderClient mFusedLocationProviderClient;
     private  LatLng currentLocation;
     private double latitude, longitude;
     private DatabaseReference groupRef;
@@ -118,11 +115,32 @@ startTrackerService();
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         mMap.clear();
-                        for (DataSnapshot user: dataSnapshot.getChildren()){
-                            double longitude= Double.parseDouble(user.child("longitude").getValue().toString());
-                            double latitude= Double.parseDouble(user.child("latitude").getValue().toString());
-                            LatLng currentLocationOfAUser= new LatLng(latitude,longitude);
-                            mMap.addMarker(new MarkerOptions().position(currentLocationOfAUser).title(user.getKey()));
+                        try{
+                            for (DataSnapshot user: dataSnapshot.getChildren()){
+                           final double longitude= Double.parseDouble(user.child("longitude").getValue().toString());
+                           final double latitude= Double.parseDouble(user.child("latitude").getValue().toString());
+                            groupRef.child(groupID).child("joined").child(user.getKey()).addValueEventListener(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot)  {
+                                  try{   String nickname= dataSnapshot.getValue().toString();
+                                    LatLng currentLocationOfAUser= new LatLng(latitude,longitude);
+                                    mMap.addMarker(new MarkerOptions().position(currentLocationOfAUser).title(nickname));
+                                }
+                                  catch (NullPointerException nullEx){
+                                      //Nothing needed, just prevent from crashing.
+                                }
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                }
+                            });
+
+                        }
+                        }
+                        catch (NullPointerException nullEx){
+                            //Nothing needed, just prevent from crashing.
                         }
                     }
 

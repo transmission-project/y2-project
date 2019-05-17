@@ -416,7 +416,7 @@ public class FriendList extends AppCompatActivity {
         hideKeyboard(FriendList.this);
         return super.onTouchEvent(event);
     }
-    
+
     //check which page we came from and go to that activity
     @Override
     public void onBackPressed() {
@@ -433,4 +433,5 @@ public class FriendList extends AppCompatActivity {
         }
     }
 }
+
 

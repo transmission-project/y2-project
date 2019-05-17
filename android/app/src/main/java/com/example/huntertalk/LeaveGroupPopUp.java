@@ -66,11 +66,13 @@ public class LeaveGroupPopUp extends Activity {
 
 
                 groupsRef.child(groupID).child("joined").child(uid).removeValue();
+                groupsRef.child(groupID).child("locations").child(uid).removeValue();
                 groupsRef.child(groupID).addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot snapshot) {
                         if (!snapshot.hasChild("joined")) {
-                            groupsRef.child(groupID).child("invited").removeValue();
+                            groupsRef.child(groupID).removeValue();
+
                         }
                     }
 
