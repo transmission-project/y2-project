@@ -168,7 +168,7 @@ public class JoinAGroupById extends AppCompatActivity {
                                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
                                                String nickname = dataSnapshot.child("nickname").getValue().toString();
-                                               groupRef.child(ds.getKey()).child("joined").child(uid).setValue(nickname);
+                                               groupRef.child(ds.getKey()).child("joined").child(uid).child("nickname").setValue(nickname);
                                                groupRef.child(ds.getKey()).child("invited").child(uid).removeValue();
                                                usersRef.child(uid).child("currentGroup").setValue(ds.getKey());
                                                groupRef.child(ds.getKey()).child("locations").child(uid).setValue(lastKnownLocation);
@@ -268,7 +268,7 @@ public class JoinAGroupById extends AppCompatActivity {
                 TextView text = (TextView) row.getChildAt(1);
                 String id = text.getText().toString();
                 mDatabase.child(groupID).child("invited").child(uid).removeValue();
-                mDatabase.child(groupID).child("joined").child(uid).setValue(nickname);
+                mDatabase.child(groupID).child("joined").child(uid).child("nickname").setValue(nickname);
 
                 usersRef.child(uid).child("currentGroup").setValue(id);
 
