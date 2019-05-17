@@ -26,15 +26,26 @@ We're creating an app that hunters can use as an alternative to the communicatio
 
 |  Goal         | Description   | Result  |
 | ------------- |:-------------:| -----:|
-| Polishing      | Small fixes to groups etc | - |
-| Invite page      | Create a page for viewing and accepting/declining invitations | - |
-| P2P voice chat | Figure out peer 2 peer communication | - |
-| Publish | Get the app ready for publishing to play store, GDPR etc | - |
+| Polishing      | Small fixes to groups etc | Ongoing process |
+| Invite page      | Create a page for viewing and accepting/declining invitations | Done |
+| P2P voice chat | Figure out peer 2 peer communication | Close to finished |
+| Publish | Get the app ready for publishing to play store, GDPR etc | Not quite there yet |
 
 
 ## Snapshot from the third sprint planning meeting
 
 ![](sprint3-scheduling.jpg)
+
+### Sprint 4 **FINAL SPRINT**
+
+|  Goal         | Description   | Result  |
+| ------------- |:-------------:| -----:|
+| Polishing      | Small fixes mainly for pressing back/leaving groups | - |
+| Push Notifications      | Create push notifications for invitations | - |
+| P2P voice chat | Integration and finishing touches | - |
+| Nice UI | Make the app beautiful and easy to use | - |
+| Publish | Get the app ready for publishing to play store, GDPR etc | - |
+
 
 
 ## About us
