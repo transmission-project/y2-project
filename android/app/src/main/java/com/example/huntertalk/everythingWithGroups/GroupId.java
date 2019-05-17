@@ -19,7 +19,7 @@ public class GroupId {
         Random rand = new Random();
         exists = true;
         while (exists) {
-            n = rand.nextInt(10000);
+            n = rand.nextInt(9000) + 1000;
             exists = false;
             FirebaseDatabase database = FirebaseDatabase.getInstance();
             DatabaseReference mRef = database.getReference().child("groups");
