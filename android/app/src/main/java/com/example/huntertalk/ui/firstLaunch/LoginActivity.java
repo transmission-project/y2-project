@@ -5,7 +5,6 @@ import android.graphics.Paint;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
@@ -30,9 +29,8 @@ public class LoginActivity extends AppCompatActivity {
 
     private Button loginButton;
     private TextView registrationButton;
-    private TextView resetpw;
+    private TextView resetPw;
     private FirebaseAuth mAuth;
-    private static final String TAG = "LoginActivity";
     private DatabaseReference usersRef, groupsRef;
     private FirebaseDatabase database;
 
@@ -47,10 +45,10 @@ public class LoginActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         final EditText usernameEditText = findViewById(R.id.username);
         final EditText passwordEditText = findViewById(R.id.password);
-        resetpw = findViewById(R.id.resetpw);
-        resetpw.setPaintFlags(resetpw.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+        resetPw = findViewById(R.id.resetpw);
+        resetPw.setPaintFlags(resetPw.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
 
-        resetpw.setOnClickListener(new View.OnClickListener() {
+        resetPw.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 moveToSignIn();
