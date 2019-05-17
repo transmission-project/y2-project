@@ -25,17 +25,16 @@ navigator.mediaDevices.getUserMedia({
 
 async function joinGroup() {
     //start listening to offers, answers, and closes
-    offerRef = database.ref('/groups/' + groupID + '/joined/' + ourID + '/offers');
+    offerRef = database.ref('/groups/' + groupID + '/rtc/' + ourID + '/offers');
     offerRef.on('child_added', onReceiveOffer);
-    answerRef = database.ref('/groups/' + groupID + '/joined/' + ourID + '/answers');
+    answerRef = database.ref('/groups/' + groupID + '/rtc/' + ourID + '/answers');
     answerRef.on('child_added', onReceiveAnswer);
-    closeRef = database.ref('/groups/' + groupID + '/joined/' + ourID + '/closing');
+    closeRef = database.ref('/groups/' + groupID + '/rtc/' + ourID + '/closing');
     closeRef.on('child_added', onClose);
-    iceRef = database.ref('/groups/' + groupID + '/joined/' + ourID + '/ice');
+    iceRef = database.ref('/groups/' + groupID + '/rtc/' + ourID + '/ice');
     iceRef.on('child_added', onReceiveICE);
 
     //add ourselves to database
-    await database.ref('/groups/' + groupID + '/joined/' + ourID).set("");
     console.log("Joined group as "+ ourID + ".");
 
     // Make connections to users already in group
@@ -49,7 +48,7 @@ async function joinGroup() {
 }
 
 async function leaveGroup() {
-    await database.ref('/groups/' + groupID + '/joined/' + ourID).set(null);
+    await database.ref('/groups/' + groupID + '/rtc/' + ourID).set(null);
 
     //unsubscribe from listeners
     offerRef.off();
@@ -62,7 +61,7 @@ async function leaveGroup() {
         if(connections[uid].signalingState !== 'closed') { //Ignore already closed connections
             console.log("closing connection to "+ uid);
             connections[uid].close();
-            database.ref('/groups/' + groupID + /joined/ + uid + /closing/ + ourID ).set("");
+            database.ref('/groups/' + groupID + "/rtc/" + uid + "/closing/" + ourID ).set("");
         }
         removeAudioElement(uid); //remove all the users we listed to html, even if we forgot them earlier
     });
@@ -106,7 +105,7 @@ async function makeOffer(childSnapshot) {
 
     console.log("Sending offer to " + uid + '...');
     const offer = await connection.createOffer();
-    database.ref('/groups/' + groupID + '/joined/' + uid + '/offers/' + ourID)
+    database.ref('/groups/' + groupID + '/rtc/' + uid + '/offers/' + ourID)
         .set(JSON.stringify(offer));
     await connection.setLocalDescription(offer);
 }
@@ -125,7 +124,7 @@ async function onReceiveOffer(snapshot) {
     console.log("Offer accepted from " + uid +". Sending our answer.");
     let answer = await connection.createAnswer();
     connection.setLocalDescription(answer);
-    database.ref('/groups/' + groupID + '/joined/' + uid + '/answers/' + ourID)
+    database.ref('/groups/' + groupID + '/rtc/' + uid + '/answers/' + ourID)
         .set(JSON.stringify(answer));
 
     addAudioElement(uid);
@@ -141,7 +140,7 @@ async function onReceiveAnswer(snapshot) {
 
     addAudioElement(uid);
     //register any ice candidates we might have received up to now and had ignored
-    onReceiveICE(await database.ref('/groups/' + groupID + '/joined/' + ourID + '/ice/' + uid).once('value'));
+    onReceiveICE(await database.ref('/groups/' + groupID + '/rtc/' + ourID + '/ice/' + uid).once('value'));
 }
 
 function onClose(snapshot){
@@ -161,7 +160,7 @@ function onGenerateICE(event) {
         ICEList.push(event.candidate)
     } else {
         console.log("Sending ICE candidates");
-        database.ref("/groups/" + groupID + "/joined/" + callerUID + "/ice/" + ourID).set(JSON.stringify(ICEList));
+        database.ref("/groups/" + groupID + "/rtc/" + callerUID + "/ice/" + ourID).set(JSON.stringify(ICEList));
     }
 }
 
