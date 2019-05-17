@@ -38,7 +38,7 @@ public class FriendList extends AppCompatActivity {
     private TableLayout tableRecHunted,tableFriends;
     public String friendName,friendId;
     private TextView tv, tv1;
-    private int k,f,i;
+    private int counterForRH,counterForFR,counterForRowElements;
     private final FirebaseAuth auth =FirebaseAuth.getInstance();
     final String uid = auth.getCurrentUser().getUid();
     private HashMap<String,String> nickNames = new HashMap<String, String>();
@@ -70,8 +70,6 @@ public class FriendList extends AppCompatActivity {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
 
-
-
         /**
          *  Create a friend list on launch
          */
@@ -80,7 +78,7 @@ public class FriendList extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                tableFriends = (TableLayout) findViewById(R.id.tableFriendList);
                tableFriends.removeAllViews();
-                f=0;
+                counterForFR=0;
                 /**
                  * Method to output all the recently hunted and friends
                  */
@@ -100,7 +98,7 @@ public class FriendList extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 tableRecHunted = (TableLayout) findViewById(R.id.tableGroupMembers2);
                 tableRecHunted.removeAllViews();
-                k=0;
+                counterForRH=0;
                 /**
                  * Method to output all the recently hunted and friends
                  */
@@ -153,23 +151,15 @@ public class FriendList extends AppCompatActivity {
                 /**
                  * Check if email provided for potential friend exists.
                  */
-                mDatabase.orderByChild("email").addListenerForSingleValueEvent(new ValueEventListener() {
+                mDatabase.orderByChild("email").equalTo(email).addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                       for (DataSnapshot email1 : dataSnapshot.getChildren()){
-                           if (email1.child("email").exists()){
-                               String emailToCheck= email1.child("email").getValue().toString();
-                           if (email.equals(emailToCheck)){
-                               return;
-                           }
-                           }
-                       }
+                        if(!dataSnapshot.hasChildren()){
                         etSearch.setError("User does not exist");
+                        }
                     }
-
                     @Override
                     public void onCancelled(@NonNull DatabaseError databaseError) {
-
                     }
                 });
 
@@ -179,24 +169,14 @@ public class FriendList extends AppCompatActivity {
             mDatabase.orderByChild("email").equalTo(email).addChildEventListener(new ChildEventListener() {
                 @Override
                 public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
                     final String futureFriend = dataSnapshot.getKey();
-                    mDatabase.child(uid).child("friends").addListenerForSingleValueEvent(new ValueEventListener() {
+                    mDatabase.child(uid).child("friends").orderByKey().equalTo(futureFriend).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            Boolean alreadyFriends=false;
-                            for (DataSnapshot person : dataSnapshot.getChildren()) {
-                                String friendName = person.getKey().toString();
-                                if (futureFriend.equals(friendName)){
-                                    alreadyFriends=true;
-                                    break;
-                                }
-                            }
-                            if(alreadyFriends){
+                           if(dataSnapshot.child(futureFriend).exists()){
                                 etSearch.setError("You're already friends!");
                                 return;
                             }
-
                             /**
                              * Add friends to the list with the nickname.
                              * Also add current user to the list "friend of" of the future friend
@@ -251,9 +231,8 @@ public class FriendList extends AppCompatActivity {
         });
     }
 
-
     /**
-     * Get all friends and Recently hunteed from the database and show on the appropriate lists
+     * Get all friends and Recently hunted from the database and show on the appropriate lists
      */
     private void startLists(DataSnapshot dataSnapshot, String command) {
         for (DataSnapshot friends1 : dataSnapshot.getChildren()){
@@ -292,23 +271,20 @@ public class FriendList extends AppCompatActivity {
      */
     private void addRow (String nickname, String id, String command){
 
-        // Creates a row with two TextView fields
-
         final TableRow row = createRow(nickname, id);
         /**
          * Creates appropriate buttons with correct functionality for each table
          * and adds them to the row. Then adds the row to the appropriate TableLayout
          */
+
+            ImageView addBtn = new ImageView(this);
+
+        addBtn.setId(counterForRowElements+counterForRH+counterForFR+1000);
+        counterForRowElements++;
+        addBtn.setVisibility(View.VISIBLE);
         if (command.equals("rc")) {
-
-            ImageView addbtn = new ImageView(this);
-            addbtn.setBackgroundResource(R.drawable.ic_person_add_green_24dp);
-            addbtn.setId(i+k+f+1000);
-            i++;
-
-            addbtn.setVisibility(View.VISIBLE);
-
-            addbtn.setOnClickListener(new View.OnClickListener() {
+            addBtn.setBackgroundResource(R.drawable.ic_person_add_green_24dp);
+            addBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     TextView text=(TextView) row.getChildAt(1);
@@ -325,17 +301,13 @@ public class FriendList extends AppCompatActivity {
                     }
                 }
             });
-            row.addView(addbtn);
-            tableRecHunted.addView(row, k);
-            k++;
+            row.addView(addBtn);
+            tableRecHunted.addView(row, counterForRH);
+            counterForRH++;
         }
         if (command.equals("fr")){
-            ImageView declinebtn = new ImageView(this);
-            declinebtn.setBackgroundResource(R.drawable.ic_close_black_24dp);
-            declinebtn.setId(i+k+f+1000);
-            i++;
-            declinebtn.setVisibility(View.VISIBLE);
-            declinebtn.setOnClickListener(new View.OnClickListener() {
+            addBtn.setBackgroundResource(R.drawable.ic_close_black_24dp);
+            addBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     TextView text=(TextView) row.getChildAt(1);
@@ -346,9 +318,9 @@ public class FriendList extends AppCompatActivity {
                     tableFriends.removeView(row);
                 }
             });
-            row.addView(declinebtn);
-            tableFriends.addView(row, f);
-            f++;
+            row.addView(addBtn);
+            tableFriends.addView(row, counterForFR);
+            counterForFR++;
         }
     }
 
@@ -359,11 +331,8 @@ public class FriendList extends AppCompatActivity {
     private TableRow createRow(String nickname, String id) {
 
         TableRow row=new TableRow(getBaseContext());
-
         TableRow.LayoutParams lp = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT);
-
         lp.setMargins(10, 10, 5, 10);
-
         row.setLayoutParams(lp);
         row.setGravity(Gravity.CENTER_VERTICAL);
 
@@ -371,15 +340,15 @@ public class FriendList extends AppCompatActivity {
         tv1.setText(nickname);
         tv1.setTextSize(18);
         tv1.setTextColor(Color.BLACK);
-        tv1.setId(f+k +i + 1000);
+        tv1.setId(counterForFR+counterForRH +counterForRowElements + 1000);
 
-        i++;
+        counterForRowElements++;
         tv = new TextView(getBaseContext());
         tv.setText(id);
-        tv.setId(f+k +i+ 1000);
-        i++;
+        tv.setId(counterForFR+counterForRH +counterForRowElements+ 1000);
+        counterForRowElements++;
         tv.setVisibility(View.GONE);
-        row.setId(f+k);
+        row.setId(counterForFR+counterForRH);
         row.addView(tv1, lp);
         row.addView(tv, lp);
      return row;
