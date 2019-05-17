@@ -179,20 +179,7 @@ public class JoinAGroupById extends AppCompatActivity {
                                            }
                                        });
 
-                                       /**
-                                        * Remove previous "recently Hunted and get all joined people from the group
-                                        * as new recently hunted
-                                        */
 
-                                       usersRef.child(uid).child("recentlyHunted").removeValue();
-                                       for (DataSnapshot ch : ds.child("joined").getChildren()) {
-                                           String id = ch.getKey();
-                                           String rcNickname = ch.getValue().toString();
-                                           if (!id.equals(uid)) {
-                                               usersRef.child(uid).child("recentlyHunted").child(id).setValue(rcNickname);
-                                               usersRef.child(id).child("recentlyHuntedOf").child(uid).setValue("rh");
-                                           }
-                                       }
 
                                        Intent i = new Intent(JoinAGroupById.this, InsideGroupActivity.class);
                                        i.putExtra("groupID", groupIDInput.getText().toString());

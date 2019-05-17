@@ -33,7 +33,7 @@ import com.google.firebase.database.annotations.NotNull;
 public class InsideGroupActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, VoipFragment.OnFragmentInteractionListener {
 
-    private DatabaseReference groupsRef;
+    private DatabaseReference groupsRef, usersRef;
     private String groupID;
     private String uid;
     private Intent service;
@@ -47,9 +47,12 @@ public class InsideGroupActivity extends AppCompatActivity
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         groupsRef = database.getReference().child("groups");
+        usersRef= database.getReference().child("users");
 
         FirebaseAuth auth = FirebaseAuth.getInstance();
         uid = auth.getCurrentUser().getUid();
+        //Clear the Recently hunted list
+        usersRef.child(uid).child("recentlyHunted").removeValue();
 
         setContentView(R.layout.activity_inside_group);
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -187,9 +190,10 @@ public class InsideGroupActivity extends AppCompatActivity
              */
         } else if (id == R.id.nav_leave) {
             System.out.println("The group ID of the group being left to "+ groupID);
-           this.stopService(service);
+            this.stopService(service);
             groupsRef.child(groupID).child("joined").child(uid).removeValue();
             groupsRef.child(groupID).child("locations").child(uid).removeValue();
+            usersRef.child(uid).child("currentGroup").removeValue();
             groupsRef.child(groupID).addListenerForSingleValueEvent((new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {

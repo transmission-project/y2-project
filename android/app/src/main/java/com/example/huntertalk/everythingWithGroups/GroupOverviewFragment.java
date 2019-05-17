@@ -21,7 +21,6 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
 import java.util.HashMap;
 
@@ -60,54 +59,20 @@ public class GroupOverviewFragment extends Fragment implements NavigationView.On
         FirebaseUser currentUser= mAuth.getCurrentUser();
         final String uid= currentUser.getUid();
 
-        groupRef.child(groupID).child("joined").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot groupMember : dataSnapshot.getChildren()) {
-                    final String member = groupMember.getKey();
-                    final String name= groupMember.getValue().toString();
-
-                    /**
-                     *  Adds every member in the group, to the hashmap of connected users for current user.
-                     */
-                    membersInTheGroup.put(member,name);
-
-                    /**
-                     * Get nickname from user ID and add to recently hunted of existing group members
-                     * Also enables current user to see himself on the list of people in side the group
-                     */
-                    usersRef.child(uid).child("nickname").addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            String nickname = dataSnapshot.getValue().toString();
-                            if (!member.equals(uid)) {
-                                usersRef.child(member).child("recentlyHunted").child(uid).setValue(nickname);
-                            }
-                            membersInTheGroup.put(uid,nickname);
-                        }
-
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError databaseError) {
-                        }
-                    });
-                }
-                createTable();
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-
-        /**
-         *    Currently necessary for update on someone leaving the group
-         *    In future could be done more neatly
-         */
-        groupRef.child(groupID).child("joined").addChildEventListener(new ChildEventListener() {
+            groupRef.child(groupID).child("joined").addChildEventListener(new ChildEventListener() {
 
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+               String member= dataSnapshot.getKey();
+               String name= dataSnapshot.getValue().toString();
+               System.out.println("The uid and key are "+ member+"   "+ name);
+               membersInTheGroup.put(member,name);
+               createTable();
+                if (!member.equals(uid)) {
+                    usersRef.child(uid).child("recentlyHunted").child(member).setValue(name);
+                    usersRef.child(member).child("recentlyHuntedOf").child(uid).setValue("rh");
+                }
 
             }
 
