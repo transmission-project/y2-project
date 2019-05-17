@@ -98,8 +98,9 @@ public class CreateGroupPage extends AppCompatActivity {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         String nickname = dataSnapshot.child("nickname").getValue().toString();
-                        groupRef.child(groupId).child("joined").child(uid).setValue(nickname);
-
+                        System.out.println("THe nickname obtained is "+ nickname);
+                        groupRef.child(groupId).child("joined").child(uid).child("nickname").setValue(nickname);
+                        System.out.println("After the database connection ");
                         usersRef.child(uid).child("currentGroup").setValue(groupId);
                     }
 

@@ -52,7 +52,7 @@ public class GroupOverviewFragment extends Fragment implements NavigationView.On
         String activityTitle = getResources().getString(R.string.title_with_group_name, groupID);
         getActivity().setTitle(activityTitle);
 
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        final FirebaseDatabase database = FirebaseDatabase.getInstance();
         groupRef = database.getReference().child("groups");
         usersRef = database.getReference().child("users");
         mAuth=FirebaseAuth.getInstance();
@@ -63,9 +63,10 @@ public class GroupOverviewFragment extends Fragment implements NavigationView.On
 
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
+                System.out.println(dataSnapshot);
                String member= dataSnapshot.getKey();
-               String name= dataSnapshot.getValue().toString();
+               System.out.println(member);
+               String name= dataSnapshot.child("nickname").getValue().toString();
                System.out.println("The uid and key are "+ member+"   "+ name);
                membersInTheGroup.put(member,name);
                createTable();
