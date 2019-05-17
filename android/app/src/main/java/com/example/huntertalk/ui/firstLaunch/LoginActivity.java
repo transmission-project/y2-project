@@ -103,52 +103,59 @@ public class LoginActivity extends AppCompatActivity {
         usersRef = database.getReference().child("users");
         groupsRef = database.getReference().child("groups");
 
-        // Check if user is signed in (non-null) and update UI accordingly.
+        // Check if user is signed in (non-null).
+        // If so, enter the home activity or group that the user was in already.
         final FirebaseUser currentUser = mAuth.getCurrentUser();
         if (currentUser!=null){
-            usersRef.child(currentUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                    if(dataSnapshot.hasChild("currentGroup")){
-
-                        final String currentGroup = dataSnapshot.child("currentGroup").getValue().toString();
-
-                          groupsRef.child(currentGroup).addListenerForSingleValueEvent(new ValueEventListener() {
-                              @Override
-                              public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                  //If somehow the group exists but is empty (due to some bug) delete the group.
-                                  if(!dataSnapshot.hasChild("joined")){
-                                      groupsRef.child(currentGroup).removeValue();
-                                      usersRef.child(currentUser.getUid()).child("currentGroup").removeValue();
-                                  }else{
-                                      Intent intent = new Intent(LoginActivity.this, InsideGroupActivity.class);
-                                      intent.putExtra("groupID", currentGroup);
-                                      startActivity(intent);
-                                      LoginActivity.this.finish();
-                                  }
-                              }
-
-                              @Override
-                              public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                              }
-                          });
-                    }
-
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                }
-            });
+            checkCurrentGroupAndRejoin(currentUser.getUid());
 
             moveToMainActivity();
         }
 
 
     }
+
+    private void checkCurrentGroupAndRejoin(final String uid) {
+        usersRef.child(uid).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                if(dataSnapshot.hasChild("currentGroup")){
+
+                    final String currentGroup = dataSnapshot.child("currentGroup").getValue().toString();
+
+                    groupsRef.child(currentGroup).addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            //If somehow the group exists but is empty (due to some bug) delete the group.
+                            if(!dataSnapshot.hasChild("joined")){
+                                groupsRef.child(currentGroup).removeValue();
+                                usersRef.child(uid).child("currentGroup").removeValue();
+                            }else{
+                                Intent intent = new Intent(LoginActivity.this, InsideGroupActivity.class);
+                                intent.putExtra("groupID", currentGroup);
+                                startActivity(intent);
+                                LoginActivity.this.finish();
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
     private void moveToMainActivity(){
         Intent intent = new Intent(LoginActivity.this, Home_page.class);
         startActivity(intent);

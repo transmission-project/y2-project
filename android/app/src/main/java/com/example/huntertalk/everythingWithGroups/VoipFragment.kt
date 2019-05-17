@@ -44,7 +44,6 @@ private const val ARG_GROUPID = "groupID"
  *
  */
 class VoipFragment : Fragment() {
-    // TODO: Rename and change types of parameters
     private var uid: String? = null
     private var groupID: Int? = null
     private var listener: OnFragmentInteractionListener? = null
@@ -52,14 +51,10 @@ class VoipFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val context = activity!!.applicationContext
         arguments?.let {
             uid = it.getString(ARG_UID)
             groupID = it.getInt(ARG_GROUPID)
         }
-
-
-        //startVoiceWebView()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -67,8 +62,9 @@ class VoipFragment : Fragment() {
         // Inflate the layout for this fragment
         val rootView = inflater.inflate(R.layout.fragment_voip, container, false)
 
+        val context = activity!! // exclamation marks bc im rly excited about this code
         voice_webview = rootView.voice_webview
-        startVoiceWebView()
+        checkAndRequestMicPerms(context)
 
         return rootView
     }
@@ -85,8 +81,6 @@ class VoipFragment : Fragment() {
         } else {
             throw RuntimeException(context.toString() + " must implement OnFragmentInteractionListener")
         }
-
-        checkAndRequestMicPerms(context)
     }
 
     private fun checkAndRequestMicPerms(context: Context) {
@@ -99,6 +93,8 @@ class VoipFragment : Fragment() {
         if (ContextCompat.checkSelfPermission(context, Manifest.permission.RECORD_AUDIO) !=
                 PackageManager.PERMISSION_GRANTED) {
             requestPermissions(arrayOf(Manifest.permission.RECORD_AUDIO), MICROPHONE_REQUEST)
+        } else {
+            startVoiceWebView()
         }
     }
 
@@ -117,6 +113,8 @@ class VoipFragment : Fragment() {
                             activity, getString(R.string.mic_permission_complain), Toast.LENGTH_LONG
                     ).show()
                     activity?.supportFragmentManager?.beginTransaction()?.remove(this)?.commit()
+                } else {
+                    startVoiceWebView()
                 }
             }
         }
@@ -150,7 +148,6 @@ class VoipFragment : Fragment() {
          *
          * @return A new instance of fragment voipFragment.
          */
-        // TODO: Rename and change types and number of parameters
         @JvmStatic
         fun newInstance(uid: String, groupID: Int) =
                 VoipFragment().apply {
