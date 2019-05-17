@@ -30,8 +30,8 @@ import kotlinx.android.synthetic.main.fragment_voip.view.*
 // Permission request callback code
 private const val MICROPHONE_REQUEST = 1888
 
-// TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+private const val ARG_UID = "uid"
 private const val ARG_GROUPID = "groupID"
 
 /**
@@ -45,6 +45,7 @@ private const val ARG_GROUPID = "groupID"
  */
 class VoipFragment : Fragment() {
     // TODO: Rename and change types of parameters
+    private var uid: String? = null
     private var groupID: Int? = null
     private var listener: OnFragmentInteractionListener? = null
     private var voice_webview: WebView? = null
@@ -53,6 +54,7 @@ class VoipFragment : Fragment() {
         super.onCreate(savedInstanceState)
         val context = activity!!.applicationContext
         arguments?.let {
+            uid = it.getString(ARG_UID)
             groupID = it.getInt(ARG_GROUPID)
         }
 
@@ -150,9 +152,10 @@ class VoipFragment : Fragment() {
          */
         // TODO: Rename and change types and number of parameters
         @JvmStatic
-        fun newInstance(groupID: Int) =
+        fun newInstance(uid: String, groupID: Int) =
                 VoipFragment().apply {
                     arguments = Bundle().apply {
+                        putString(ARG_UID, uid)
                         putInt(ARG_GROUPID, groupID)
                     }
                 }
@@ -181,7 +184,7 @@ class VoipFragment : Fragment() {
             }
         }
 
-        voiceWebview.addJavascriptInterface(VoipLayer(groupID = this.groupID!!), "androidInterface")
+        voiceWebview.addJavascriptInterface(VoipLayer(uid = this.uid!!, groupID = this.groupID!!), "androidInterface")
 
         voiceWebview.loadUrl("file:///android_asset/index.html")
     }
