@@ -74,6 +74,11 @@ public class InsideGroupActivity extends AppCompatActivity
         catch (NullPointerException e) {
             groupID = "ERROR";
         }
+
+        //Voip
+        startVoipFragment(savedInstanceState);
+
+        //Map
         startTrackerService();
     }
     // start the TrackerService//
@@ -143,21 +148,6 @@ public class InsideGroupActivity extends AppCompatActivity
 
 
         } else if (id == R.id.nav_chat) {
-            final VoipFragment voipFrag = VoipFragment.newInstance(Integer.parseInt(groupID));
-            fragmentManager.beginTransaction().replace(R.id.content_frame, voipFrag).commit();
-            //Connect PTT button
-            findViewById(R.id.ptt_button).setOnTouchListener(new View.OnTouchListener() {
-                @Override
-                public boolean onTouch(View v, MotionEvent event) {
-                    if(event.getAction() == MotionEvent.ACTION_DOWN) {
-                        voipFrag.startTalking();
-                    }
-                    else if(event.getAction() == MotionEvent.ACTION_UP) {
-                        voipFrag.stopTalking();
-                    }
-                    return true;
-                }
-            });
 
         } else if (id == R.id.nav_invite) {
             fragmentManager.beginTransaction().replace(R.id.content_frame, new InviteToGroupFragment()).commit();
@@ -168,7 +158,7 @@ public class InsideGroupActivity extends AppCompatActivity
             i.putExtra("groupNumber", groupID);
             startActivity(i);
 
-            /**
+            /*
              * Remove current user from the group (on pressing "Leave Group")
              */
         } else if (id == R.id.nav_leave) {
@@ -200,6 +190,41 @@ public class InsideGroupActivity extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
+    private void startVoipFragment(Bundle activitySavedInstanceState) throws IllegalStateException{
+        FragmentManager fm = getSupportFragmentManager();
+        final VoipFragment voipFrag;
+        String fragTag = groupID + "_VOIP_fragment";
+
+        if(activitySavedInstanceState != null) {
+            //if we're restarting the activity, retrieve the old voip fragment instead of making a new one
+            voipFrag = (VoipFragment) fm.findFragmentByTag(fragTag);
+            if(voipFrag == null)
+                throw new IllegalStateException("Could not find VOIP fragment '" +
+                        fragTag + "', Activity recreation failed.");
+        }
+        else {
+            //create a voip fragment
+            voipFrag = VoipFragment.newInstance(uid, Integer.parseInt(groupID));
+            fm.beginTransaction().add(R.id.voip_frame, voipFrag, fragTag).commit();
+        }
+
+        //Connect PTT button
+        findViewById(R.id.ptt_button).setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    voipFrag.startTalking();
+                    //groupsRef.child("muted").child(uid).setValue(false);
+                } else if (event.getAction() == MotionEvent.ACTION_UP) {
+                    voipFrag.stopTalking();
+                    //groupsRef.child("muted").child(uid).setValue(true);
+                }
+                return true;
+            }
+        });
+    }
+
     @Override
     public void onFragmentInteraction(@NotNull Uri uri) {
 

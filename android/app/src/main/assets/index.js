@@ -1,9 +1,7 @@
-showJoinGroup();
-
 let database = firebase.database();
 
-let groupID; // ID of joined group
-const ourID = Math.floor(Math.random() *90000) + 10000;// Our user ID, randomly generated for tests
+const groupID = androidInterface.getGroupID(); // ID of joined group
+const ourID = androidInterface.getUid();// Our user ID
 
 let offerRef; // Incoming offer handler, is a firebase listen object
 let answerRef; // Incoming answer handler, is a firebase listen object
@@ -22,13 +20,10 @@ navigator.mediaDevices.getUserMedia({
 }).then( (stream) => { // I have no idea how to use tracks, so I use streams even though they're depreciated
         stream.getTracks()[0].enabled = false; //mute mic by default
         LocalStream = stream;
-}).catch(function(e) {
-        alert("Oh no!\n" + e)
+        joinGroup();
 });
 
 async function joinGroup() {
-    groupID = document.getElementById('grp').value;
-
     //start listening to offers, answers, and closes
     offerRef = database.ref('/groups/' + groupID + '/joined/' + ourID + '/offers');
     offerRef.on('child_added', onReceiveOffer);
@@ -51,8 +46,6 @@ async function joinGroup() {
                 makeOffer(childSnapshot);
             })
         });
-
-    showLeaveGroup();
 }
 
 async function leaveGroup() {
@@ -80,7 +73,6 @@ async function leaveGroup() {
     connections = {};
     ICELists = {};
 
-    showJoinGroup();
     console.log("leave group complete")
 }
 
@@ -205,7 +197,7 @@ function stopTalking() {
 }
 
 
-//UI Functions
+//Audio element functions
 function addAudioElement(uid) {
     const remoteStream = connections[uid].getRemoteStreams()[0];
     const listItem = document.createElement("li");
@@ -222,44 +214,4 @@ function removeAudioElement(uid) {
     try {
         document.getElementById(uid).remove();
     } catch (e) {}
-}
-
-function showJoinGroup() {
-    try {
-        document.getElementById("group_label").remove();
-        document.getElementById("leave").remove()
-    } catch (e) {}
-
-    const div = document.getElementById("group_controls");
-
-    const number = document.createElement("input");
-    number.id = "grp";
-    number.type = "number";
-
-    const join = document.createElement("button");
-    join.id = "join";
-    join.onclick = joinGroup;
-    join.innerText = "Join";
-
-    div.appendChild(number);
-    div.appendChild(join);
-}
-
-function showLeaveGroup() {
-    document.getElementById("grp").remove();
-    document.getElementById('join').remove();
-
-    const div = document.getElementById("group_controls");
-
-    const currentGroup = document.createElement("h2");
-    currentGroup.id = "group_label";
-    currentGroup.innerText = "Current group: " + groupID;
-
-    const leave = document.createElement("button");
-    leave.id = "leave";
-    leave.onclick = leaveGroup;
-    leave.innerText = "Leave current group";
-
-    div.appendChild(currentGroup);
-    div.appendChild(leave);
 }
