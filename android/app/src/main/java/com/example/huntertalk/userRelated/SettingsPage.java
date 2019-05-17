@@ -17,6 +17,8 @@ import android.view.Gravity;
 import android.view.MenuItem;
 
 import com.example.huntertalk.R;
+import com.example.huntertalk.everythingWithGroups.InsideGroupActivity;
+import com.example.huntertalk.ui.firstLaunch.Home_page;
 import com.example.huntertalk.ui.firstLaunch.LoginActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -34,7 +36,7 @@ public class SettingsPage extends AppCompatActivity {
     private Boolean passwordChange= false;
     private Boolean password2Change= false;
     private DatabaseReference mDatabase;
-
+    private String previousPage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +50,7 @@ public class SettingsPage extends AppCompatActivity {
         final EditText confirmPassword = findViewById(R.id.etchangepw2);
         mDatabase = FirebaseDatabase.getInstance().getReference();
 
+        previousPage = getIntent().getExtras().getString("previousPage");
 
         final FirebaseAuth auth = FirebaseAuth.getInstance();
         final String uid = auth.getCurrentUser().getUid();
@@ -280,5 +283,20 @@ public class SettingsPage extends AppCompatActivity {
                 return true;
         }
         return (super.onOptionsItemSelected(menuItem));
+    }
+
+    //check which page we came from and go to that activity
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+
+        if (previousPage.equals("insideGroupPage")){
+            this.finish();
+        }
+        else {
+            Intent intent = new Intent(SettingsPage.this, Home_page.class);
+            startActivity(intent);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        }
     }
 }

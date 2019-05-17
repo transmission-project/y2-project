@@ -45,35 +45,10 @@ public class Home_page extends AppCompatActivity  {
         groupsRef = database.getReference().child("groups");
         welcomeNickname = (TextView) findViewById(R.id.textView);
 
-        //getting a single value from the database
+        //getting a single value from the database to set welcome nickname
         usersRef.child(uid).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
-                if(dataSnapshot.hasChild("currentGroup")){
-
-                    final String currentGroup = dataSnapshot.child("currentGroup").getValue().toString();
-
-                    groupsRef.child(currentGroup).child("joined").child(uid).removeValue();
-                    groupsRef.child(currentGroup).addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
-                            if (!dataSnapshot.child(currentGroup).hasChild("joined")) {
-                                groupsRef.child(currentGroup).child("invited").removeValue();
-                            }
-
-                        }
-
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                        }
-                    });
-
-                    usersRef.child(uid).child("currentGroup").removeValue();
-                }
-
                 String nickname = dataSnapshot.child("nickname").getValue().toString();
                 welcomeNickname.setText("Welcome " + String.valueOf(nickname) + "!");
             }
@@ -92,6 +67,7 @@ public class Home_page extends AppCompatActivity  {
             public void onClick(View v){
                 Intent i=new Intent(Home_page.this, JoinAGroupById.class);
                 startActivity(i);
+                Home_page.this.finish();
             }
         });
 
@@ -103,6 +79,7 @@ public class Home_page extends AppCompatActivity  {
             public void onClick(View v){
                 Intent i=new Intent(Home_page.this, CreateGroupPage.class);
                 startActivity(i);
+                Home_page.this.finish();
             }
         });
     }
@@ -119,14 +96,23 @@ public class Home_page extends AppCompatActivity  {
         int id = item.getItemId();
         if (id == R.id.mybutton) {
             Intent i=new Intent(Home_page.this, SettingsPage.class);
+            i.putExtra("previousPage", "homePage");
             startActivity(i);
             this.finish();
         }
         if (id == R.id.addFriends) {
             Intent i=new Intent(Home_page.this, FriendList.class);
+            i.putExtra("previousPage", "homePage");
             startActivity(i);
             this.finish();
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    //Back button is currently disabled from home page
+    @Override
+    public void onBackPressed() {
+        //super.onBackPressed();
+
     }
 }

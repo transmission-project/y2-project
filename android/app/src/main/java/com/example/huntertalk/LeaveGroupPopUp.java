@@ -19,9 +19,10 @@ import com.google.firebase.database.ValueEventListener;
 
 public class LeaveGroupPopUp extends Activity {
 
-    String groupID;
-    String uid;
-    String finish;
+    private String groupID;
+    private String uid;
+    private String finish;
+    private Intent intent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +47,8 @@ public class LeaveGroupPopUp extends Activity {
 
                 FirebaseDatabase database = FirebaseDatabase.getInstance();
                 final DatabaseReference groupsRef = database.getReference().child("groups");
+                final DatabaseReference usersRef = database.getReference().child("users");
+
 
                 //get group ID and user ID from Inside Group Page
                 try {
@@ -57,6 +60,10 @@ public class LeaveGroupPopUp extends Activity {
                     groupID = "ERROR";
                     uid = "ERROR";
                 }
+
+                usersRef.child(uid).child("currentGroup").removeValue();
+
+
 
                 groupsRef.child(groupID).child("joined").child(uid).removeValue();
                 groupsRef.child(groupID).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -76,7 +83,7 @@ public class LeaveGroupPopUp extends Activity {
                 //set finish to finish if user choose to leave group so that inside group activity finishes
                 finish = "finish";
 
-                Intent intent = new Intent(LeaveGroupPopUp.this, InsideGroupActivity.class);
+                intent = new Intent(LeaveGroupPopUp.this, InsideGroupActivity.class);
                 intent.putExtra("finish", finish);
                 LeaveGroupPopUp.this.finish();
                 Intent i =  new Intent(LeaveGroupPopUp.this, Home_page.class);
