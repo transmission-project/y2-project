@@ -21,11 +21,8 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
-import com.example.huntertalk.LeaveGroupPopUp;
 import com.example.huntertalk.ui.firstLaunch.Home_page;
 import com.example.huntertalk.R;
-
-import com.example.huntertalk.userRelated.FriendList;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -47,9 +44,7 @@ public class JoinAGroupById extends AppCompatActivity {
     private DatabaseReference usersRef, groupRef, mDatabase;
     private TableLayout tableInvitations;
     private TextView tv1;
-    private int rowNumber;
-    private int i = 150;
-    private int k;
+    private int rowNumber, elementCounter, rowIndex;
     Boolean changed = false;
     private final FirebaseAuth auth = FirebaseAuth.getInstance();
     final String uid = auth.getCurrentUser().getUid();
@@ -245,22 +240,25 @@ public class JoinAGroupById extends AppCompatActivity {
     //Create invitations table
     private void createTable(final String ID, final String nickname) {
 
-        rowNumber = 0;
+        elementCounter=1;
         final TableRow row = new TableRow(getBaseContext());
         TableRow.LayoutParams lp = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT);
         lp.setMargins(10, 10, 5, 10);
         row.setLayoutParams(lp);
         Button acceptButton = new Button(this);
         acceptButton.setText("Accept");
-        acceptButton.setId(i + k + 100);
+        acceptButton.setId(elementCounter + rowNumber);
+        elementCounter++;
         acceptButton.setVisibility(View.VISIBLE);
         Button declineButton = new Button(this);
         declineButton.setText("Decline");
-        declineButton.setId(i + k);
+        declineButton.setId(elementCounter + rowNumber);
+        elementCounter++;
         declineButton.setVisibility(View.VISIBLE);
         Button invisibleButton = new Button(this);
         invisibleButton.setText("Invisible");
-        invisibleButton.setId(i + k + 1000);
+        invisibleButton.setId(elementCounter + rowNumber);
+        elementCounter++;
         invisibleButton.setVisibility(View.GONE);
         acceptButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -293,14 +291,16 @@ public class JoinAGroupById extends AppCompatActivity {
         tv1 = new TextView(getBaseContext());
         tv1.setText(ID);
         tv1.setTextSize(20);
-        tv1.setId(i + k + 10000);
-        row.setId(k);
+        tv1.setId(elementCounter + rowNumber);
+        elementCounter++;
+        row.setId(rowNumber);
         row.addView(invisibleButton);
         row.addView(tv1, lp);
         row.addView(acceptButton);
         row.addView(declineButton);
-        tableInvitations.addView(row, rowNumber);
-        rowNumber++;
+        tableInvitations.addView(row, rowNumber-rowIndex*4);
+        rowNumber+=5;
+        rowIndex++;
     }
     public boolean onTouchEvent(MotionEvent event) {
         hideKeyboard(JoinAGroupById.this);
