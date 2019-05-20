@@ -39,33 +39,24 @@ public class CreateGroupPage extends AppCompatActivity {
     private TextView friend, tick, tv1;
     private String friendName, friendId;
     private TableLayout tableRecHunted,tableFriends;
-    private FusedLocationProviderClient fusedLocationClient;
+
     private int recentlyHuntedCount, friendsCount,recentlyHuntedRowCount,friendsRowCount;
     private String[][] selected;
     private HashMap<String,String> friends = new HashMap<String, String>();
     private HashMap<String,String> recentlyHunted = new HashMap<String, String>();
-    private LatLng lastKnownLocation;
+
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+
 
         if ( ContextCompat.checkSelfPermission( this, android.Manifest.permission.ACCESS_COARSE_LOCATION ) != PackageManager.PERMISSION_GRANTED ) {
 
         }
-        fusedLocationClient.getLastLocation()
-                .addOnSuccessListener(this, new OnSuccessListener<Location>() {
-                    @Override
-                    public void onSuccess(Location location) {
-                        lastKnownLocation = new LatLng(-33.8523341, 151.2106085);
-                        if (location != null) {
-                            lastKnownLocation = new LatLng(location.getLatitude(), location.getLongitude());
-                        }
-                    }
-                });
+
         setContentView(R.layout.activity_create_group_page);
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         ActionBar actionBar = getSupportActionBar();
@@ -115,7 +106,7 @@ public class CreateGroupPage extends AppCompatActivity {
                     }
                 }
 
-                groupRef.child(groupId).child("locations").child(uid).setValue(lastKnownLocation);
+
 
                 Intent intent =new Intent(CreateGroupPage.this, InsideGroupActivity.class);
                 intent.putExtra("groupID", groupId);
