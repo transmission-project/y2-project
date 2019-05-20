@@ -254,10 +254,8 @@ public class JoinAGroupById extends AppCompatActivity {
         row.setLayoutParams(lp);
 
         row.setLayoutParams(lp);
-
         lp = new TableRow.LayoutParams(0,
                 TableRow.LayoutParams.WRAP_CONTENT);
-
         lp.setMargins(3, 10, 3, 10);
 
         LinearLayout layout = new LinearLayout(getBaseContext());
@@ -275,7 +273,7 @@ public class JoinAGroupById extends AppCompatActivity {
         tv1 = new TextView(getBaseContext());
         tv1.setText(ID);
         tv1.setTextSize(20);
-          tv1.setLayoutParams(chiledParams);
+        tv1.setLayoutParams(chiledParams);
         tv1.setId(elementCounter + rowID);
         elementCounter++;
 
@@ -312,8 +310,10 @@ public class JoinAGroupById extends AppCompatActivity {
         acceptButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                TextView text = (TextView) row.getChildAt(1);
+                LinearLayout lay = (LinearLayout) row.getChildAt(0);
+                TextView text = (TextView) lay.getChildAt(0);
                 String id = text.getText().toString();
+                System.out.println("thing id is"+ id);
                 mDatabase.child(groupID).child("invited").child(uid).removeValue();
                 mDatabase.child(groupID).child("joined").child(uid).child("nickname").setValue(nickname);
 
@@ -330,7 +330,8 @@ public class JoinAGroupById extends AppCompatActivity {
         declineButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                TextView text = (TextView) row.getChildAt(1);
+                LinearLayout lay = (LinearLayout) row.getChildAt(0);
+                TextView text = (TextView) lay.getChildAt(0);
                 String id = text.getText().toString();
                 mDatabase.child(id).child("invited").child(uid).removeValue();
                 tableInvitations.removeView(row);
@@ -339,7 +340,7 @@ public class JoinAGroupById extends AppCompatActivity {
 
 
         row.setId(rowID);
-            row.addView(layout);
+        row.addView(layout);
         tableInvitations.addView(row, rowIndex);
         rowID+=4;
         rowIndex++;

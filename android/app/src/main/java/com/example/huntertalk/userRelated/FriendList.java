@@ -274,29 +274,18 @@ public class FriendList extends AppCompatActivity {
     private void addRow (String nickname, String id, String command){
 
         // Creates a row with two TextView fields
-
+        counterForRowElements=1;
         TableRow.LayoutParams lp = new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT);
-
-
         final TableRow row = new TableRow(getBaseContext());
-
         lp.setMargins(3, 10, 3, 10);
-
         row.setLayoutParams(lp);
-
         lp = new TableRow.LayoutParams(0,
                 TableRow.LayoutParams.WRAP_CONTENT);
-
         lp.setMargins(3, 10, 3, 10);
-
-
         LinearLayout layout = new LinearLayout(getBaseContext());
         lp.weight = 1;
         layout.setLayoutParams(lp);
         layout.setWeightSum(1);
-
-        //row.setGravity(Gravity.CENTER_VERTICAL);
-
         LinearLayout.LayoutParams chiledParams = new LinearLayout.LayoutParams(0,
                 LinearLayout.LayoutParams.WRAP_CONTENT);
         chiledParams.weight = (float) 1;
@@ -305,7 +294,7 @@ public class FriendList extends AppCompatActivity {
         tv1.setText(nickname);
         tv1.setTextSize(18);
         tv1.setTextColor(Color.BLACK);
-        tv1.setId(counterForFR + counterForRH + counterForRowElements + 1000);
+        tv1.setId(counterForFR + counterForRH + counterForRowElements);
         tv1.setLayoutParams(chiledParams);
 
         layout.addView(tv1);
@@ -314,7 +303,7 @@ public class FriendList extends AppCompatActivity {
 
         tv = new TextView(getBaseContext());
         tv.setText(id);
-        tv.setId(counterForFR + counterForRH + counterForRowElements + 1000);
+        tv.setId(counterForFR + counterForRH + counterForRowElements);
         counterForRowElements++;
         tv.setVisibility(View.GONE);
         layout.addView(tv);
@@ -329,14 +318,13 @@ public class FriendList extends AppCompatActivity {
             LinearLayout.LayoutParams chiledParams1 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
                     LinearLayout.LayoutParams.WRAP_CONTENT);
             chiledParams1.gravity = Gravity.RIGHT;
-            //chiledParams1.weight = (float) 0.1;
 
 
-  ImageView addbtn = new ImageView(this);
+        ImageView addBtn = new ImageView(this);
         addBtn.setId(counterForRowElements+counterForRH+counterForFR);
         counterForRowElements++;
-        addbtn.setScaleType(ImageView.ScaleType.FIT_CENTER);
-        addbtn.setLayoutParams(chiledParams1);
+        addBtn.setScaleType(ImageView.ScaleType.FIT_CENTER);
+        addBtn.setLayoutParams(chiledParams1);
         if (command.equals("rc")) {
             addBtn.setBackgroundResource(R.drawable.ic_person_add_green_24dp);
             addBtn.setOnClickListener(new View.OnClickListener() {
@@ -358,12 +346,12 @@ public class FriendList extends AppCompatActivity {
                 }
             });
 
-            layout.addView(addbtn);
+            layout.addView(addBtn);
             row.addView(layout);
-            tableRecHunted.addView(row, counterForRH);
+            tableRecHunted.addView(row, rHRowCounter);
             counterForRH+=5;
             rHRowCounter++;
-        }
+        }}
 
         if (command.equals("fr")){
 
@@ -373,7 +361,7 @@ public class FriendList extends AppCompatActivity {
 
             ImageView declinebtn = new ImageView(this);
             declinebtn.setBackgroundResource(R.drawable.ic_close_black_24dp);
-            declinebtn.setId(counterForFR + counterForRH + counterForRowElements + 1000);
+            declinebtn.setId(counterForFR + counterForRH + counterForRowElements);
             declinebtn.setScaleType(ImageView.ScaleType.FIT_XY);
             declinebtn.setLayoutParams(chiledParams1);
             counterForRowElements++;
@@ -393,7 +381,7 @@ public class FriendList extends AppCompatActivity {
             });
             layout.addView(declinebtn);
             row.addView(layout);
-            tableFriends.addView(row, counterForFR);
+            tableFriends.addView(row, friendRowCounter);
             counterForFR+=5;
             friendRowCounter++;
         }
