@@ -38,7 +38,7 @@ public class FriendList extends AppCompatActivity {
     private TableLayout tableRecHunted,tableFriends;
     public String friendName,friendId;
     private TextView tv, tv1;
-    private int counterForRH,counterForFR,counterForRowElements;
+    private int counterForRH,counterForFR,counterForRowElements, friendRowCounter,rHRowCounter;
     private final FirebaseAuth auth =FirebaseAuth.getInstance();
     final String uid = auth.getCurrentUser().getUid();
     private HashMap<String,String> nickNames = new HashMap<String, String>();
@@ -79,6 +79,7 @@ public class FriendList extends AppCompatActivity {
                tableFriends = (TableLayout) findViewById(R.id.tableFriendList);
                tableFriends.removeAllViews();
                 counterForFR=0;
+                friendRowCounter=0;
                 /**
                  * Method to output all the recently hunted and friends
                  */
@@ -99,6 +100,7 @@ public class FriendList extends AppCompatActivity {
                 tableRecHunted = (TableLayout) findViewById(R.id.tableGroupMembers2);
                 tableRecHunted.removeAllViews();
                 counterForRH=0;
+                rHRowCounter=0;
                 /**
                  * Method to output all the recently hunted and friends
                  */
@@ -279,7 +281,7 @@ public class FriendList extends AppCompatActivity {
 
             ImageView addBtn = new ImageView(this);
 
-        addBtn.setId(counterForRowElements+counterForRH+counterForFR+1000);
+        addBtn.setId(counterForRowElements+counterForRH+counterForFR);
         counterForRowElements++;
         addBtn.setVisibility(View.VISIBLE);
         if (command.equals("rc")) {
@@ -302,8 +304,9 @@ public class FriendList extends AppCompatActivity {
                 }
             });
             row.addView(addBtn);
-            tableRecHunted.addView(row, counterForRH);
-            counterForRH++;
+            tableRecHunted.addView(row, rHRowCounter);
+            counterForRH+=5;
+            rHRowCounter++;
         }
         if (command.equals("fr")){
             addBtn.setBackgroundResource(R.drawable.ic_close_black_24dp);
@@ -319,8 +322,9 @@ public class FriendList extends AppCompatActivity {
                 }
             });
             row.addView(addBtn);
-            tableFriends.addView(row, counterForFR);
-            counterForFR++;
+            tableFriends.addView(row, friendRowCounter);
+            counterForFR+=5;
+            friendRowCounter++;
         }
     }
 
@@ -329,6 +333,7 @@ public class FriendList extends AppCompatActivity {
      */
 
     private TableRow createRow(String nickname, String id) {
+        counterForRowElements=1;
 
         TableRow row=new TableRow(getBaseContext());
         TableRow.LayoutParams lp = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT);
@@ -340,12 +345,12 @@ public class FriendList extends AppCompatActivity {
         tv1.setText(nickname);
         tv1.setTextSize(18);
         tv1.setTextColor(Color.BLACK);
-        tv1.setId(counterForFR+counterForRH +counterForRowElements + 1000);
+        tv1.setId(counterForFR+counterForRH +counterForRowElements);
 
         counterForRowElements++;
         tv = new TextView(getBaseContext());
         tv.setText(id);
-        tv.setId(counterForFR+counterForRH +counterForRowElements+ 1000);
+        tv.setId(counterForFR+counterForRH +counterForRowElements);
         counterForRowElements++;
         tv.setVisibility(View.GONE);
         row.setId(counterForFR+counterForRH);

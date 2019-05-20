@@ -44,7 +44,7 @@ public class JoinAGroupById extends AppCompatActivity {
     private DatabaseReference usersRef, groupRef, mDatabase;
     private TableLayout tableInvitations;
     private TextView tv1;
-    private int rowNumber, elementCounter, rowIndex;
+    private int rowID, rowIndex;
     Boolean changed = false;
     private final FirebaseAuth auth = FirebaseAuth.getInstance();
     final String uid = auth.getCurrentUser().getUid();
@@ -98,6 +98,8 @@ public class JoinAGroupById extends AppCompatActivity {
                                 if (users.equals(uid)) {
                                     groupID = groups.getKey();
                                     String nickname = user.getValue().toString();
+                                    rowID=0;
+                                    rowIndex=0;
                                     createTable(groupID, nickname);
                                 }
                             }
@@ -240,24 +242,24 @@ public class JoinAGroupById extends AppCompatActivity {
     //Create invitations table
     private void createTable(final String ID, final String nickname) {
 
-        elementCounter=1;
+        int elementCounter=1;
         final TableRow row = new TableRow(getBaseContext());
         TableRow.LayoutParams lp = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT);
         lp.setMargins(10, 10, 5, 10);
         row.setLayoutParams(lp);
         Button acceptButton = new Button(this);
         acceptButton.setText("Accept");
-        acceptButton.setId(elementCounter + rowNumber);
+        acceptButton.setId(elementCounter + rowID);
         elementCounter++;
         acceptButton.setVisibility(View.VISIBLE);
         Button declineButton = new Button(this);
         declineButton.setText("Decline");
-        declineButton.setId(elementCounter + rowNumber);
+        declineButton.setId(elementCounter + rowID);
         elementCounter++;
         declineButton.setVisibility(View.VISIBLE);
         Button invisibleButton = new Button(this);
         invisibleButton.setText("Invisible");
-        invisibleButton.setId(elementCounter + rowNumber);
+        invisibleButton.setId(elementCounter + rowID);
         elementCounter++;
         invisibleButton.setVisibility(View.GONE);
         acceptButton.setOnClickListener(new View.OnClickListener() {
@@ -291,15 +293,15 @@ public class JoinAGroupById extends AppCompatActivity {
         tv1 = new TextView(getBaseContext());
         tv1.setText(ID);
         tv1.setTextSize(20);
-        tv1.setId(elementCounter + rowNumber);
+        tv1.setId(elementCounter + rowID);
         elementCounter++;
-        row.setId(rowNumber);
+        row.setId(rowID);
         row.addView(invisibleButton);
         row.addView(tv1, lp);
         row.addView(acceptButton);
         row.addView(declineButton);
-        tableInvitations.addView(row, rowNumber-rowIndex*4);
-        rowNumber+=5;
+        tableInvitations.addView(row, rowIndex);
+        rowID+=5;
         rowIndex++;
     }
     public boolean onTouchEvent(MotionEvent event) {
