@@ -23,11 +23,8 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
-import com.example.huntertalk.LeaveGroupPopUp;
 import com.example.huntertalk.ui.firstLaunch.Home_page;
 import com.example.huntertalk.R;
-
-import com.example.huntertalk.userRelated.FriendList;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -49,9 +46,7 @@ public class JoinAGroupById extends AppCompatActivity {
     private DatabaseReference usersRef, groupRef, mDatabase;
     private TableLayout tableInvitations;
     private TextView tv1;
-    private int rowNumber;
-    private int i = 150;
-    private int k;
+    private int rowID, rowIndex;
     Boolean changed = false;
     private final FirebaseAuth auth = FirebaseAuth.getInstance();
     final String uid = auth.getCurrentUser().getUid();
@@ -105,6 +100,8 @@ public class JoinAGroupById extends AppCompatActivity {
                                 if (users.equals(uid)) {
                                     groupID = groups.getKey();
                                     String nickname = user.getValue().toString();
+                                    rowID=0;
+                                    rowIndex=0;
                                     createTable(groupID, nickname);
                                 }
                             }
@@ -247,7 +244,7 @@ public class JoinAGroupById extends AppCompatActivity {
     //Create invitations table
     private void createTable(final String ID, final String nickname) {
 
-        rowNumber = 0;
+        int elementCounter=1;
         final TableRow row = new TableRow(getBaseContext());
 
         TableRow.LayoutParams lp = new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT);
@@ -257,10 +254,8 @@ public class JoinAGroupById extends AppCompatActivity {
         row.setLayoutParams(lp);
 
         row.setLayoutParams(lp);
-
         lp = new TableRow.LayoutParams(0,
                 TableRow.LayoutParams.WRAP_CONTENT);
-
         lp.setMargins(3, 10, 3, 10);
 
         LinearLayout layout = new LinearLayout(getBaseContext());
@@ -273,11 +268,14 @@ public class JoinAGroupById extends AppCompatActivity {
         chiledParams.setMargins(3, 0, 3, 0);
         chiledParams.weight = (float) 1;
 
+
+
         tv1 = new TextView(getBaseContext());
         tv1.setText(ID);
         tv1.setTextSize(20);
-        tv1.setId(i + k + 10000);
         tv1.setLayoutParams(chiledParams);
+        tv1.setId(elementCounter + rowID);
+        elementCounter++;
 
         layout.addView(tv1);
 
@@ -291,31 +289,31 @@ public class JoinAGroupById extends AppCompatActivity {
 
         acceptButton.setText("Accept");
 
-        acceptButton.setId(i + k + 100);
-
+        acceptButton.setId(elementCounter + rowID);
+        elementCounter++;
         acceptButton.setBackgroundColor(Color.parseColor("#355e3b"));
         acceptButton.setTextColor(Color.WHITE);
-
         acceptButton.setLayoutParams(chiledParams1);
 
         Button declineButton = new Button(this);
 
         declineButton.setText("Decline");
-
+        declineButton.setId(elementCounter + rowID);
+        elementCounter++;
+        declineButton.setVisibility(View.VISIBLE);
         declineButton.setBackgroundColor(Color.WHITE);
         declineButton.setTextColor(Color.parseColor("#355e3b"));
-
-        declineButton.setId(i + k);
         declineButton.setLayoutParams(chiledParams1);
-
         layout.addView(acceptButton);
         layout.addView(declineButton);
 
         acceptButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                TextView text = (TextView) row.getChildAt(1);
+                LinearLayout lay = (LinearLayout) row.getChildAt(0);
+                TextView text = (TextView) lay.getChildAt(0);
                 String id = text.getText().toString();
+                System.out.println("thing id is"+ id);
                 mDatabase.child(groupID).child("invited").child(uid).removeValue();
                 mDatabase.child(groupID).child("joined").child(uid).child("nickname").setValue(nickname);
 
@@ -332,7 +330,8 @@ public class JoinAGroupById extends AppCompatActivity {
         declineButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                TextView text = (TextView) row.getChildAt(1);
+                LinearLayout lay = (LinearLayout) row.getChildAt(0);
+                TextView text = (TextView) lay.getChildAt(0);
                 String id = text.getText().toString();
                 mDatabase.child(id).child("invited").child(uid).removeValue();
                 tableInvitations.removeView(row);
@@ -340,12 +339,11 @@ public class JoinAGroupById extends AppCompatActivity {
         });
 
 
-
-
-        row.setId(k);
+        row.setId(rowID);
         row.addView(layout);
-        tableInvitations.addView(row, rowNumber);
-        rowNumber++;
+        tableInvitations.addView(row, rowIndex);
+        rowID+=4;
+        rowIndex++;
     }
     public boolean onTouchEvent(MotionEvent event) {
         hideKeyboard(JoinAGroupById.this);
