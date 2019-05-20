@@ -45,8 +45,7 @@ public class CreateGroupPage extends AppCompatActivity {
     private String friendName, friendId;
     private TableLayout tableRecHunted,tableFriends;
     private FusedLocationProviderClient fusedLocationClient;
-    private int k = 0;
-    private int f = 0;
+    private int recentlyHuntedCount, friendsCount ;
     private String[][] selected;
     private HashMap<String,String> friends = new HashMap<String, String>();
     private HashMap<String,String> recentlyHunted = new HashMap<String, String>();
@@ -114,7 +113,7 @@ public class CreateGroupPage extends AppCompatActivity {
                  * Nicknames are stored at 0 ids are at 1
                  */
 
-                for(int i = 0; i < k+f; i++) {
+                for(int i = 0; i < recentlyHuntedCount+friendsCount; i++) {
                     if(selected[i][0] != null){
                         groupRef.child(groupId).child("invited").child(selected[i][1]).setValue(selected[i][0]);
                     }
@@ -135,11 +134,11 @@ public class CreateGroupPage extends AppCompatActivity {
 
                 tableRecHunted = (TableLayout) findViewById(R.id.tableGroupMembers1);
                 tableRecHunted.removeAllViews();
-                k = 0;
+                recentlyHuntedCount= 0;
 
                 tableFriends = (TableLayout) findViewById(R.id.tableFriends);
                 tableFriends.removeAllViews();
-                f=0;
+                friendsCount=0;
             /**
             * Method to output all the recently hunted and friends
             */
@@ -179,7 +178,7 @@ public class CreateGroupPage extends AppCompatActivity {
                     }
                 }
                 //nicknames are stored at 0 ids are at 1
-                selected = new String[f + k][2];
+                selected = new String[friendsCount + recentlyHuntedCount][2];
             }
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
@@ -199,20 +198,20 @@ public class CreateGroupPage extends AppCompatActivity {
             row.setLayoutParams(lp);
             tv1 = new TextView(getBaseContext());
             tv1.setText(nickname);
-            tv1.setId(f+k + 1000);
+            tv1.setId(friendsCount+recentlyHuntedCount + 10000);
 
             tick = new TextView(getBaseContext());
             tick.setText("\u2713");
             tick.setTextColor(Color.WHITE);
             tick.setTextSize(16);
-            tick.setId(f+k + 2000);
+            tick.setId(friendsCount+recentlyHuntedCount + 20000);
 
 
             tv1.setTextColor(Color.BLACK);
             tv1.setTextSize(16);
 
 
-            row.setId(f+k);
+            row.setId(friendsCount+recentlyHuntedCount);
             row.addView(tick, lp);
             row.addView(tv1, lp);
 
@@ -220,8 +219,8 @@ public class CreateGroupPage extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     int clicked_id = v.getId();
-                    friend = (TextView) findViewById(clicked_id + 1000);
-                    tick = (TextView) findViewById(clicked_id + 2000);
+                    friend = (TextView) findViewById(clicked_id + 10000);
+                    tick = (TextView) findViewById(clicked_id + 20000);
                     String nameRH = friend.getText().toString();
                     if (selected[clicked_id][0]== null) {
                         friend.setTextColor(Color.parseColor("#355e3b"));
@@ -239,12 +238,12 @@ public class CreateGroupPage extends AppCompatActivity {
             }
          );
         if (command.equals("rc")) {
-            tableRecHunted.addView(row, k);
-            k++;
+            tableRecHunted.addView(row, recentlyHuntedCount);
+            recentlyHuntedCount++;
         }
         else{
-            tableFriends.addView(row, f);
-            f++;
+            tableFriends.addView(row, friendsCount);
+            friendsCount++;
         }
         }
     }
