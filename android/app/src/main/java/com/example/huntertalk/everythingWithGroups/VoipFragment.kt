@@ -20,6 +20,8 @@ import android.widget.ImageButton
 import android.widget.Toast
 
 import com.example.huntertalk.R
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
 import kotlinx.android.synthetic.main.activity_inside_group.*
 import kotlinx.android.synthetic.main.activity_inside_group.view.*
 import kotlinx.android.synthetic.main.app_bar_inside_group.*
@@ -46,8 +48,12 @@ private const val ARG_GROUPID = "groupID"
 class VoipFragment : Fragment() {
     private var uid: String? = null
     private var groupID: Int? = null
+
     private var listener: OnFragmentInteractionListener? = null
+
     private var voice_webview: WebView? = null
+
+//    private var groupDatabase: DatabaseReference? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,6 +61,9 @@ class VoipFragment : Fragment() {
             uid = it.getString(ARG_UID)
             groupID = it.getInt(ARG_GROUPID)
         }
+
+//        groupDatabase = FirebaseDatabase.getInstance().reference.child("groups")
+//                .child(groupID.toString())
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -181,6 +190,8 @@ class VoipFragment : Fragment() {
             }
         }
 
+        //groupDatabase.child("muted").child(uid).setValue(true)
+
         voiceWebview.addJavascriptInterface(VoipLayer(uid = this.uid!!, groupID = this.groupID!!), "androidInterface")
 
         voiceWebview.loadUrl("file:///android_asset/index.html")
@@ -188,9 +199,11 @@ class VoipFragment : Fragment() {
 
     fun startTalking() {
         voice_webview?.loadUrl("javascript:startTalking()")
+        //groupDatabase.child("muted").child(uid).setValue(false)
     }
 
     fun stopTalking() {
         voice_webview?.loadUrl("javascript:stopTalking()")
+        //groupDatabase.child("muted").child(uid).setValue(true)
     }
 }
