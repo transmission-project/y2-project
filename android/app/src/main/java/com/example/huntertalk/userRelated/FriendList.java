@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Layout;
 import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.MenuItem;
@@ -16,6 +17,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -60,7 +62,6 @@ public class FriendList extends AppCompatActivity {
 
         final EditText etSearch = findViewById(R.id.etsearch);
         Button searchButton = findViewById(R.id.searchButton);
-        etSearch.setHint("Enter email");
 
         mDatabase = FirebaseDatabase.getInstance().getReference("users");
         /**
@@ -121,7 +122,6 @@ public class FriendList extends AppCompatActivity {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
 
-                etSearch.setText("");
                 return false;
             }
         });
@@ -273,25 +273,79 @@ public class FriendList extends AppCompatActivity {
      */
     private void addRow (String nickname, String id, String command){
 
-        final TableRow row = createRow(nickname, id);
+        // Creates a row with two TextView fields
+
+        TableRow.LayoutParams lp = new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT);
+
+
+        final TableRow row = new TableRow(getBaseContext());
+
+        lp.setMargins(3, 10, 3, 10);
+
+        row.setLayoutParams(lp);
+
+        lp = new TableRow.LayoutParams(0,
+                TableRow.LayoutParams.WRAP_CONTENT);
+
+        lp.setMargins(3, 10, 3, 10);
+
+
+        LinearLayout layout = new LinearLayout(getBaseContext());
+        lp.weight = 1;
+        layout.setLayoutParams(lp);
+        layout.setWeightSum(1);
+
+        //row.setGravity(Gravity.CENTER_VERTICAL);
+
+        LinearLayout.LayoutParams chiledParams = new LinearLayout.LayoutParams(0,
+                LinearLayout.LayoutParams.WRAP_CONTENT);
+        chiledParams.weight = (float) 1;
+
+        tv1 = new TextView(getBaseContext());
+        tv1.setText(nickname);
+        tv1.setTextSize(18);
+        tv1.setTextColor(Color.BLACK);
+        tv1.setId(counterForFR + counterForRH + counterForRowElements + 1000);
+        tv1.setLayoutParams(chiledParams);
+
+        layout.addView(tv1);
+
+        counterForRowElements++;
+
+        tv = new TextView(getBaseContext());
+        tv.setText(id);
+        tv.setId(counterForFR + counterForRH + counterForRowElements + 1000);
+        counterForRowElements++;
+        tv.setVisibility(View.GONE);
+        layout.addView(tv);
+
+
         /**
          * Creates appropriate buttons with correct functionality for each table
          * and adds them to the row. Then adds the row to the appropriate TableLayout
          */
+        if (command.equals("rc")) {
 
-            ImageView addBtn = new ImageView(this);
+            LinearLayout.LayoutParams chiledParams1 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT);
+            chiledParams1.gravity = Gravity.RIGHT;
+            //chiledParams1.weight = (float) 0.1;
 
+
+  ImageView addbtn = new ImageView(this);
         addBtn.setId(counterForRowElements+counterForRH+counterForFR);
         counterForRowElements++;
-        addBtn.setVisibility(View.VISIBLE);
+        addbtn.setScaleType(ImageView.ScaleType.FIT_CENTER);
+        addbtn.setLayoutParams(chiledParams1);
         if (command.equals("rc")) {
             addBtn.setBackgroundResource(R.drawable.ic_person_add_green_24dp);
             addBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    TextView text=(TextView) row.getChildAt(1);
+                    LinearLayout lay = (LinearLayout) row.getChildAt(0);
+                    TextView text=(TextView) lay.getChildAt(1);
                     String id= text.getText().toString();
-                    TextView textNickname=(TextView) row.getChildAt(0);
+                    TextView textNickname=(TextView) lay.getChildAt(0);
                     String nickname= textNickname.getText().toString();
                     mDatabase.child(uid).child("friends").child(id).setValue(nickname);
                     mDatabase.child(id).child("friendOf").child(uid).setValue("fr");
@@ -303,61 +357,48 @@ public class FriendList extends AppCompatActivity {
                     }
                 }
             });
-            row.addView(addBtn);
-            tableRecHunted.addView(row, rHRowCounter);
+
+            layout.addView(addbtn);
+            row.addView(layout);
+            tableRecHunted.addView(row, counterForRH);
             counterForRH+=5;
             rHRowCounter++;
         }
+
         if (command.equals("fr")){
-            addBtn.setBackgroundResource(R.drawable.ic_close_black_24dp);
-            addBtn.setOnClickListener(new View.OnClickListener() {
+
+            LinearLayout.LayoutParams chiledParams1 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT);
+            chiledParams1.gravity = Gravity.RIGHT;
+
+            ImageView declinebtn = new ImageView(this);
+            declinebtn.setBackgroundResource(R.drawable.ic_close_black_24dp);
+            declinebtn.setId(counterForFR + counterForRH + counterForRowElements + 1000);
+            declinebtn.setScaleType(ImageView.ScaleType.FIT_XY);
+            declinebtn.setLayoutParams(chiledParams1);
+            counterForRowElements++;
+
+            declinebtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    TextView text=(TextView) row.getChildAt(1);
+                    LinearLayout lay = (LinearLayout) row.getChildAt(0);
+                    TextView text=(TextView) lay.getChildAt(1);
                     String id= text.getText().toString();
+                    System.out.println(id);
                     mDatabase.child(uid).child("friends").child(id).removeValue();
                     mDatabase.child(id).child("friendOf").child(uid).removeValue();
                     nickNames.remove(id);
                     tableFriends.removeView(row);
                 }
             });
-            row.addView(addBtn);
-            tableFriends.addView(row, friendRowCounter);
+            layout.addView(declinebtn);
+            row.addView(layout);
+            tableFriends.addView(row, counterForFR);
             counterForFR+=5;
             friendRowCounter++;
         }
     }
 
-    /**
-     * Creates a row with two TextView fields
-     */
-
-    private TableRow createRow(String nickname, String id) {
-        counterForRowElements=1;
-
-        TableRow row=new TableRow(getBaseContext());
-        TableRow.LayoutParams lp = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT);
-        lp.setMargins(10, 10, 5, 10);
-        row.setLayoutParams(lp);
-        row.setGravity(Gravity.CENTER_VERTICAL);
-
-        tv1 = new TextView(getBaseContext());
-        tv1.setText(nickname);
-        tv1.setTextSize(18);
-        tv1.setTextColor(Color.BLACK);
-        tv1.setId(counterForFR+counterForRH +counterForRowElements);
-
-        counterForRowElements++;
-        tv = new TextView(getBaseContext());
-        tv.setText(id);
-        tv.setId(counterForFR+counterForRH +counterForRowElements);
-        counterForRowElements++;
-        tv.setVisibility(View.GONE);
-        row.setId(counterForFR+counterForRH);
-        row.addView(tv1, lp);
-        row.addView(tv, lp);
-     return row;
-    }
 
     /**
      *  Back button functionality
@@ -407,5 +448,3 @@ public class FriendList extends AppCompatActivity {
         }
     }
 }
-
-

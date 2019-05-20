@@ -45,6 +45,8 @@ public class InsideGroupActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        Thread.setDefaultUncaughtExceptionHandler(new GroupExceptionHandler(this));
+
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.replace(R.id.content_frame, new GroupOverviewFragment()).commit();
 
@@ -72,7 +74,7 @@ public class InsideGroupActivity extends AppCompatActivity
             groupID = getIntent().getExtras().getString("groupID");
         }
         catch (NullPointerException e) {
-            groupID = "ERROR";
+            finish();
         }
 
         //Voip
@@ -246,6 +248,48 @@ public class InsideGroupActivity extends AppCompatActivity
             if (resultCode == RESULT_CANCELED){
 
             }
+        }
+    }
+}
+
+class GroupExceptionHandler implements
+        java.lang.Thread.UncaughtExceptionHandler {
+
+    private final InsideGroupActivity myContext;
+
+    public GroupExceptionHandler(InsideGroupActivity context) {
+        myContext = context;
+    }
+
+    @Override
+    public void uncaughtException(Thread t, Throwable e) {
+        System.out.println("Error occurred inside the group.");
+        e.printStackTrace(System.out);
+
+        // attempt to relaunch the activity
+        try {
+            Intent intent = myContext.getIntent();
+
+            boolean restartedAlready;
+            try { restartedAlready = intent.getExtras().getBoolean("restartedAfterException"); }
+            catch(NullPointerException ex) {restartedAlready = false;}
+            if(restartedAlready) {
+                System.out.println("Refusing to restart InsideGroupActivity twice.");
+            }
+
+            intent.putExtra("restartedAfterException", true);
+
+
+            System.out.println("Restarting InsideGroupActivity.");
+            myContext.finish();
+            myContext.startActivity(intent);
+        }
+
+        catch (Exception ex) {
+            //cannot recover, END IT ALL
+            System.out.println("Unable to recover Group, aborting.");
+            myContext.finish();
+            return;
         }
     }
 }
