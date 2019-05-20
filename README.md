@@ -58,3 +58,5 @@ Team Transmission is a goup of 6 ICT students at KTH in Stockholm and we're doin
 [Hansika Attanayake](mailto:ghat@kth.se)<br />
 [Justin Lex](mailto:jtlex@kth.se)<br />
 [Mikhail Vlasov](mailto:vlasov@kth.se)<br />
+
+<a href="privacy.html">Privacy Policy</a>
