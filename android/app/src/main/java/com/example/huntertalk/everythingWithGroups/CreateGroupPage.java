@@ -3,37 +3,32 @@ package com.example.huntertalk.everythingWithGroups;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
-import android.graphics.Typeface;
 import android.location.Location;
 import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.huntertalk.R;
-import com.example.huntertalk.userRelated.SettingsPage;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.android.gms.location.LocationServices;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.sql.SQLOutput;
 import java.util.HashMap;
 
 
@@ -45,7 +40,7 @@ public class CreateGroupPage extends AppCompatActivity {
     private String friendName, friendId;
     private TableLayout tableRecHunted,tableFriends;
     private FusedLocationProviderClient fusedLocationClient;
-    private int recentlyHuntedCount, friendsCount ;
+    private int recentlyHuntedCount, friendsCount,recentlyHuntedRowCount,friendsRowCount;
     private String[][] selected;
     private HashMap<String,String> friends = new HashMap<String, String>();
     private HashMap<String,String> recentlyHunted = new HashMap<String, String>();
@@ -101,6 +96,7 @@ public class CreateGroupPage extends AppCompatActivity {
                         groupRef.child(groupId).child("joined").child(uid).child("nickname").setValue(nickname);
                         System.out.println("After the database connection ");
                         usersRef.child(uid).child("currentGroup").setValue(groupId);
+                        System.out.println("After updating the ciurrent group");
                     }
 
                     @Override
@@ -113,7 +109,7 @@ public class CreateGroupPage extends AppCompatActivity {
                  * Nicknames are stored at 0 ids are at 1
                  */
 
-                for(int i = 0; i < recentlyHuntedCount+friendsCount; i++) {
+                for(int i = 0; i < recentlyHuntedRowCount+friendsRowCount; i++) {
                     if(selected[i][0] != null){
                         groupRef.child(groupId).child("invited").child(selected[i][1]).setValue(selected[i][0]);
                     }
@@ -135,10 +131,12 @@ public class CreateGroupPage extends AppCompatActivity {
                 tableRecHunted = (TableLayout) findViewById(R.id.tableGroupMembers1);
                 tableRecHunted.removeAllViews();
                 recentlyHuntedCount= 0;
+                recentlyHuntedRowCount=0;
 
                 tableFriends = (TableLayout) findViewById(R.id.tableFriends);
                 tableFriends.removeAllViews();
                 friendsCount=0;
+                friendsRowCount=0;
             /**
             * Method to output all the recently hunted and friends
             */
@@ -178,7 +176,7 @@ public class CreateGroupPage extends AppCompatActivity {
                     }
                 }
                 //nicknames are stored at 0 ids are at 1
-                selected = new String[friendsCount + recentlyHuntedCount][2];
+                selected = new String[friendsRowCount + recentlyHuntedRowCount][2];
             }
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
@@ -190,6 +188,7 @@ public class CreateGroupPage extends AppCompatActivity {
      */
     private void createTable(HashMap<String, String> people, String command){
         for (String key: people.keySet()){
+            int elementIndex=1;
             String nickname= people.get(key);
             final String keyForStoringId =key;
             final TableRow row = new TableRow(getBaseContext());
@@ -198,14 +197,15 @@ public class CreateGroupPage extends AppCompatActivity {
             row.setLayoutParams(lp);
             tv1 = new TextView(getBaseContext());
             tv1.setText(nickname);
-            tv1.setId(friendsCount+recentlyHuntedCount + 10000);
+            tv1.setId(friendsCount+recentlyHuntedCount + elementIndex);
+            elementIndex++;
 
             tick = new TextView(getBaseContext());
             tick.setText("\u2713");
             tick.setTextColor(Color.WHITE);
             tick.setTextSize(16);
-            tick.setId(friendsCount+recentlyHuntedCount + 20000);
-
+            tick.setId(friendsCount+recentlyHuntedCount + elementIndex);
+            elementIndex++;
 
             tv1.setTextColor(Color.BLACK);
             tv1.setTextSize(16);
@@ -214,36 +214,40 @@ public class CreateGroupPage extends AppCompatActivity {
             row.setId(friendsCount+recentlyHuntedCount);
             row.addView(tick, lp);
             row.addView(tv1, lp);
-
+            final int clickedID= recentlyHuntedRowCount+friendsRowCount;
             row.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     int clicked_id = v.getId();
-                    friend = (TextView) findViewById(clicked_id + 10000);
-                    tick = (TextView) findViewById(clicked_id + 20000);
+                    System.out.println("THe clicked ID is "+clicked_id);
+                    friend = (TextView) findViewById(clicked_id + 1);
+                    tick = (TextView) findViewById(clicked_id + 2);
                     String nameRH = friend.getText().toString();
-                    if (selected[clicked_id][0]== null) {
+                    System.out.println("THe array index is"+(clicked_id-2*(clickedID)));
+                    if (selected[clicked_id-2*(clickedID)][0]== null) {
                         friend.setTextColor(Color.parseColor("#355e3b"));
                         tick.setTextColor(Color.parseColor("#355e3b"));
-                        selected[clicked_id][0] = nameRH;
-                        selected[clicked_id][1] = keyForStoringId;
+                        selected[clicked_id-2*(clickedID)][0] = nameRH;
+                        selected[clicked_id-2*(clickedID)][1] = keyForStoringId;
                     }
                     else {
                         friend.setTextColor(Color.BLACK);
                         tick.setTextColor(Color.WHITE);
-                        selected[clicked_id][0] = null;
+                        selected[clicked_id-2*(clickedID)][0] = null;
 
                     }
                 }
             }
          );
         if (command.equals("rc")) {
-            tableRecHunted.addView(row, recentlyHuntedCount);
-            recentlyHuntedCount++;
+            tableRecHunted.addView(row, recentlyHuntedRowCount);
+            recentlyHuntedCount+=3;
+            recentlyHuntedRowCount++;
         }
         else{
-            tableFriends.addView(row, friendsCount);
-            friendsCount++;
+            tableFriends.addView(row, friendsRowCount);
+            friendsCount+=3;
+            friendsRowCount++;
         }
         }
     }
