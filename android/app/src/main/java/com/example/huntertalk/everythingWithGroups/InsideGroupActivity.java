@@ -61,7 +61,6 @@ public class InsideGroupActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-
         Thread.setDefaultUncaughtExceptionHandler(new GroupExceptionHandler(this));
 
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
