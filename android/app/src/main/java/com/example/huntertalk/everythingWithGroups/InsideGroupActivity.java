@@ -1,14 +1,21 @@
 package com.example.huntertalk.everythingWithGroups;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v7.app.ActionBarDrawerToggle;
+
+import android.view.Gravity;
 import android.view.MenuItem;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
@@ -21,8 +28,13 @@ import android.widget.Toast;
 
 import com.example.huntertalk.LeaveGroupPopUp;
 import com.example.huntertalk.R;
+import com.example.huntertalk.ui.firstLaunch.RegistrationActivity;
 import com.example.huntertalk.userRelated.SettingsPage;
 import com.example.huntertalk.ui.firstLaunch.Home_page;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -34,16 +46,21 @@ import com.google.firebase.database.annotations.NotNull;
 
 public class InsideGroupActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, VoipFragment.OnFragmentInteractionListener {
-
+    private FusedLocationProviderClient fusedLocationClient;
     private DatabaseReference groupsRef, usersRef;
     private String groupID;
     private String uid;
     private Intent service;
+    private final int MY_ACCESS_FINE_PERMISSION=3;
+    private boolean mapAccess=false;
     static final int POP_UP_REQUEST = 1;
+    private LatLng lastKnownLocation;
+    private FragmentManager fragmentManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
 
         Thread.setDefaultUncaughtExceptionHandler(new GroupExceptionHandler(this));
 
@@ -53,6 +70,8 @@ public class InsideGroupActivity extends AppCompatActivity
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         groupsRef = database.getReference().child("groups");
         usersRef= database.getReference().child("users");
+
+
 
         FirebaseAuth auth = FirebaseAuth.getInstance();
         uid = auth.getCurrentUser().getUid();
@@ -76,13 +95,70 @@ public class InsideGroupActivity extends AppCompatActivity
         catch (NullPointerException e) {
             finish();
         }
-
+       locationPermissionCheck();
         //Voip
         startVoipFragment(savedInstanceState);
 
         //Map
-        startTrackerService();
+
     }
+
+    private void locationPermissionCheck() {
+
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                        MY_ACCESS_FINE_PERMISSION);
+                // Show an explanation to the user *asynchronously* -- don't block
+                // this thread waiting for the user's response! After the user
+                // sees the explanation, try again to request the permission.
+
+
+        } else {
+            // Permission has already been granted
+            fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+            fusedLocationClient.getLastLocation()
+                    .addOnSuccessListener(this, new OnSuccessListener<Location>() {
+                        @Override
+                        public void onSuccess(Location location) {
+                            lastKnownLocation = new LatLng(-33.8523341, 151.2106085);
+                            if (location != null) {
+                                lastKnownLocation = new LatLng(location.getLatitude(), location.getLongitude());
+                            }
+                        }
+                    });
+            mapAccess=true;
+            groupsRef.child(groupID).child("locations").child(uid).setValue(lastKnownLocation);
+            startTrackerService();
+
+        }
+
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String[] permissions, int[] grantResults) {
+        switch (requestCode) {
+            case MY_ACCESS_FINE_PERMISSION: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                   locationPermissionCheck();
+                   mapAccess=true;
+                } else {
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                    mapAccess=false;
+                }
+                return;
+            }
+
+            // other 'case' lines to check for other
+            // permissions this app might request.
+        }
+    }
+
     // start the TrackerService//
 
     //Start the TrackerService//
@@ -136,18 +212,20 @@ public class InsideGroupActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
-        FragmentManager fragmentManager = getSupportFragmentManager();
+        fragmentManager = getSupportFragmentManager();
 
         if (id == R.id.nav_overview) {
             fragmentManager.beginTransaction().replace(R.id.content_frame, new GroupOverviewFragment()).commit();
 
         } else if (id == R.id.nav_map) {
-            Bundle bundle = new Bundle();
-            bundle.putString("groupID", groupID);
-            MapFragment map= new MapFragment();
-            map.setArguments(bundle);
-            fragmentManager.beginTransaction().replace(R.id.content_frame, map).commit();
-
+            locationPermissionCheck();
+            if (mapAccess){
+                Bundle bundle = new Bundle();
+                bundle.putString("groupID", groupID);
+                MapFragment map = new MapFragment();
+                map.setArguments(bundle);
+                fragmentManager.beginTransaction().replace(R.id.content_frame, map).commit();
+            }
 
         } else if (id == R.id.nav_chat) {
 
@@ -165,7 +243,9 @@ public class InsideGroupActivity extends AppCompatActivity
              */
         } else if (id == R.id.nav_leave) {
             System.out.println("The group ID of the group being left to "+ groupID);
-            this.stopService(service);
+            if(mapAccess) {
+                this.stopService(service);
+            }
             groupsRef.child(groupID).child("joined").child(uid).removeValue();
             groupsRef.child(groupID).child("locations").child(uid).removeValue();
             usersRef.child(uid).child("currentGroup").removeValue();
@@ -192,6 +272,8 @@ public class InsideGroupActivity extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
+
 
     private void startVoipFragment(Bundle activitySavedInstanceState) throws IllegalStateException{
         FragmentManager fm = getSupportFragmentManager();
@@ -240,10 +322,14 @@ public class InsideGroupActivity extends AppCompatActivity
             if (resultCode == RESULT_OK){
                 String popUp = data.getStringExtra("popUp");
 
-                if (popUp.equals("yes")){
+                if (popUp.equals("yes")&&mapAccess){
                     this.stopService(service);
                     finish();
                 }
+                else {
+                    finish();
+                }
+
             }
             if (resultCode == RESULT_CANCELED){
 
