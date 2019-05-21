@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="io.transmission_project.huntertalk">
-
     <!--
          The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
          Google Maps Android API v2, but you must specify either coarse or fine
@@ -10,11 +9,12 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <uses-feature
         android:glEsVersion="0x00020000"
         android:required="true" />
+
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
 
@@ -25,10 +25,15 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity
+            android:name=".PrivacyPolicy"
+            android:label="@string/title_activity_privacy_policy"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+
         <service
             android:name=".everythingWithGroups.TrackingService"
             android:enabled="true"
-            android:exported="true"></service>
+            android:exported="true" />
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
@@ -50,7 +55,7 @@
 
         <activity
             android:name=".userRelated.FriendList"
-            android:label="@string/friendList"></activity>
+            android:label="@string/friendList" />
         <activity android:name=".userRelated.SettingsPage" />
         <activity
             android:name=".ui.firstLaunch.ResetPassword"
@@ -58,8 +63,8 @@
             android:parentActivityName=".ui.firstLaunch.LoginActivity" />
         <activity
             android:name=".everythingWithGroups.CreateGroupPage"
-            android:parentActivityName=".ui.firstLaunch.Home_page"
-            android:label="@string/title_create_group" />
+            android:label="@string/title_create_group"
+            android:parentActivityName=".ui.firstLaunch.Home_page" />
         <activity
             android:name=".everythingWithGroups.InsideGroupActivity"
             android:label="@string/title_activity_inside_group"
@@ -72,20 +77,20 @@
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
             android:name=".ui.firstLaunch.RegistrationActivity"
             android:label="@string/title_activity_register"
-            android:parentActivityName=".ui.firstLaunch.LoginActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
-        <service android:name="InviteNotificationService">
+        <service android:name=".InviteNotificationService">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>

@@ -12,6 +12,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import io.transmission_project.huntertalk.PrivacyPolicy;
 import io.transmission_project.huntertalk.R;
 import io.transmission_project.huntertalk.everythingWithGroups.InsideGroupActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -90,7 +91,7 @@ public class LoginActivity extends AppCompatActivity {
         registrationButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                moveToRegistrationActivity();
+                moveToPrivacyPolicy();
             }
         });
     }
@@ -160,12 +161,17 @@ public class LoginActivity extends AppCompatActivity {
         Intent intent = new Intent(LoginActivity.this, Home_page.class);
         startActivity(intent);
     }
-    private void moveToRegistrationActivity(){
-        Intent intent = new Intent(LoginActivity.this, RegistrationActivity.class);
+    private void moveToPrivacyPolicy(){
+        Intent intent = new Intent(LoginActivity.this, PrivacyPolicy.class);
         startActivity(intent);
     }
     private void moveToSignIn(){
         Intent intent = new Intent(LoginActivity.this, ResetPassword.class);
         startActivity(intent);
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
     }
 }

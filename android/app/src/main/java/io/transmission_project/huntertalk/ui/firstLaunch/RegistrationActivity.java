@@ -47,8 +47,7 @@ public class RegistrationActivity extends AppCompatActivity {
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(RegistrationActivity.this, LoginActivity.class);
-                startActivity(intent);
+                finish();
             }
         });
 
@@ -117,8 +116,8 @@ public class RegistrationActivity extends AppCompatActivity {
                     startActivity(intent);
                 }else{
                 if (secondPress){
-                Intent intent = new Intent(RegistrationActivity.this, LoginActivity.class);
-                startActivity(intent);}
+                finish();
+                }
                 else{
                     Toast message= Toast.makeText(RegistrationActivity.this, "Press once again to cancel the registration",
                             Toast.LENGTH_LONG);
