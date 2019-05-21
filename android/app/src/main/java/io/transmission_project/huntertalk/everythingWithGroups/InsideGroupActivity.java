@@ -117,60 +117,9 @@ public class InsideGroupActivity extends AppCompatActivity
         startVoipFragment(savedInstanceState);
     }
 
-    private void locationPermissionCheck() {
-
-        if (ContextCompat.checkSelfPermission(this,
-                Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                        MY_ACCESS_FINE_PERMISSION);
-                // Show an explanation to the user *asynchronously* -- don't block
-                // this thread waiting for the user's response! After the user
-                // sees the explanation, try again to request the permission.
 
 
-        } else {
-            // Permission has already been granted
-            fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
-            fusedLocationClient.getLastLocation()
-                    .addOnSuccessListener(this, new OnSuccessListener<Location>() {
-                        @Override
-                        public void onSuccess(Location location) {
-                            lastKnownLocation = new LatLng(-33.8523341, 151.2106085);
-                            if (location != null) {
-                                lastKnownLocation = new LatLng(location.getLatitude(), location.getLongitude());
-                            }
-                        }
-                    });
-            mapAccess=true;
-            groupsRef.child(groupID).child("locations").child(uid).setValue(lastKnownLocation);
-            startTrackerService();
 
-        }
-
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           String[] permissions, int[] grantResults) {
-        switch (requestCode) {
-            case MY_ACCESS_FINE_PERMISSION: {
-                // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                   locationPermissionCheck();
-                   mapAccess=true;
-                } else {
-                    // permission denied, boo! Disable the
-                    // functionality that depends on this permission.
-                    mapAccess=false;
-                }
-                return;
-            }
-
-        //Map
-
-    }
 
     private void locationPermissionCheck() {
 
