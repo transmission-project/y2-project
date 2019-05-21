@@ -61,8 +61,7 @@ public class InsideGroupActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-
-        Thread.setDefaultUncaughtExceptionHandler(new GroupExceptionHandler(this));
+        //Thread.setDefaultUncaughtExceptionHandler(new GroupExceptionHandler(this));
 
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.replace(R.id.content_frame, new GroupOverviewFragment()).commit();
@@ -299,10 +298,8 @@ public class InsideGroupActivity extends AppCompatActivity
             public boolean onTouch(View v, MotionEvent event) {
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
                     voipFrag.startTalking();
-                    //groupsRef.child("muted").child(uid).setValue(false);
                 } else if (event.getAction() == MotionEvent.ACTION_UP) {
                     voipFrag.stopTalking();
-                    //groupsRef.child("muted").child(uid).setValue(true);
                 }
                 return true;
             }
@@ -338,44 +335,45 @@ public class InsideGroupActivity extends AppCompatActivity
     }
 }
 
-class GroupExceptionHandler implements
-        java.lang.Thread.UncaughtExceptionHandler {
+//This exception handler seems to crash the entire app very hard no matter what we do in it...
 
-    private final InsideGroupActivity myContext;
-
-    public GroupExceptionHandler(InsideGroupActivity context) {
-        myContext = context;
-    }
-
-    @Override
-    public void uncaughtException(Thread t, Throwable e) {
-        System.out.println("Error occurred inside the group.");
-        e.printStackTrace(System.out);
-
-        // attempt to relaunch the activity
-        try {
-            Intent intent = myContext.getIntent();
-
-            boolean restartedAlready;
-            try { restartedAlready = intent.getExtras().getBoolean("restartedAfterException"); }
-            catch(NullPointerException ex) {restartedAlready = false;}
-            if(restartedAlready) {
-                System.out.println("Refusing to restart InsideGroupActivity twice.");
-            }
-
-            intent.putExtra("restartedAfterException", true);
-
-
-            System.out.println("Restarting InsideGroupActivity.");
-            myContext.finish();
-            myContext.startActivity(intent);
-        }
-
-        catch (Exception ex) {
-            //cannot recover, END IT ALL
-            System.out.println("Unable to recover Group, aborting.");
-            myContext.finish();
-            return;
-        }
-    }
-}
+//class GroupExceptionHandler implements
+//        java.lang.Thread.UncaughtExceptionHandler {
+//
+//    private final InsideGroupActivity myContext;
+//
+//    public GroupExceptionHandler(InsideGroupActivity context) {
+//        myContext = context;
+//    }
+//
+//    @Override
+//    public void uncaughtException(Thread t, Throwable e) {
+//        System.out.println("Error occurred inside the group.");
+//        System.out.println(myContext);
+//        myContext.finish();
+//
+//        //e.printStackTrace(System.err);
+//
+////        // attempt to relaunch the activity
+////        try {
+////            Intent intent = myContext.getIntent();
+////
+////            boolean restartedAlready;
+////            try { restartedAlready = intent.getExtras().getBoolean("restartedAfterException"); }
+////            catch(NullPointerException ex) {restartedAlready = false;}
+////            if(restartedAlready) {
+////                System.out.println("Refusing to restart InsideGroupActivity twice.");
+////            }
+////
+////            intent.putExtra("restartedAfterException", true);
+////
+////            myContext.recreate();
+////        }
+////
+////        catch (Exception ex) {
+////            //cannot recover, END IT ALL
+////            System.out.println("Unable to recover Group, aborting.");
+////            myContext.finish();
+////        }
+//    }
+//}
