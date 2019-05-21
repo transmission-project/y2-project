@@ -25,6 +25,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import static android.widget.Toast.makeText;
 
@@ -76,7 +77,6 @@ public class InviteToGroupFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 final String enteredemail = etSearch.getText().toString().trim();
-
                 Log.d("btnTag", enteredemail);
                 if (!enteredemail.contains("@") || !enteredemail.contains(".")) {
                     etSearch.setError("Invalid email addresss");
@@ -107,9 +107,7 @@ public class InviteToGroupFragment extends Fragment {
                                     groupDb.child(groupID).child("invited").child(inviteduser).setValue(nickname);
                                     etSearch.setHint("Enter email");
                                     etSearch.setText("");
-
                                     hideKeyboardFrom(getContext(), getView());
-
                                     Toast toast = makeText(getContext(), "Invitation sent", Toast.LENGTH_LONG);
                                     toast.setGravity(Gravity.BOTTOM,0,600);
                                     toast.show();

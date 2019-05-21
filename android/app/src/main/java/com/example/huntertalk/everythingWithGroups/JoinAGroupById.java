@@ -37,6 +37,11 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.messaging.FirebaseMessaging;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import static android.widget.Toast.makeText;
 import static com.example.huntertalk.userRelated.FriendList.hideKeyboard;
@@ -84,6 +89,8 @@ public class JoinAGroupById extends AppCompatActivity {
         usersRef = FirebaseDatabase.getInstance().getReference().child("users");
 
         final EditText groupIDInput = findViewById(R.id.etgroupid);
+
+
 
         //create invitation list on start
         mDatabase.addValueEventListener(new ValueEventListener() {

@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
@@ -19,8 +20,11 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 
 public class RegistrationActivity extends AppCompatActivity {
 
@@ -172,10 +176,25 @@ class registerFollowup implements OnCompleteListener<AuthResult> {
         else{
             FirebaseAuth auth = FirebaseAuth.getInstance();
             FirebaseDatabase database = FirebaseDatabase.getInstance();
-            DatabaseReference usersTable = database.getReference().child("users");
-            String uid = auth.getCurrentUser().getUid();
+            final DatabaseReference usersTable = database.getReference().child("users");
+            final String uid = auth.getCurrentUser().getUid();
             usersTable.child(uid).child("nickname").setValue(nickname);
             usersTable.child(uid).child("email").setValue(email);
+            // generate token for users when they register
+            FirebaseInstanceId.getInstance().getInstanceId()
+                    .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<InstanceIdResult> task) {
+                            if (!task.isSuccessful()) {
+                                Log.w("fail", "getInstanceId failed", task.getException());
+                                return;
+                            }
+                            // Get new Instance ID token
+                            String token = task.getResult().getToken();
+                            usersTable.child(uid).child("fcmToken").setValue(token);
+                        }
+                    });
+
             Toast message = Toast.makeText(registrationActivity, "You have successfully registered. Redirecting to the main page.",
                     Toast.LENGTH_LONG);
             message.setGravity(Gravity.TOP, 0,0);
