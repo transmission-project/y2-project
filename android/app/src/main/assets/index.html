@@ -6,19 +6,24 @@
   <ul id="connected">
   </ul>
 
-  <script src="https://www.gstatic.com/firebasejs/5.11.1/firebase.js"></script>
+  <!-- The core Firebase JS SDK is always required and must be listed first -->
+  <script src="https://www.gstatic.com/firebasejs/6.0.2/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/6.0.2/firebase-database.js"></script>
+
   <script>
-      // Initialize Firebase
-      var config = {
-          apiKey: "AIzaSyCgcyKJ6PL_53rTc1XylCXQqt0dKKaefMA",
-          authDomain: "hunter-talk-be521.firebaseapp.com",
-          databaseURL: "https://hunter-talk-be521.firebaseio.com",
-          projectId: "hunter-talk-be521",
-          storageBucket: "hunter-talk-be521.appspot.com",
-          messagingSenderId: "849259271283"
-      };
-      firebase.initializeApp(config);
-  </script>
+  // Your web app's Firebase configuration
+  var firebaseConfig = {
+    apiKey: "AIzaSyCgcyKJ6PL_53rTc1XylCXQqt0dKKaefMA",
+    authDomain: "hunter-talk-be521.firebaseapp.com",
+    databaseURL: "https://hunter-talk-be521.firebaseio.com",
+    projectId: "hunter-talk-be521",
+    storageBucket: "hunter-talk-be521.appspot.com",
+    messagingSenderId: "849259271283",
+    appId: "1:849259271283:web:4da61eef6b58db1c"
+  };
+  // Initialize Firebase
+  firebase.initializeApp(firebaseConfig);
+</script>
   <script src="index.js"></script>
 
 </body>
