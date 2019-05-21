@@ -164,7 +164,7 @@ class VoipFragment : Fragment() {
         voiceWebview.settings.setAllowUniversalAccessFromFileURLs(true)
         voiceWebview.settings.setMediaPlaybackRequiresUserGesture(false)
 
-        WebView.setWebContentsDebuggingEnabled(true) //TODO: disable this for production
+        //WebView.setWebContentsDebuggingEnabled(true) //disable this for production
 
         voiceWebview.webChromeClient = object : WebChromeClient() {
             // Pass JS console messages to Logcat
