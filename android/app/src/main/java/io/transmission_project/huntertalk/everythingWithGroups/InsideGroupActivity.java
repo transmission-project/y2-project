@@ -117,6 +117,10 @@ public class InsideGroupActivity extends AppCompatActivity
         startVoipFragment(savedInstanceState);
     }
 
+
+
+
+
     private void locationPermissionCheck() {
 
         if (ContextCompat.checkSelfPermission(this,
