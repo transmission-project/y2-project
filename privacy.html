@@ -51,5 +51,42 @@
     <p>Click
     <a href="mailto:jtlex8@gmail.com">here</a>
       to send us an email</p>
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+#myDIV {
+  width: 100%;
+  padding: 50px 0;
+  background-color: lightgreen;
+  margin-top: 20px;
+}
+</style>
+</head>
+<body>
+
+<button onclick="myFunction()">Click here to find out more about your data protection rights!</button>
+
+<div id="myDIV">
+<h2>What are your data protection rights?</h2>
+    <p>Hunter Talk would like to make sure you are fully aware of all of your data protection rights. Every user is entitled to the following:</p>
+    <p><b>The right to access</b> - You have the right to request Hunter Talk for copies of your personal data.</p>
+    <p><b>The right to rectification</b> - You have the right to request that Hunter Talk correct any information you believe is inaccurate. You also have the right to request Hunter Talk to complete the information you believe is incomplete.</p>
+    <p><b>The right to erasure</b> - You have the right to request that Hunter Talk erase your personal data, under certain conditions.</p>
+    <p><b>The right to restrict processing</b> - You have the right to request that Hunter Talk restrict the processing of your personal data, under certain conditions.</p>
+    <p><b>The right to object to processing</b> - You have the right to object to Hunter Talk’s processing of your personal data, under certain conditions.</p>
+    <p><b>The right to data portability</b> - You have the right to request that Hunter Talk transfer the data that we have collected to another organization, or directly to you, under certain conditions.</p>
+    <p>If you make a request, we have one month to respond to you. If you would like to exercise any of these rights, please contact us at our email above.</p>
+</div>
+
+<script>
+function myFunction() {
+  var x = document.getElementById("myDIV");
+  if (x.style.display === "none") {
+    x.style.display = "block";
+  } else {
+    x.style.display = "none";
+  }
+}
+</script>
   </body>
 </html>
