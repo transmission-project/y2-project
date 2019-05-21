@@ -69,11 +69,24 @@ public class InsideGroupActivity extends AppCompatActivity
         groupsRef = database.getReference().child("groups");
         usersRef= database.getReference().child("users");
 
-
-
         FirebaseAuth auth = FirebaseAuth.getInstance();
         uid = auth.getCurrentUser().getUid();
 
+        //Clear the Recently hunted list
+        usersRef.child(uid).child("recentlyHunted").removeValue();
+
+        setContentView(R.layout.activity_inside_group);
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        NavigationView navigationView = findViewById(R.id.nav_view);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.addDrawerListener(toggle);
+        toggle.syncState();
+        navigationView.setNavigationItemSelectedListener(this);
+
+        //set hamburger bar user info
         usersRef.child(uid).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -92,20 +105,6 @@ public class InsideGroupActivity extends AppCompatActivity
 
             }
         });
-
-        //Clear the Recently hunted list
-        usersRef.child(uid).child("recentlyHunted").removeValue();
-
-        setContentView(R.layout.activity_inside_group);
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        NavigationView navigationView = findViewById(R.id.nav_view);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.addDrawerListener(toggle);
-        toggle.syncState();
-        navigationView.setNavigationItemSelectedListener(this);
 
         try {
             groupID = getIntent().getExtras().getString("groupID");
