@@ -58,6 +58,35 @@
           ]
         }
       }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:849259271283:android:e0ead13d953e4e6b",
+        "android_client_info": {
+          "package_name": "io.transmission_project.huntertalk"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "849259271283-t246k3ov1ev8u68okfrqoa9i5rj0gok3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDF-m5n89dE5nWqQWm9OPYo6cHa8tn6CCo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "849259271283-t246k3ov1ev8u68okfrqoa9i5rj0gok3.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
     }
   ],
   "configuration_version": "1"
