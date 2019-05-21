@@ -92,12 +92,8 @@ public class InsideGroupActivity extends AppCompatActivity
         catch (NullPointerException e) {
             finish();
         }
-       locationPermissionCheck();
-        //Voip
+
         startVoipFragment(savedInstanceState);
-
-        //Map
-
     }
 
     private void locationPermissionCheck() {
