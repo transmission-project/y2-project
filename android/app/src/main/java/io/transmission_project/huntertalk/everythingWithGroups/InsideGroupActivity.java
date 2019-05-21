@@ -23,6 +23,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.TextView;
 
 import io.transmission_project.huntertalk.LeaveGroupPopUp;
 import io.transmission_project.huntertalk.R;
@@ -64,7 +65,7 @@ public class InsideGroupActivity extends AppCompatActivity
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.replace(R.id.content_frame, new GroupOverviewFragment()).commit();
 
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        final FirebaseDatabase database = FirebaseDatabase.getInstance();
         groupsRef = database.getReference().child("groups");
         usersRef= database.getReference().child("users");
 
@@ -72,6 +73,26 @@ public class InsideGroupActivity extends AppCompatActivity
 
         FirebaseAuth auth = FirebaseAuth.getInstance();
         uid = auth.getCurrentUser().getUid();
+
+        usersRef.child(uid).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                String nickname = dataSnapshot.child("nickname").getValue().toString();
+                String email = dataSnapshot.child("email").getValue().toString();
+
+                TextView navNickname = findViewById(R.id.navNickname);
+                TextView navEmail = findViewById(R.id.navEmail);
+
+                navEmail.setText(email);
+                navNickname.setText(nickname);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
         //Clear the Recently hunted list
         usersRef.child(uid).child("recentlyHunted").removeValue();
 
@@ -219,8 +240,6 @@ public class InsideGroupActivity extends AppCompatActivity
                 map.setArguments(bundle);
                 fragmentManager.beginTransaction().replace(R.id.content_frame, map).commit();
             }
-
-        } else if (id == R.id.nav_chat) {
 
         } else if (id == R.id.nav_invite) {
             fragmentManager.beginTransaction().replace(R.id.content_frame, new InviteToGroupFragment()).commit();
