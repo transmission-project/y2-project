@@ -40,11 +40,11 @@ We're creating an app that hunters can use as an alternative to the communicatio
 
 |  Goal         | Description   | Result  |
 | ------------- |:-------------:| -----:|
-| Polishing      | Small fixes mainly for pressing back/leaving groups | - |
-| Push Notifications      | Create push notifications for invitations | - |
+| Polishing      | Small fixes mainly for pressing back/leaving groups | Done |
+| Push Notifications      | Create push notifications for invitations | Done |
 | P2P voice chat | Integration and finishing touches | - |
-| Nice UI | Make the app beautiful and easy to use | - |
-| Publish | Get the app ready for publishing to play store, GDPR etc | - |
+| Nice UI | Make the app beautiful and easy to use | Done |
+| Publish | Get the app ready for publishing to play store, GDPR etc | Done |
 
 
 
@@ -59,4 +59,5 @@ Team Transmission is a goup of 6 ICT students at KTH in Stockholm and we're doin
 [Justin Lex](mailto:jtlex@kth.se)<br />
 [Mikhail Vlasov](mailto:vlasov@kth.se)<br />
 
-<a href="privacy.html">Privacy Policy</a>
+
+Click <a href="privacy.html">here</a> to read our privacy policy.
